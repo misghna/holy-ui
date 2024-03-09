@@ -1,0 +1,7 @@
+{
+  "ignorePatterns": [
+  "*",
+    "**/.*",
+    "!src/**/*" // Ignore all files and directories except those inside src directory
+  ]
+}
