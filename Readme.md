@@ -6,16 +6,16 @@ Church UI is a basic React app built using (Vite)[https://vitejs.dev/] and (Mate
 Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-ui/getting-started/], a popular React UI library for building fast, scalable, and accessible applications.
 
 ## Prerequisites
-1. Install Bun on your machine.
+1. Install Bun on your machine. (Node is also fine)
 2. Basic understanding of React, Vite, and Material-UI.
 
 ## Getting Started
 1. Clone or download this repository to your local machine.
 2. Navigate to the project directory in your terminal.
 3. Install the dependencies 
-   >`bun install`.
+   >`bun install`. (Node : npm install & then npm i @mui/styles --force)
 4. Run the app 
-   >`bun dev`. Your app should now be running at http://localhost:3000
+   >`bun dev`. (Node : npm run dev) Your app should now be running at http://localhost:3000
 ## Code Structure
 * **main.jsx**: The entry point of the application. It renders the root component of your app, which is <App />.
 * **index.html**: The HTML file that contains the root element where your app will be mounted.
