@@ -13,9 +13,9 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 1. Clone or download this repository to your local machine.
 2. Navigate to the project directory in your terminal.
 3. Install the dependencies 
-   >`npm install` (or `bun install` if you're using Bun).
+   >`bun install`.
 4. Run the app 
-   >`npm run dev` (or `bun dev` if you're using Bun). Your app should now be running at http://localhost:3000
+   >`bun dev`. Your app should now be running at http://localhost:3000
 ## Code Structure
 * **main.jsx**: The entry point of the application. It renders the root component of your app, which is <App />.
 * **index.html**: The HTML file that contains the root element where your app will be mounted.
