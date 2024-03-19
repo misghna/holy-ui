@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     margin: theme.spacing(2)
   },
-  cardContent: {
+  cardTitle: {
     padding: theme.spacing(1)
   }
 }));
@@ -38,7 +39,29 @@ function CardView({ data }) {
             title={data?.title}
           />
         </CardActionArea>
-        <CardContent className={classes.cardContent}>{data?.content}</CardContent>
+        <CardContent>
+          <Typography
+            sx={{
+              fontWeight: 300,
+              fontSize: "1.25rem",
+              textTransform: "uppercase",
+              color: "#696969"
+            }}
+            className={classes.cardTitle}
+          >
+            {data?.title}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "0.875rem",
+              lineHeight: 1.5,
+              color: "#999999"
+            }}
+            className={classes.cardTitle}
+          >
+            {data?.content}
+          </Typography>
+        </CardContent>
         <CardActions>
           <Button fullWidth onClick={() => alert("More button clicked!")}>
             More

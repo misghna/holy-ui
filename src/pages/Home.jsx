@@ -4,7 +4,7 @@ import GridView from "~/layouts/GridView";
 
 function Home() {
   return (
-    <Box>
+    <Box sx={{ backgroundColor: "#F0F0F0" }}>
       <GridView />
     </Box>
   );

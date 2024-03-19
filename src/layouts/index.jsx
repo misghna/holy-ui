@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
   },
   bodySection: {
     position: "relative",
-    marginTop: theme.spacing(2),
     maxHeight: "100dvh",
     overflow: "auto"
   }
