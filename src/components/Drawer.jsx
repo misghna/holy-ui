@@ -24,7 +24,13 @@ const ChurchDrawer = ({ navigationItems, open, handleDrawerClose }) => {
   const classes = useStyles();
 
   return (
-    <Drawer className={classes.drawer} variant="persisent" anchor="left" open={open}>
+    <Drawer
+      className={classes.drawer}
+      variant="persisent"
+      anchor="left"
+      open={open}
+      classes={{ paper: classes.drawerPaper }}
+    >
       <List>
         {navigationItems.map((item) => (
           <ListItem
