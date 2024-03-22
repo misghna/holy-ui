@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import NavigationHeader from "~/components/Header";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
     minHeight: "100dvh",
