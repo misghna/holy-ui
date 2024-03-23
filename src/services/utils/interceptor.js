@@ -30,6 +30,8 @@ const responseInterceptor = () => {
 
         if (error.response.status === 401) {
           console.error("Unauthorized access");
+        } else if (error.response.status === 400) {
+          console.error("bad request");
         } else if (error.response.status >= 500) {
           console.error("Server error");
         } else {
