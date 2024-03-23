@@ -21,18 +21,24 @@ const requestInterceptor = () => {
 const responseInterceptor = () => {
   return axios.interceptors.response.use(
     (response) => {
-      console.log("Response test:", response.status, response.data);
+      console.log("Response :", response?.status, response?.data);
       return response;
     },
     (error) => {
-      console.error("Error:", error.response.status, error.response.data);
+      if (error.response) {
+        console.error("Error:", error.response.status, error.response.data);
 
-      if (error.response.status === 401) {
-        console.error("Unauthorized access");
-      } else if (error.response.status >= 500) {
-        console.error("Server error");
+        if (error.response.status === 401) {
+          console.error("Unauthorized access");
+        } else if (error.response.status >= 500) {
+          console.error("Server error");
+        } else {
+          console.error("Other error");
+        }
+      } else if (error.request) {
+        console.log("error  ", error.request);
       } else {
-        console.error("Other error");
+        console.log("error ", error.message);
       }
 
       return Promise.reject(error);

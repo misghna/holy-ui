@@ -12,7 +12,8 @@ const useStyles = makeStyles(() => ({
     width: "100%"
   }
 }));
-const partialUrl = "a5a4743103745caca161";
+const partialUrl = "a5a4743103745caca16189";
+
 export default function GridView() {
   const classes = useStyles();
   const { cardData } = useGridData(partialUrl);
@@ -20,11 +21,12 @@ export default function GridView() {
   return (
     <Box>
       <Grid container className={classes.grid}>
-        {cardData.map((data) => (
-          <Grid item xs={12} sm={4} key={data.id}>
-            <CardView data={data} />
-          </Grid>
-        ))}
+        {cardData &&
+          cardData.map((data) => (
+            <Grid item xs={12} sm={4} key={data.id}>
+              <CardView data={data} />
+            </Grid>
+          ))}
       </Grid>
     </Box>
   );

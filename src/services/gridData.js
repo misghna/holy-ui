@@ -8,8 +8,8 @@ export const getGridData = async (url) => {
   try {
     const response = await axios.get(url);
 
-    return response.data;
+    return response?.data || [];
   } catch (error) {
-    console.log(error);
+    console.log("error ", error.message);
   }
 };
