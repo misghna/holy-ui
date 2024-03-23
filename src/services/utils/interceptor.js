@@ -31,9 +31,9 @@ const responseErrorInterceptor = (error) => {
       console.error("Other error");
     }
   } else if (error.request) {
-    console.log("error  ", error.request);
+    console.error("error  ", error.request);
   } else {
-    console.log("error ", error.message);
+    console.error("error ", error.message);
   }
 
   return Promise.reject(error);
