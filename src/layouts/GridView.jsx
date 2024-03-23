@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import CardView from "~/components/Card";
-import useGridData from "~/hooks/useGridData";
+import useAxios from "~/hooks/useAxios";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -16,7 +16,10 @@ const partialUrl = "a5a4743103745caca161";
 
 export default function GridView() {
   const classes = useStyles();
-  const { cardData } = useGridData(partialUrl);
+  const { response: cardData } = useAxios({
+    url: partialUrl,
+    method: "get"
+  });
 
   return (
     <Grid container className={classes.grid}>
