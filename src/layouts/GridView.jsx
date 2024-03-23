@@ -1,4 +1,4 @@
-import { Grid, Box } from "@mui/material";
+import { Grid } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import CardView from "~/components/Card";
@@ -19,15 +19,13 @@ export default function GridView() {
   const { cardData } = useGridData(partialUrl);
 
   return (
-    <Box>
-      <Grid container className={classes.grid}>
-        {cardData &&
-          cardData.map((data) => (
-            <Grid item xs={12} sm={4} key={data.id}>
-              <CardView data={data} />
-            </Grid>
-          ))}
-      </Grid>
-    </Box>
+    <Grid container className={classes.grid}>
+      {cardData &&
+        cardData.map((data) => (
+          <Grid item xs={12} sm={4} key={data.id}>
+            <CardView data={data} />
+          </Grid>
+        ))}
+    </Grid>
   );
 }
