@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 function CardView({ data }) {
-  console.log("{data} :>> ", { data });
   const classes = useStyles();
   const handleModalClose = () => {
     console.log('"object" :>> ', "object");
