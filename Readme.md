@@ -23,4 +23,12 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 * **index.html**: The HTML file that contains the root element where your app will be mounted.
 * **src/App.css**: Contains CSS styles for the App component.
 * **src/App.jsx**: The main component of your application. It imports and uses the necessary libraries and utilities from Vite, Material-UI, and React.
-* **package.json**: Contains metadata about your project, including its name, version, dependencies, and scripts.
+* **package.json**: Contains metadata about your project, including its name, version, dependencies, and scripts.'
+
+## License
+
+MIT
+
+**Free Software, Yeah always free !**
+
+
