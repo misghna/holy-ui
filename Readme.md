@@ -9,6 +9,8 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 1. Install Bun on your machine. (Node is also fine)
 2. Basic understanding of React, Vite, and Material-UI.
 
+>Note : If using npm use `--legacy-peer-deps` flag.
+
 ## Getting Started
 1. Clone or download this repository to your local machine.
 2. Navigate to the project directory in your terminal.
