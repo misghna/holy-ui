@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import Box from "@mui/material/Box";
 import { useParams } from "react-router-dom";
 
@@ -5,7 +7,9 @@ import GridView from "~/layouts/GridView";
 
 function CategoryPages() {
   const params = useParams();
-  console.log("🚀 ~ Home ~ match:", params);
+  useEffect(() => {
+    document.title = params.category;
+  }, [params?.category]);
   return (
     <Box sx={{ backgroundColor: "#F0F0F0" }}>
       <GridView />
