@@ -25,6 +25,24 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 * **src/App.jsx**: The main component of your application. It imports and uses the necessary libraries and utilities from Vite, Material-UI, and React.
 * **package.json**: Contains metadata about your project, including its name, version, dependencies, and scripts.'
 
+## Scope : Release 1 (Core Functionality)
+1. Admin - The ability to create/edit pages,add content and upload media dynamically
+2. Public - view, navigate and date filter
+3. Supported contents - Text,Pdf, Image, Audio, Video
+4. Filter - Basic Date filter and global Search
+5. Language - multi language support including autotranslate
+6. Theme - light/Dark mode and Stye colors selectors
+
+## Scope : Release 2 
+1. Donation manager
+2. User profile manager
+3. My donations and Org statements viewer
+4. Sentiment and Comment Integration 
+
+## Scope : Release 3 
+1. Chat engine
+2. pastoral care and Members manager
+
 ## License
 
 MIT
