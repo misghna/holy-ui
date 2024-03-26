@@ -1,4 +1,4 @@
-# Holy UI
+# Holy: Web UI
 
 ## Introduction
 Church UI is a basic React app built using (Vite)[https://vitejs.dev/] and (Material-UI)[https://mui.com/material-ui/getting-started/] for fast development. It uses Bun, an alternative to Node.js, to run your app. Here you'll find all the necessary files and instructions to get up and running with this project.
