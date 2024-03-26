@@ -27,11 +27,10 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 
 ## Scope : Release 1 (Core Functionality)
 1. Admin - The ability to create/edit pages,add content and upload media dynamically
-2. Public - view, navigate and date filter
+2. Public - view, navigate and filter (date & global search)
 3. Supported contents - Text,Pdf, Image, Audio, Video
-4. Filter - Basic Date filter and global Search
-5. Language - multi language support including autotranslate
-6. Theme - light/Dark mode and Stye colors selectors
+4. Language - multi language support including autotranslate
+5. Theme - light/Dark mode and Stye colors selectors
 
 ## Scope : Release 2 
 1. Donation manager
