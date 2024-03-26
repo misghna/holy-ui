@@ -33,10 +33,11 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 5. Theme - light/Dark mode and Stye colors selectors
 
 ## Scope : Release 2 
-1. Donation manager
-2. User profile manager
-3. My donations and Org statements viewer
-4. Sentiment and Comment Integration 
+1. Donation manager - (with monthly subscription Feature)
+2. Notification Manager (SMS)
+3. User profile manager
+4. My donations and Org statements viewer
+5. Sentiment and Comment Integration 
 
 ## Scope : Release 3 
 1. Chat engine
