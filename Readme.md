@@ -41,7 +41,7 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 
 ## Scope : Release 3 
 1. Chat engine
-2. pastoral care and Members manager
+2. Pastoral care and Members manager
 
 ## License
 
