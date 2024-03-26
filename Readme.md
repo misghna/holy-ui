@@ -19,12 +19,12 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
 4. Run the app 
    >`bun dev`. (Node : npm run dev) Your app should now be running at http://localhost:3000
 
-# Kanban board : clickup
-signup for for fee and request admin for invite
+## Kanban board : clickup
+signup for for fee and request admin for invite  
 ```https://app.clickup.com/9014227579/v/b/li/901402296735```
 
-# API Testing platform : insomnia
-signup for for fee and request admin for invite
+## API Testing platform : insomnia
+signup for for fee and request admin for invite  
 ```https://insomnia.rest/```  
 
 ## Code Structure
