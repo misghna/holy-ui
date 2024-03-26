@@ -18,6 +18,15 @@ Note: This version of Church UI utilizes (Material-UI)[https://mui.com/material-
    >`bun install`. (Node : npm install & then npm i @mui/styles --force)
 4. Run the app 
    >`bun dev`. (Node : npm run dev) Your app should now be running at http://localhost:3000
+
+# Kanban board : clickup
+signup for for fee and request admin for invite
+```https://app.clickup.com/9014227579/v/b/li/901402296735```
+
+# API Testing platform : insomnia
+signup for for fee and request admin for invite
+```https://insomnia.rest/```  
+
 ## Code Structure
 * **main.jsx**: The entry point of the application. It renders the root component of your app, which is <App />.
 * **index.html**: The HTML file that contains the root element where your app will be mounted.
