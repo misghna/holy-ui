@@ -1,7 +1,7 @@
 # Holy: Web UI
 
 ## Introduction
-Holy is an open-source web application, crafted by a team of volunteer engineers. While it's versatile enough to be used for any blog site, its primary design is aimed at serving Churches and Temples.  
+Holy is an open-source web application, crafted by a team of volunteer engineers. While it's versatile enough to be used for any blog site, its primary design is aimed at serving Churches and Temples. While the website will be fully functional on desktop, its design and user experience are primarily optimized for mobile users, reflecting the prevailing trend of mobile dominance in internet usage today.
 
 Holy UI is a React app built using (Vite)[https://vitejs.dev/] and (Material-UI)[https://mui.com/material-ui/getting-started/] for fast development. It uses Bun, an alternative to Node.js, to run your app. Here you'll find all the necessary files and instructions to get up and running with this project.
 
