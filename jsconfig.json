@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "ES6",
+    "module": "commonJS",
     "target": "ESNEXT",
     "jsx": "react",
     "baseUrl": ".",
