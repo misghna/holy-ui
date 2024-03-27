@@ -39,7 +39,7 @@ const useSetting = (url) => {
   const axiosPrivate = useAxiosPrivate();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const fetchMenuSetting = useCallback(async () => {
+  const fetchSetting = useCallback(async () => {
     dispatch({ type: actionTypes.FETCH_START });
     try {
       const response = await axiosPrivate.get(url);
@@ -52,8 +52,8 @@ const useSetting = (url) => {
   }, [axiosPrivate, dispatch, url]);
 
   useEffect(() => {
-    fetchMenuSetting();
-  }, [fetchMenuSetting]);
+    fetchSetting();
+  }, [fetchSetting]);
 
   return { state, dispatch };
 };
