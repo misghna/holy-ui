@@ -41,6 +41,7 @@ const useSetting = (url) => {
 
   const fetchSetting = useCallback(async () => {
     dispatch({ type: actionTypes.FETCH_START });
+
     try {
       const response = await axiosPrivate.get(url);
       dispatch({ type: actionTypes.FETCH_SUCCESS, payload: response?.data });
@@ -49,7 +50,6 @@ const useSetting = (url) => {
       dispatch({ type: actionTypes.FETCH_ERROR, payload: error });
     }
   }, [axiosPrivate, dispatch, url]);
-
   useEffect(() => {
     fetchSetting();
   }, [fetchSetting]);
