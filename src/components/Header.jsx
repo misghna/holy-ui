@@ -4,18 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 
 import ChurchDrawer from "./Drawer";
-const navigationItems = [
-  {
-    label: "Home",
-    icon: null,
-    path: "/"
-  },
-  {
-    label: "About",
-    icon: null,
-    path: "/about"
-  }
-];
+
 export default function NavigationHeader() {
   const [open, setOpen] = useState(false);
 
@@ -44,7 +33,7 @@ export default function NavigationHeader() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <ChurchDrawer navigationItems={navigationItems} open={open} handleDrawerClose={handleDrawerClose} />
+      <ChurchDrawer open={open} handleDrawerClose={handleDrawerClose} />
     </>
   );
 }
