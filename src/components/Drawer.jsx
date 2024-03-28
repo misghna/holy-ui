@@ -1,4 +1,4 @@
-import { Fragment, useContext } from "react";
+import { Fragment, useContext, useMemo } from "react";
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { List, ListItem, ListItemIcon, ListItemText, Drawer, Divider } from "@mui/material";
@@ -31,11 +31,15 @@ const ChurchDrawer = ({ open, handleDrawerClose }) => {
   const navigate = useNavigate();
   const { setting } = state;
   const menu = setting.menu;
-  const groupedMenu = menu.reduce((acc, item) => {
-    acc[item.type] = acc[item.type] || [];
-    acc[item.type].push(item);
-    return acc;
-  }, []);
+  const groupedMenu = useMemo(
+    () =>
+      menu.reduce((acc, item) => {
+        acc[item.type] = acc[item.type] || [];
+        acc[item.type].push(item);
+        return acc;
+      }, {}),
+    [menu]
+  );
 
   return (
     <Drawer
@@ -47,8 +51,8 @@ const ChurchDrawer = ({ open, handleDrawerClose }) => {
     >
       <List>
         {groupedMenu &&
-          Object.entries(groupedMenu).map((items, index) => (
-            <Fragment key={items[index]}>
+          Object.entries(groupedMenu).map((items) => (
+            <Fragment key={items[0]}>
               <Divider />
               {items[1].map((item) => (
                 <ListItem
