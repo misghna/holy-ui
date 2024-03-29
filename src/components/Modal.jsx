@@ -21,7 +21,7 @@ export default function DynamicModal({
   hideTitle
 }) {
   return (
-    <Dialog open={open} maxWidth={maxWidth} onClose={handleClose}>
+    <Dialog open={open} fullWidth maxWidth={maxWidth} onClose={handleClose}>
       {!hideTitle && (
         <>
           <DialogTitle>{header}</DialogTitle>

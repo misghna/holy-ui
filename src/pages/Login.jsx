@@ -53,11 +53,11 @@ function Login() {
     if (user) {
       let routePath = "/admin/home";
       if (location?.state?.pathname) {
-        routePath = location.state.pathname;
+        routePath = location.state?.pathname;
       }
       navigate(routePath);
     }
-  }, [location.state.pathname, navigate]);
+  }, [location.state?.pathname, navigate]);
 
   const handleSubmit = (event) => {
     event.preventDefault();

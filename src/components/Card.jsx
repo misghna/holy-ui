@@ -14,41 +14,40 @@ import { useNavigate } from "react-router-dom";
 
 import DynamicModal from "./Modal";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1
-  },
-  card: {
-    margin: theme.spacing(2),
-    minHeight: "93%"
-  },
-  cardTitle: {
-    padding: 0,
-    color: "#696969",
-    textTransform: "uppercase"
-  },
-  cardBody: {
-    color: "#999999"
-  }
-}));
+const useStyles = makeStyles((theme) => {
+  return {
+    root: {
+      flexGrow: 1
+    },
+    card: {
+      margin: theme.spacing(2),
+      minHeight: "93%"
+    },
+    cardTitle: {
+      padding: 0,
+      color: "#696969",
+      textTransform: "uppercase"
+    },
+    cardBody: {
+      color: "#999999",
+      paddingTop: 0
+    }
+  };
+});
 function CardView({ data }) {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [modal, setModalData] = useState({ open: false });
+  const [modalData, setModalData] = useState({ open: false });
   const handleModalClose = () => {
     setModalData({});
   };
+  function handleCardAction() {
+    if (data.content?.length > 0) setModalData({ open: true, data });
+  }
   return (
     <>
       <Card className={classes.card}>
-        <CardActionArea
-          onClick={() => {
-            setModalData({
-              open: true,
-              data
-            });
-          }}
-        >
+        <CardActionArea onClick={handleCardAction}>
           <CardMedia
             height={200}
             component="img"
@@ -79,25 +78,8 @@ function CardView({ data }) {
           </Button>
         </CardActions>
       </Card>
-      <DynamicModal open={modal.open} handleClose={handleModalClose} header="test">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. A, aliquam officia. Saepe quibusdam culpa quos quod
-        neque. Minima vero sed, modi, eius, nobis dolorem quidem provident quas iusto deserunt autem! Lorem ipsum dolor,
-        sit amet consectetur adipisicing elit. Atque incidunt amet cumque omnis earum minima a! Accusamus placeat nulla
-        commodi, facilis harum reprehenderit dicta, voluptate voluptatibus, corporis omnis assumenda sunt? Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit. Enim aut aliquam consequatur consequuntur dolores. Reprehenderit
-        dolor non amet voluptatem, doloremque ab. Expedita ipsum iste aliquid quidem sapiente autem nesciunt fugit?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. A, aliquam officia. Saepe quibusdam culpa quos quod
-        neque. Minima vero sed, modi, eius, nobis dolorem quidem provident quas iusto deserunt autem! Lorem ipsum dolor,
-        sit amet consectetur adipisicing elit. Atque incidunt amet cumque omnis earum minima a! Accusamus placeat nulla
-        commodi, facilis harum reprehenderit dicta, voluptate voluptatibus, corporis omnis assumenda sunt? Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit. Enim aut aliquam consequatur consequuntur dolores. Reprehenderit
-        dolor non amet voluptatem, doloremque ab. Expedita ipsum iste aliquid quidem sapiente autem nesciunt fugit?
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. A, aliquam officia. Saepe quibusdam culpa quos quod
-        neque. Minima vero sed, modi, eius, nobis dolorem quidem provident quas iusto deserunt autem! Lorem ipsum dolor,
-        sit amet consectetur adipisicing elit. Atque incidunt amet cumque omnis earum minima a! Accusamus placeat nulla
-        commodi, facilis harum reprehenderit dicta, voluptate voluptatibus, corporis omnis assumenda sunt? Lorem ipsum
-        dolor sit amet, consectetur adipisicing elit. Enim aut aliquam consequatur consequuntur dolores. Reprehenderit
-        dolor non amet voluptatem, doloremque ab. Expedita ipsum iste aliquid quidem sapiente autem nesciunt fugit?
+      <DynamicModal open={modalData.open} handleClose={handleModalClose} header="test">
+        {data.content}
       </DynamicModal>
     </>
   );
