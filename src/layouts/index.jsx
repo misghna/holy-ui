@@ -1,5 +1,7 @@
+import { useEffect } from "react";
+
 import { makeStyles } from "@mui/styles";
-import { Outlet } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 
 import NavigationHeader from "~/components/Header";
 
@@ -22,10 +24,14 @@ const useStyles = makeStyles(() => ({
 }));
 const Layout = () => {
   const classes = useStyles();
+  const params = useParams();
+  useEffect(() => {
+    document.title = params.category;
+  }, [params?.category]);
   return (
     <div className={classes.root}>
       <section className={classes.headerSection}>
-        <NavigationHeader />
+        <NavigationHeader title={params.category || ""} />
       </section>
       <section className={classes.bodySection}>
         <Outlet />

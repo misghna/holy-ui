@@ -73,7 +73,7 @@ function CardView({ data }) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button fullWidth onClick={() => navigate(`/${data.contentCategory}`)}>
+          <Button fullWidth onClick={() => navigate(`/${data.contentCategory?.toLowerCase()}`)}>
             More
           </Button>
         </CardActions>
