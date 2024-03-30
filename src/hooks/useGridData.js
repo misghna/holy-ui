@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import useAxiosPrivate from "./useAxiosPrivate";
+import useAxiosPrivate from "~/hooks/useAxiosPrivate";
 
 const useGridData = (url) => {
   const [cardData, setCardData] = useState(null);
