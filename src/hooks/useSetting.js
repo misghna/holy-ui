@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useReducer } from "react";
+import { useEffect, useCallback, useReducer, useRef } from "react";
 
 import useAxiosPrivate from "~/hooks/useAxiosPrivate";
 
@@ -38,8 +38,12 @@ const reducer = (state, action) => {
 const useSetting = (url) => {
   const axiosPrivate = useAxiosPrivate();
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const isMounted = useRef(false);
   const fetchSetting = useCallback(async () => {
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
     dispatch({ type: actionTypes.FETCH_START });
 
     try {

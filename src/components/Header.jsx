@@ -1,22 +1,47 @@
-import { useState } from "react";
+import { useCallback, useContext } from "react";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
+import { Box, Toolbar, Typography } from "@mui/material";
+import MuiAppBar from "@mui/material/AppBar";
+import IconButton from "@mui/material/IconButton";
+import { styled } from "@mui/material/styles";
+
+import { DRAWER_WIDTH } from "~/constants/theme";
+import LayoutContext from "~/contexts/layoutContext";
+import { actionTypes } from "~/contexts/LayoutProvider";
 
 import ChurchDrawer from "./Drawer";
 
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== "open"
+})(({ theme, open }) => ({
+  transition: theme.transitions.create(["margin", "width"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  ...(open && {
+    width: `calc(100% - ${DRAWER_WIDTH}px)`,
+    marginLeft: `${DRAWER_WIDTH}px`,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    })
+  })
+}));
+
 export default function NavigationHeader() {
-  const [open, setOpen] = useState(false);
+  const { state, dispatch } = useContext(LayoutContext);
+  const { open } = state;
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    dispatch({ type: actionTypes.TOGGLE_DRAWER });
   };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const handleDrawerClose = useCallback(() => {
+    dispatch({ type: actionTypes.UNTOGGLE_DRAWER });
+  }, [dispatch]);
   return (
-    <>
-      <AppBar position="static">
+    <Box sx={{ display: "flex" }}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             size="large"
@@ -33,7 +58,7 @@ export default function NavigationHeader() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <ChurchDrawer open={open} handleDrawerClose={handleDrawerClose} />
-    </>
+      <ChurchDrawer handleDrawerClose={handleDrawerClose} />
+    </Box>
   );
 }
