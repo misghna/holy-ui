@@ -8,7 +8,7 @@ const useGridData = (url) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosPrivate.get(url);
+        const response = await axiosPrivate.get(`/api/${url}`);
         setCardData(response.data);
       } catch (error) {
         console.log(error);
