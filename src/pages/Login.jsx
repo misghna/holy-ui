@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Button,
@@ -16,6 +16,7 @@ import { makeStyles } from "@mui/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import image from "~/assets/home1bg.jpg";
+import { useAuth } from "~/context/AuthContext";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -47,37 +48,52 @@ function Login() {
   const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const { authState, setAuthState } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      let routePath = "/admin/home";
+    if (authState.token?.accessToken) {
+      let routePath = "/admin";
       if (location?.state?.pathname) {
-        routePath = location.state.pathname;
+        routePath = location.state?.pathname;
       }
       navigate(routePath);
     }
-  }, [location.state.pathname, navigate]);
+  }, [location.state?.pathname, navigate, authState?.token?.accessToken]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // implement login logic here
+    // DUMMY
+    const data = {
+      token: {
+        refresh: "asdnaksldn",
+        accessToken: "esdxasdkjn"
+      },
+      user: {
+        name: "Esteban",
+        email
+      }
+    };
+    localStorage.setItem("auth", JSON.stringify(data));
+    setAuthState(data);
+    navigate("/admin");
   };
 
   return (
-    <Stack className={classes.root} flexDirection="row" fullWidth alignItems="center" justifyContent="center">
+    <Stack className={classes.root} flexDirection="row" alignItems="center" justifyContent="center">
       <Container component="main" maxWidth="xs" className={classes.formWrapper}>
-        <Stack flexDirection="column" fullWidth alignItems="left" justifyContent="center">
+        <Stack flexDirection="column" alignItems="left" justifyContent="center">
           <h2>Login</h2>
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
+              value={email}
               label="Email Address"
               name="email"
               autoComplete="email"
+              onChange={({ target }) => setEmail(target.value)}
               autoFocus
             />
             <TextField
@@ -87,7 +103,8 @@ function Login() {
               name="password"
               label="Password"
               type="password"
-              id="password"
+              value={password}
+              onChange={({ target }) => setPassword(target.value)}
               autoComplete="current-password"
             />
             <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
