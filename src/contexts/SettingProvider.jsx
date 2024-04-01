@@ -7,7 +7,7 @@ import useSetting from "~/hooks/useSetting";
 export const SettingContext = createContext({ state: {}, dispatch: () => {} });
 
 const url = "28912ddd5410287eb4c0";
-const SettingProvider = ({ children }) => {
+export const SettingProvider = ({ children }) => {
   const { state, dispatch } = useSetting(url);
 
   return state.setting.menu.length > 0 ? (
@@ -17,5 +17,3 @@ const SettingProvider = ({ children }) => {
 SettingProvider.propTypes = {
   children: PropTypes.node.isRequired
 };
-
-export default SettingProvider;

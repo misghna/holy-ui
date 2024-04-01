@@ -24,12 +24,10 @@ const reducer = (state, action) => {
   }
 };
 
-const LayoutProvider = ({ children }) => {
+export const LayoutProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return <LayoutContext.Provider value={{ state, dispatch }}>{children}</LayoutContext.Provider>;
 };
 LayoutProvider.propTypes = {
   children: PropTypes.node.isRequired
 };
-
-export default LayoutProvider;

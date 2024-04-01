@@ -16,7 +16,7 @@ import { makeStyles } from "@mui/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import image from "~/assets/home1bg.jpg";
-import { useAuth } from "~/context/AuthContext";
+import { useAuth } from "~/contexts/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
   root: {

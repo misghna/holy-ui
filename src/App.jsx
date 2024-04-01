@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import { AuthProvider } from "~/context/AuthContext";
-import LayoutProvider from "~/contexts/LayoutProvider";
-import SettingProvider from "~/contexts/SettingProvider";
+import { AuthProvider } from "~/contexts/AuthContext";
+import { LayoutProvider } from "~/contexts/LayoutProvider";
+import { SettingProvider } from "~/contexts/SettingProvider";
 import Layout from "~/layouts";
 import AdminLayout from "~/layouts/AdminLayout";
 import ProtectedLayout from "~/layouts/ProtectedLayout";
