@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import useRefreshToken from "./useRefreshToken";
+import useRefreshToken from "~/hooks/useRefreshToken";
 
 const axiosPrivate = axios.create();
 const useAxiosPrivate = () => {

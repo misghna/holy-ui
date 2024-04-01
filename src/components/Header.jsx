@@ -5,6 +5,7 @@ import { Box, Toolbar, Typography } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
+import { string } from "prop-types";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { LayoutContext, actionTypes } from "~/contexts/LayoutProvider";
@@ -61,3 +62,7 @@ export default function NavigationHeader() {
     </Box>
   );
 }
+
+NavigationHeader.propTypes = {
+  title: string
+};

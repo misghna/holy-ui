@@ -12,7 +12,7 @@ import { makeStyles } from "@mui/styles";
 import { shape, string } from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-import DynamicModal from "./Modal";
+import DynamicModal from "~/components/Modal";
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -73,7 +73,7 @@ function CardView({ data }) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button fullWidth onClick={() => navigate(`/${data.contentCategory}`)}>
+          <Button fullWidth onClick={() => navigate(`/${data.contentCategory?.toLowerCase()}`)}>
             More
           </Button>
         </CardActions>

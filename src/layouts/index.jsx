@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import { styled } from "@mui/material/styles";
-import { Outlet } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+import { Outlet, useParams } from "react-router-dom";
 
 import { DrawerHeader } from "~/components/Drawer";
 import NavigationHeader from "~/components/Header";
@@ -24,13 +25,37 @@ const Section = styled("section", { shouldForwardProp: (prop) => prop !== "open"
     })
   })
 }));
+
+const useStyles = makeStyles(() => ({
+  root: {
+    flexGrow: 1,
+    minHeight: "100dvh",
+    maxHeight: "100dvh",
+    display: "flex",
+    flexDirection: "column"
+  },
+  headerSection: {
+    position: "relative"
+  },
+  bodySection: {
+    position: "relative",
+    maxHeight: "100dvh",
+    overflow: "auto"
+  }
+}));
 const Layout = () => {
   const { state } = useContext(LayoutContext);
   const { open } = state;
+
+  const classes = useStyles();
+  const params = useParams();
+  useEffect(() => {
+    document.title = params.category;
+  }, [params?.category]);
   return (
-    <div>
-      <section>
-        <NavigationHeader />
+    <div className={classes.root}>
+      <section className={classes.headerSection}>
+        <NavigationHeader title={params.category || ""} />
         <DrawerHeader />
       </section>
 

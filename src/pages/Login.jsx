@@ -18,29 +18,33 @@ import { useNavigate, useLocation } from "react-router-dom";
 import image from "~/assets/home1bg.jpg";
 import { useAuth } from "~/context/AuthContext";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100vw",
-    height: "100vh"
+    height: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
   },
   formWrapper: {
     backgroundColor: "white",
-    height: "80%",
-    display: "flex",
-    alignItems: "center",
+    padding: theme.spacing(5),
     borderRadius: "12px",
-    flexDirection: "column",
-    justifyContent: "center"
+    [theme.breakpoints.down("xs")]: {
+      width: "100%" // Adjust the width for smaller screens
+    }
   },
   imageWrapper: {
-    width: "100%",
-    height: "100%",
-    backgroundImage: `url(${image})`,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    color: "white",
-    // backgroundPositionX: "calc(100vw - 60vw)",
-    backgroundPositionY: "calc(100vh - 95vh)"
+    display: "none !important",
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+      height: "100%",
+      backgroundImage: `url(${image})`,
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      color: "white",
+      display: "block !important"
+    }
   }
 }));
 
@@ -51,6 +55,7 @@ function Login() {
   const { authState, setAuthState } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   useEffect(() => {
     if (authState.token?.accessToken) {
       let routePath = "/admin";
@@ -80,9 +85,9 @@ function Login() {
   };
 
   return (
-    <Stack className={classes.root} flexDirection="row" alignItems="center" justifyContent="center">
+    <Stack className={classes.root} flexDirection="row">
       <Container component="main" maxWidth="xs" className={classes.formWrapper}>
-        <Stack flexDirection="column" alignItems="left" justifyContent="center">
+        <Stack spacing={2}>
           <h2>Login</h2>
           <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
@@ -126,7 +131,7 @@ function Login() {
           </Box>
         </Stack>
       </Container>
-      <Container component="section" maxWidth="lg" className={classes.imageWrapper}>
+      <Container component="section" maxWidth="lg" classes={{ root: classes.imageWrapper }}>
         <Stack
           flexDirection="column"
           justifyContent="center"
