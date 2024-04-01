@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
+import LayoutProvider from "~/contexts/LayoutProvider";
 import SettingProvider from "~/contexts/SettingProvider";
 import Layout from "~/layouts";
 import ProtectedLayout from "~/layouts/ProtectedLayout";
@@ -8,7 +9,6 @@ import Login from "~/pages/Login";
 import CategoryPages from "~/pages/WebsiteCategoryPages";
 
 import { AuthProvider } from "./context/AuthContext";
-import LayoutProvider from "./contexts/LayoutProvider";
 import AdminLayout from "./layouts/AdminLayout";
 
 function App() {

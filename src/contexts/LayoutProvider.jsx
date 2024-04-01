@@ -1,8 +1,8 @@
-import { useReducer } from "react";
+import { useReducer, createContext } from "react";
 
 import PropTypes from "prop-types";
 
-import LayoutContext from "./layoutContext";
+export const LayoutContext = createContext({ state: { open: false }, dispatch: () => {} });
 
 const initialState = {
   open: false

@@ -12,8 +12,8 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
-import LayoutContext from "~/contexts/layoutContext";
-import SettingContext from "~/contexts/settingContext";
+import { LayoutContext } from "~/contexts/LayoutProvider";
+import { SettingContext } from "~/contexts/SettingProvider";
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",

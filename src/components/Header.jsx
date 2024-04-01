@@ -7,8 +7,7 @@ import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
-import LayoutContext from "~/contexts/layoutContext";
-import { actionTypes } from "~/contexts/LayoutProvider";
+import { LayoutContext, actionTypes } from "~/contexts/LayoutProvider";
 
 import ChurchDrawer from "./Drawer";
 

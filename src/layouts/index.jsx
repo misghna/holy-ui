@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 import { DrawerHeader } from "~/components/Drawer";
 import NavigationHeader from "~/components/Header";
 import { DRAWER_WIDTH } from "~/constants/theme";
-import LayoutContext from "~/contexts/layoutContext";
+import { LayoutContext } from "~/contexts/LayoutProvider";
 
 const Section = styled("section", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
   flexGrow: 1,

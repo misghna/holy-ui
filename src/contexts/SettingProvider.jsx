@@ -1,8 +1,10 @@
+import { createContext } from "react";
+
 import PropTypes from "prop-types";
 
 import useSetting from "~/hooks/useSetting";
 
-import SettingContext from "./settingContext";
+export const SettingContext = createContext({ state: {}, dispatch: () => {} });
 
 const url = "28912ddd5410287eb4c0";
 const SettingProvider = ({ children }) => {
