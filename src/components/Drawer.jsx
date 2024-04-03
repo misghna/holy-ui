@@ -54,7 +54,7 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
     return nestedArray;
   }, [groupedMenu]);
 
-  const [isSubMenOpen, setIsSubMenOpen] = useState(submenus);
+  const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
     if (submenu?.length == 0) return null;
@@ -107,12 +107,10 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
     setIsSubMenOpen(arr);
   };
   const handleSubMenCloseClick = (typeIndex, menuIndex) => {
-    const arr = [...isSubMenOpen];
+    const arr = [...submenus];
     let typeOpens = arr[typeIndex];
-    typeOpens = typeOpens.map(() => false);
     typeOpens[menuIndex] = false;
     arr[typeIndex] = [...typeOpens];
-
     setIsSubMenOpen(arr);
   };
 
