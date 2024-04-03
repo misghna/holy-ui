@@ -28,7 +28,7 @@ export const LayoutProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return <LayoutContext.Provider value={{ state, dispatch }}>{children}</LayoutContext.Provider>;
 };
-export const useLayoutContext = () => useContext(LayoutContext);
+export const useLayout = () => useContext(LayoutContext);
 LayoutProvider.propTypes = {
   children: PropTypes.node.isRequired
 };

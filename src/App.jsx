@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "~/contexts/AuthContext";
+import { GlobalSettingProvider } from "~/contexts/GlobalSettingProvider";
 import { LayoutProvider } from "~/contexts/LayoutProvider";
-import { SettingProvider } from "~/contexts/SettingProvider";
 import Layout from "~/layouts";
 import AdminLayout from "~/layouts/AdminLayout";
 import ProtectedLayout from "~/layouts/ProtectedLayout";
@@ -14,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <SettingProvider>
+        <GlobalSettingProvider>
           <LayoutProvider>
             <Routes>
               <Route path="/login" exact element={<Login />} />
@@ -31,7 +31,7 @@ function App() {
               </Route>
             </Routes>
           </LayoutProvider>
-        </SettingProvider>
+        </GlobalSettingProvider>
       </AuthProvider>
     </BrowserRouter>
   );

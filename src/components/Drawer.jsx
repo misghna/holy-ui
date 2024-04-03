@@ -13,8 +13,8 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
-import { useLayoutContext } from "~/contexts/LayoutProvider";
-import { useSettingContext } from "~/contexts/SettingProvider";
+import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import { useLayout } from "~/contexts/LayoutProvider";
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -26,12 +26,12 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
-  const { state: drawerState } = useLayoutContext();
+  const { state: drawerState } = useLayout();
 
   const { open } = drawerState;
 
   const theme = useTheme();
-  const { state } = useSettingContext();
+  const { state } = useGlobalSetting();
   const navigate = useNavigate();
   const { setting } = state;
   const menu = setting?.menu;

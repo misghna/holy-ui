@@ -7,7 +7,7 @@ import { Outlet, useParams } from "react-router-dom";
 import { DrawerHeader } from "~/components/Drawer";
 import NavigationHeader from "~/components/Header";
 import { DRAWER_WIDTH } from "~/constants/theme";
-import { useSettingContext } from "~/contexts/SettingProvider";
+import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 
 const Section = styled("section", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
   flexGrow: 1,
@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 const Layout = () => {
-  const { state } = useSettingContext();
+  const { state } = useGlobalSetting();
   const { open } = state;
 
   const classes = useStyles();

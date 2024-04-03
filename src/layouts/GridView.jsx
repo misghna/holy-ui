@@ -18,7 +18,7 @@ const currentConfig = import.meta.env.MODE === "development" ? config.test : con
 
 export default function GridView() {
   const classes = useStyles();
-  const { cardData } = useGridData(currentConfig.gridData);
+  const { cardData } = useGridData(currentConfig.contentData);
 
   return (
     <Grid container className={classes.grid}>

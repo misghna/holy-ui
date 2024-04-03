@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles";
 import { string } from "prop-types";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
-import { actionTypes, useLayoutContext } from "~/contexts/LayoutProvider";
+import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
 
 import ChurchDrawer from "./Drawer";
 
@@ -30,7 +30,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function NavigationHeader() {
-  const { state, dispatch } = useLayoutContext();
+  const { state, dispatch } = useLayout();
   const { open } = state;
 
   const handleDrawerOpen = () => {
