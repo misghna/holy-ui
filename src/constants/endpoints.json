@@ -1,0 +1,10 @@
+{
+  "test": {
+    "setting": "c8cc332b042cac357c51",
+    "gridData": "a5a4743103745caca161"
+  },
+  "prod": {
+    "setting": "api/",
+    "gridData": "api/"
+  }
+}

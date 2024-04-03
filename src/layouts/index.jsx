@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
@@ -7,7 +7,7 @@ import { Outlet, useParams } from "react-router-dom";
 import { DrawerHeader } from "~/components/Drawer";
 import NavigationHeader from "~/components/Header";
 import { DRAWER_WIDTH } from "~/constants/theme";
-import { LayoutContext } from "~/contexts/LayoutProvider";
+import { useSettingContext } from "~/contexts/SettingProvider";
 
 const Section = styled("section", { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
   flexGrow: 1,
@@ -44,7 +44,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 const Layout = () => {
-  const { state } = useContext(LayoutContext);
+  const { state } = useSettingContext();
   const { open } = state;
 
   const classes = useStyles();

@@ -1,4 +1,4 @@
-import { useCallback, useContext } from "react";
+import { useCallback } from "react";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Toolbar, Typography } from "@mui/material";
@@ -8,7 +8,7 @@ import { styled } from "@mui/material/styles";
 import { string } from "prop-types";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
-import { LayoutContext, actionTypes } from "~/contexts/LayoutProvider";
+import { actionTypes, useLayoutContext } from "~/contexts/LayoutProvider";
 
 import ChurchDrawer from "./Drawer";
 
@@ -30,7 +30,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function NavigationHeader() {
-  const { state, dispatch } = useContext(LayoutContext);
+  const { state, dispatch } = useLayoutContext();
   const { open } = state;
 
   const handleDrawerOpen = () => {

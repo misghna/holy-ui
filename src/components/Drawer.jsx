@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -7,13 +7,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { List, ListItem, ListItemIcon, ListItemText, Drawer, Divider } from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
+import ListSubheader from "@mui/material/ListSubheader";
 import { styled, useTheme } from "@mui/material/styles";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
-import { LayoutContext } from "~/contexts/LayoutProvider";
-import { SettingContext } from "~/contexts/SettingProvider";
+import { useLayoutContext } from "~/contexts/LayoutProvider";
+import { useSettingContext } from "~/contexts/SettingProvider";
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -25,17 +26,15 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
-  const { state: drawerState } = useContext(LayoutContext);
+  const { state: drawerState } = useLayoutContext();
 
   const { open } = drawerState;
 
   const theme = useTheme();
-  const { state } = useContext(SettingContext);
+  const { state } = useSettingContext();
   const navigate = useNavigate();
   const { setting } = state;
-  const menu = setting.menu;
-
-  const [isSubMenOpen, setIsSubMenOpen] = useState(Array(menu.length).fill(false));
+  const menu = setting?.menu;
 
   const groupedMenu = useMemo(
     () =>
@@ -46,14 +45,24 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
       }, {}),
     [menu]
   );
+  const submenus = useMemo(() => {
+    const rows = Object.keys(groupedMenu).length;
+    const columns = Object.values(groupedMenu).reduce((max, group) => Math.max(max, group.length), 0);
 
-  const renderSubMenu = (item, index) => {
-    if (item?.submenu?.length == 0) return null;
+    const nestedArray = Array.from({ length: rows }, () => Array.from({ length: columns }, () => false));
+
+    return nestedArray;
+  }, [groupedMenu]);
+
+  const [isSubMenOpen, setIsSubMenOpen] = useState(submenus);
+
+  const renderSubMenu = (submenu, typeIndex, menuIndex) => {
+    if (submenu?.length == 0) return null;
     return (
-      <Collapse in={isSubMenOpen[index]} timeout="auto" unmountOnExit>
+      <Collapse in={isSubMenOpen[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
         <List disablePadding>
-          {item?.submenu &&
-            item?.submenu.map((item) => (
+          {submenu &&
+            submenu.map((item) => (
               <ListItem
                 key={item.name}
                 button
@@ -70,33 +79,41 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
       </Collapse>
     );
   };
-  const showMoreOrLessIcon = (submenu, index) => {
+  const showMoreOrLessIcon = (submenu, typeIndex, menuIndex) => {
     if (submenu.length === 0) return null;
-    if (isSubMenOpen[index])
+    if (isSubMenOpen[typeIndex][menuIndex])
       return (
         <ExpandLessIcon
           onClick={() => {
-            handleSubMenCloseClick(index);
+            handleSubMenCloseClick(typeIndex, menuIndex);
           }}
         />
       );
     return (
       <ExpandMoreIcon
         onClick={() => {
-          handleSubMenOpenClick(index);
+          handleSubMenOpenClick(typeIndex, menuIndex);
         }}
       />
     );
   };
-  const handleSubMenOpenClick = (index) => {
-    const openStates = [...isSubMenOpen];
-    openStates[index] = true;
-    setIsSubMenOpen(openStates);
+  const handleSubMenOpenClick = (typeIndex, menuIndex) => {
+    const arr = [...submenus];
+    let typeOpens = arr[typeIndex];
+    typeOpens = typeOpens.map(() => false);
+    typeOpens[menuIndex] = true;
+    arr[typeIndex] = [...typeOpens];
+
+    setIsSubMenOpen(arr);
   };
-  const handleSubMenCloseClick = (index) => {
-    const openStates = [...isSubMenOpen];
-    openStates[index] = false;
-    setIsSubMenOpen(openStates);
+  const handleSubMenCloseClick = (typeIndex, menuIndex) => {
+    const arr = [...isSubMenOpen];
+    let typeOpens = arr[typeIndex];
+    typeOpens = typeOpens.map(() => false);
+    typeOpens[menuIndex] = false;
+    arr[typeIndex] = [...typeOpens];
+
+    setIsSubMenOpen(arr);
   };
 
   return (
@@ -120,19 +137,20 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
       </DrawerHeader>
       <List>
         {groupedMenu &&
-          Object.entries(groupedMenu).map((items, index) => (
-            <Fragment key={items[0] + index}>
+          Object.entries(groupedMenu).map((items, typeIndex) => (
+            <Fragment key={items[0]}>
+              <ListSubheader>{items[0] === "public" ? "Public" : "Secure"}</ListSubheader>
               <Divider />
-              {items[1].map((item, index) => (
+              {items[1].map((item, menuIndex) => (
                 <>
                   <ListItem
                     key={item.name}
                     button
                     onClick={() => {
-                      if (item.sub_menu.length > 0 && !isSubMenOpen[index]) {
-                        handleSubMenOpenClick(index);
-                      } else {
-                        setIsSubMenOpen(Array(menu.length).fill(false));
+                      if (item.sub_menu.length > 0 && !isSubMenOpen[typeIndex][menuIndex]) {
+                        handleSubMenOpenClick(typeIndex, menuIndex);
+                      }
+                      if (item.sub_menu.length == 0) {
                         navigate(item.url);
                       }
                     }}
@@ -140,9 +158,9 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.name} />
 
-                    {showMoreOrLessIcon(item.sub_menu, index)}
+                    {showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
                   </ListItem>
-                  {renderSubMenu(item, index)}
+                  {renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
                 </>
               ))}
             </Fragment>

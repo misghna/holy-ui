@@ -1,8 +1,8 @@
-import { useReducer, createContext } from "react";
+import { useReducer, createContext, useContext } from "react";
 
 import PropTypes from "prop-types";
 
-export const LayoutContext = createContext({ state: { open: false }, dispatch: () => {} });
+const LayoutContext = createContext({ state: { open: false }, dispatch: () => {} });
 
 const initialState = {
   open: false
@@ -28,6 +28,7 @@ export const LayoutProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   return <LayoutContext.Provider value={{ state, dispatch }}>{children}</LayoutContext.Provider>;
 };
+export const useLayoutContext = () => useContext(LayoutContext);
 LayoutProvider.propTypes = {
   children: PropTypes.node.isRequired
 };
