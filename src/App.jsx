@@ -29,9 +29,7 @@ function App() {
                 <Route index element={<Navigate to="/home" replace />} />
                 <Route path="/:category" exact element={<CategoryPages />} />
                 <Route path="*" exact element={<NotFoundPage />} />
-                {/**
-                 * Secure routes
-                 */}
+
                 <Route exact path="/secure" element={<ProtectedLayout />}>
                   <Route path="content_manager" element={<ContentManager />} />
                 </Route>
