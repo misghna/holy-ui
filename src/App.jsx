@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import { AuthProvider } from "~/context/AuthContext";
+import { AuthProvider } from "~/contexts/AuthContext";
+import { GlobalSettingProvider } from "~/contexts/GlobalSettingProvider";
+import { LayoutProvider } from "~/contexts/LayoutProvider";
 import Layout from "~/layouts";
 import AdminLayout from "~/layouts/AdminLayout";
 import ProtectedLayout from "~/layouts/ProtectedLayout";
@@ -12,20 +14,24 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
-          <Route path="/login" exact element={<Login />} />
-          <Route exact path="/admin" element={<ProtectedLayout />}>
-            <Route element={<AdminLayout />}>
-              <Route index element={<div>DEMO</div>} />
-              <Route path="*" exact element={<Navigate to="/admin" />} />
-            </Route>
-          </Route>
-          <Route element={<Layout />}>
-            <Route index element={<Navigate to="/home" replace />} />
-            <Route path="/:category" exact element={<CategoryPages />} />
-            <Route path="*" exact element={<NotFoundPage />} />
-          </Route>
-        </Routes>
+        <GlobalSettingProvider>
+          <LayoutProvider>
+            <Routes>
+              <Route path="/login" exact element={<Login />} />
+              <Route exact path="/admin" element={<ProtectedLayout />}>
+                <Route element={<AdminLayout />}>
+                  <Route index element={<div>DEMO</div>} />
+                  <Route path="*" exact element={<Navigate to="/admin" />} />
+                </Route>
+              </Route>
+              <Route element={<Layout />}>
+                <Route index element={<Navigate to="/home" replace />} />
+                <Route path="/:category" exact element={<CategoryPages />} />
+                <Route path="*" exact element={<NotFoundPage />} />
+              </Route>
+            </Routes>
+          </LayoutProvider>
+        </GlobalSettingProvider>
       </AuthProvider>
     </BrowserRouter>
   );

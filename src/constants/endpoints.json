@@ -1,0 +1,10 @@
+{
+  "test": {
+    "globalSetting": "c8cc332b042cac357c51",
+    "contentData": "a5a4743103745caca161"
+  },
+  "prod": {
+    "globalSetting": "api/",
+    "contentData": "api/"
+  }
+}
