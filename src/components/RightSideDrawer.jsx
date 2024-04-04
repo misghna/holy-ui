@@ -10,21 +10,17 @@ import { Box, List, ListItem, ListItemIcon, ListItemText, Divider, Select, MenuI
 import Avatar from "@mui/material/Avatar";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
+import PropTypes from "prop-types";
 
-const RightSideDrawer = () => {
+const RightSideDrawer = ({ themeMode, toggleThemeMode }) => {
   const [open, setOpen] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Assuming user login state
-  const [themeMode, setThemeMode] = React.useState("light"); // 'light' or 'dark'
   const [selectedColor, setSelectedColor] = React.useState("primary"); // 'primary' or 'secondary'
   const [language, setLanguage] = React.useState("English"); // Default language
   const languageList = ["English", "Spanish", "French", "German", "Italian"]; // Example language list
 
   const handleToggleDrawer = () => {
     setOpen(!open);
-  };
-
-  const handleThemeToggle = () => {
-    setThemeMode(themeMode === "light" ? "dark" : "light");
   };
 
   const handleColorChange = (event) => {
@@ -63,7 +59,7 @@ const RightSideDrawer = () => {
       >
         <Box sx={{ width: "100%" }}>
           <List>
-            <ListItem button onClick={handleThemeToggle}>
+            <ListItem button onClick={toggleThemeMode}>
               <ListItemIcon>{themeMode === "light" ? <Brightness4Icon /> : <Brightness7Icon />}</ListItemIcon>
               <ListItemText primary="Theme Mode" />
             </ListItem>
@@ -104,6 +100,11 @@ const RightSideDrawer = () => {
       </Box>
     </div>
   );
+};
+
+RightSideDrawer.propTypes = {
+  themeMode: PropTypes.oneOf(["light", "dark"]).isRequired,
+  toggleThemeMode: PropTypes.func.isRequired
 };
 
 export default RightSideDrawer;

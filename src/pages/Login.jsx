@@ -16,6 +16,7 @@ import { makeStyles } from "@mui/styles";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import image from "~/assets/home1bg.jpg";
+import RightSideDrawer from "~/components/RightSideDrawer";
 import { useAuth } from "~/context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
@@ -86,6 +87,7 @@ function Login() {
 
   return (
     <Stack className={classes.root} flexDirection="row">
+      <RightSideDrawer />
       <Container component="main" maxWidth="xs" className={classes.formWrapper}>
         <Stack spacing={2}>
           <h2>Login</h2>

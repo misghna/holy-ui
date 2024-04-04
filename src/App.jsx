@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import RightSideDrawer from "~/components/RightSideDrawer";
 import { AuthProvider } from "~/context/AuthContext";
 import Layout from "~/layouts";
 import AdminLayout from "~/layouts/AdminLayout";
@@ -28,7 +27,6 @@ function App() {
           </Route>
         </Routes>
       </AuthProvider>
-      <RightSideDrawer />
     </BrowserRouter>
   );
 }

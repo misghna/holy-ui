@@ -9,17 +9,23 @@ import Typography from "@mui/material/Typography";
 import { Outlet } from "react-router-dom";
 
 import SideBar from "~/components/AdminLayout/SideBar";
+import RightSideDrawer from "~/components/RightSideDrawer";
 
 const drawerWidth = 240;
 
 function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [openRightDrawer, setOpenRightDrawer] = useState(false);
 
   const handleDrawerToggle = () => {
     if (!isClosing) {
       setMobileOpen(!mobileOpen);
     }
+  };
+
+  const handleRightDrawerToggle = () => {
+    setOpenRightDrawer(!openRightDrawer);
   };
 
   return (
@@ -46,6 +52,7 @@ function AdminLayout() {
           </Typography>
         </Toolbar>
       </AppBar>
+      <RightSideDrawer open={openRightDrawer} onClose={handleRightDrawerToggle} />
       <SideBar
         setIsClosing={setIsClosing}
         setMobileOpen={setMobileOpen}
