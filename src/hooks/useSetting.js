@@ -10,7 +10,8 @@ const initialState = {
     default_theme_color: "",
     langs: [],
     product_release_no: "",
-    user_name: ""
+    user_name: "",
+    labels: { page_config: "Page Config", content_manager: "Content Manager", document: "Documents", search_title: "" }
   },
   loading: false,
   error: null
