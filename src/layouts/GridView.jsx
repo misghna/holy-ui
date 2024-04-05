@@ -12,11 +12,13 @@ const useStyles = makeStyles(() => ({
     width: "100%"
   }
 }));
-const partialUrl = "a5a4743103745caca161";
+import config from "../constants/endpoints.json";
+
+const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
 export default function GridView() {
   const classes = useStyles();
-  const { cardData } = useGridData(partialUrl);
+  const { cardData } = useGridData(currentConfig.contentData);
 
   return (
     <Grid container className={classes.grid}>

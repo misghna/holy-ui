@@ -11,3 +11,5 @@ export const theme = createTheme({
     }
   }
 });
+
+export const DRAWER_WIDTH = 240;
