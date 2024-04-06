@@ -18,13 +18,13 @@ function App() {
           <LayoutProvider>
             <Routes>
               <Route path="/login" exact element={<Login />} />
-              <Route exact path="/admin" element={<ProtectedLayout />}>
-                <Route element={<AdminLayout />}>
-                  <Route index element={<div>DEMO</div>} />
-                  <Route path="*" exact element={<Navigate to="/admin" />} />
+              <Route exact path="/secure" element={<ProtectedLayout />}>
+                <Route path="" element={<AdminLayout />}>
+                  <Route path=":type" exact element={<CategoryPages />} />
+                  <Route path="*" exact element={<Navigate to="/secure" />} />
                 </Route>
               </Route>
-              <Route element={<Layout />}>
+              <Route path="/" exact element={<Layout />}>
                 <Route index element={<Navigate to="/home" replace />} />
                 <Route path="/:category" exact element={<CategoryPages />} />
                 <Route path="*" exact element={<NotFoundPage />} />

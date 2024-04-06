@@ -4,12 +4,22 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { List, ListItem, ListItemIcon, ListItemText, Drawer, Divider } from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Drawer,
+  Divider,
+  ListItemButton,
+  Box,
+  Typography
+} from "@mui/material";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ListSubheader from "@mui/material/ListSubheader";
 import { styled, useTheme } from "@mui/material/styles";
-import PropTypes from "prop-types";
+import { bool, func } from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
@@ -19,13 +29,19 @@ import { useLayout } from "~/contexts/LayoutProvider";
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
+  position: "sticky",
+  top: 0,
+  left: 0,
+  zIndex: 10,
+  width: "100%",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
-  justifyContent: "flex-end"
+  justifyContent: "flex-end",
+  borderBottom: `1px solid ${theme.palette.primary.main}`
 }));
 
-const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
+const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
   const { state: drawerState } = useLayout();
 
   const { open } = drawerState;
@@ -63,16 +79,15 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
         <List disablePadding>
           {submenu &&
             submenu.map((item) => (
-              <ListItem
+              <ListItemButton
                 key={item.name}
-                button
                 onClick={() => {
-                  navigate(item.url);
+                  navigate(item.url, { replace: true });
                 }}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />
-              </ListItem>
+              </ListItemButton>
             ))}
         </List>
         <Divider />
@@ -119,9 +134,12 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
       sx={{
         width: DRAWER_WIDTH,
         flexShrink: 0,
+        position: "relative",
         "& .MuiDrawer-paper": {
           width: DRAWER_WIDTH,
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          maxHeight: "100dvh",
+          overflow: "auto"
         }
       }}
       variant="persistent"
@@ -129,17 +147,24 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
       open={open}
     >
       <DrawerHeader>
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
+        <Box sx={{ width: "100%", backgroundColor: "white" }} display="flex" alignItems="center">
+          <Typography variant="h6" textAlign="center" noWrap flexGrow={1} sx={{ width: "100%" }}>
+            Holy-UI
+          </Typography>
+          {!drawerAlwaysOpen && (
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          )}
+        </Box>
       </DrawerHeader>
       <List>
         {groupedMenu &&
           Object.entries(groupedMenu).map((items, typeIndex) => (
-            <Fragment key={items[0]}>
-              <ListSubheader>{items[0] === "public" ? "Public" : "Secure"}</ListSubheader>
+            <Fragment key={items?.at(0)}>
+              <ListSubheader>{items?.at(0) === "public" ? "Public" : "Secure"}</ListSubheader>
               <Divider />
-              {items[1].map((item, menuIndex) => (
+              {items?.at(1)?.map((item, menuIndex) => (
                 <>
                   <ListItem
                     key={item.name}
@@ -169,7 +194,8 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose }) {
 });
 
 ChurchDrawer.propTypes = {
-  handleDrawerClose: PropTypes.func.isRequired
+  handleDrawerClose: func.isRequired,
+  drawerAlwaysOpen: bool
 };
 
 export default ChurchDrawer;
