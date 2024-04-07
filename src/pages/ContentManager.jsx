@@ -1,7 +1,9 @@
 import React, { useCallback, useState } from "react";
 
+import SaveIcon from "@mui/icons-material/Save";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Container, MenuItem } from "@mui/material";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import { makeStyles } from "@mui/styles";
 
 import ActionMenu from "~/components/ActionMenu";
@@ -81,7 +83,12 @@ function ContentManager() {
         <Box className={classes.searchContainer}>
           <SearchIcon fontSize="large" onClick={handleSearchIcon} />
           <ActionMenu handleClick={handleClick} handleClose={handleClose} anchorEl={anchorEl}>
-            <MenuItem onClick={() => handleMenuItemClick("Action 1")}>{labels.action_menu_save}</MenuItem>
+            <MenuItem onClick={() => handleMenuItemClick("Action 1")}>
+              <ListItemIcon>
+                <SaveIcon />
+              </ListItemIcon>
+              {labels.action_menu_save}
+            </MenuItem>
           </ActionMenu>
         </Box>
       </Box>

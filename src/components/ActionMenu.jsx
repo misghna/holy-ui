@@ -1,11 +1,12 @@
-import MenuIcon from "@mui/icons-material/Menu";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Menu } from "@mui/material";
 import PropTypes from "prop-types";
 
 function ActionMenu({ children, handleClick, handleClose, anchorEl }) {
   return (
     <div>
-      <MenuIcon onClick={handleClick} />
+      <MoreVertIcon onClick={handleClick} />
+
       <Menu id="action-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
         {children}
       </Menu>
