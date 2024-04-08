@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
@@ -11,8 +12,13 @@ import CardMedia from "@mui/material/CardMedia";
 import { makeStyles } from "@mui/styles";
 import { shape, string } from "prop-types";
 import { useNavigate } from "react-router-dom";
-
+import DefaultBgImage from '~/assets/home1bg.jpg'
 import DynamicModal from "~/components/Modal";
+import ContentViewer from "./Viewers";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import CommentIcon from '@mui/icons-material/Comment';
+import { Favorite } from "@mui/icons-material";
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -34,28 +40,97 @@ const useStyles = makeStyles((theme) => {
     }
   };
 });
+
 function CardView({ data }) {
   const classes = useStyles();
   const navigate = useNavigate();
   const [modalData, setModalData] = useState({ open: false });
+  const [liked, setLiked] = useState(false);
+
   const handleModalClose = () => {
     setModalData({});
   };
   function handleCardAction() {
-    if (data.content?.length > 0) setModalData({ open: true, data });
+    if (data.content?.length > 0) {
+      setModalData({ open: true, data });
+    }
   }
-  return (
-    <>
-      <Card className={classes.card}>
-        <CardActionArea onClick={handleCardAction}>
+
+  const handleLike = () => {
+    setLiked(!liked);
+  }
+
+  // Conditional rendering of CardMedia based on the data type
+  const renderCardMedia = () => {
+    switch (data.type) {
+      case "image":
+        return (
           <CardMedia
             height={200}
             component="img"
-            alt="Contemplative Reptile"
-            image={data?.backgroundImg}
-            title={data?.title}
+            alt={data.title}
+            image={data.content[0] || DefaultBgImage}
+            title={data.title}
           />
+        );
+      case "video":
+      case "youtube":
+      case "audio":
+        // For video, youtube, and audio, use a placeholder image or a specific thumbnail
+        // and overlay a play icon to indicate action.
+        return (
+          <Box
+            position="relative"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            height={200}
+          >
+            <CardMedia
+              component="img"
+              alt={data.title}
+              image={data.backgroundImg || DefaultBgImage}
+              title={data.title}
+              style={{ height: '100%', width: '100%', position: 'absolute' }}
+            />
+            <IconButton onClick={handleCardAction} sx={{ color: 'white', zIndex: 1}}>
+              <PlayCircleOutlineIcon fontSize="large"/>
+            </IconButton>
+          </Box>
+
+        );
+      case "pdf":
+        // For PDFs, might directly use an image if provided or a default one
+        return (
+          <CardMedia
+            height={200}
+            component="img"
+            alt={data.title}
+            image={data.backgroundImg || DefaultBgImage}
+            title={data.title}
+          />
+        );
+      default:
+        // Fallback for other types or undefined type
+        return (
+          <CardMedia
+            height={200}
+            component="img"
+            alt={data.title}
+            image={DefaultBgImage}
+            title={data.title}
+          />
+        );
+    }
+  };
+
+  return (
+    <>
+      <Card className={classes.card} onDoubleClick={handleCardAction}>
+        <CardActionArea >
+          {renderCardMedia()}
         </CardActionArea>
+
         <CardHeader
           title={data.title}
           titleTypographyProps={{
@@ -67,19 +142,25 @@ function CardView({ data }) {
             root: classes.cardTitle
           }}
         />
+
         <CardContent classes={{ root: classes.cardBody }}>
-          <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
+          {/* <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
             {data?.content}
-          </Typography>
+          </Typography> */}
+          <ContentViewer item={data} displayContent={false} />
         </CardContent>
-        <CardActions>
-          <Button fullWidth onClick={() => navigate(`/${data.contentCategory?.toLowerCase()}`)}>
+
+        <CardActions sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+          <IconButton onClick={handleLike} aria-label="like">{liked ? <Favorite sx={{ color: 'red' }} /> : <FavoriteBorderIcon />} </IconButton>
+          <IconButton aria-label="comment"><CommentIcon /></IconButton>
+          <Button onClick={() => navigate(`/${data.type?.toLowerCase()}`)}>
             More
           </Button>
         </CardActions>
       </Card>
-      <DynamicModal open={modalData.open} handleClose={handleModalClose} header="test">
-        {data.content}
+      <DynamicModal open={modalData.open} handleClose={handleModalClose} header={data.title} hideFooter={true}>
+        <ContentViewer item={data} displayContent={true} />
+        {/* {data.content} */}
       </DynamicModal>
     </>
   );
