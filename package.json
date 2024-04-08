@@ -18,10 +18,13 @@
     "@mui/icons-material": "^5.15.12",
     "@mui/material": "^5.15.12",
     "@mui/styles": "^5.15.12",
+    "@react-pdf/renderer": "^3.4.2",
     "axios": "^1.6.8",
+    "pdfjs-dist": "^4.0.379",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-pdf": "^7.7.1",
     "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
