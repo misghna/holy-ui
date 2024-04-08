@@ -1,12 +1,14 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import MenuIcon from "@mui/icons-material/Menu";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Box, Toolbar, Typography } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
 import { string } from "prop-types";
 
+import SettingsDrawer from "~/components/SettingsDrawer";
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
 
@@ -33,6 +35,17 @@ export default function NavigationHeader() {
   const { state, dispatch } = useLayout();
   const { open } = state;
 
+  // State and function for handling the settings drawer
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const handleSettingsOpen = () => {
+    setSettingsOpen(true);
+  };
+
+  const handleSettingsClose = () => {
+    setSettingsOpen(false);
+  };
+
   const handleDrawerOpen = () => {
     dispatch({ type: actionTypes.TOGGLE_DRAWER });
   };
@@ -56,9 +69,13 @@ export default function NavigationHeader() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Church
           </Typography>
+          <IconButton size="large" edge="end" color="inherit" aria-label="settings" onClick={handleSettingsOpen}>
+            <SettingsIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <ChurchDrawer handleDrawerClose={handleDrawerClose} />
+      <SettingsDrawer open={settingsOpen} handleClose={handleSettingsClose} />
     </Box>
   );
 }
