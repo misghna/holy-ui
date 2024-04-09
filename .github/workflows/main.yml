@@ -24,4 +24,4 @@ jobs:
         server: holydemo.com
         username: u483864572.holydemo_ftp_admin
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir : dist
+        local-dir : dist/
