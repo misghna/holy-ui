@@ -11,12 +11,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Tabs({ children, activeTab = 0, handleTabChange }) {
+function Tabs({ children, activeTab = 0, handleTabChange, ...restProps }) {
   const classes = useStyles();
   return (
     <TabContext.Provider value={{ activeTab, handleTabChange }}>
       <Box className={classes.tabsContainer} sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <MuiTabs value={activeTab} onChange={handleTabChange} indicatorColor="primary">
+        <MuiTabs value={activeTab} onChange={handleTabChange} indicatorColor="primary" {...restProps}>
           {React.Children.map(children, (child, index) => {
             return React.cloneElement(child, { index });
           })}
