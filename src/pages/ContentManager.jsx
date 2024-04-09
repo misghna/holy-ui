@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ContentManager() {
-  const [activeTab, setActiveTab] = React.useState(0);
+  const [activeTab, setActiveTab] = React.useState(1);
   const { state } = useGlobalSetting();
   const { labels } = state.setting;
   const [modelOpen, setModelOpen] = useState(false);
