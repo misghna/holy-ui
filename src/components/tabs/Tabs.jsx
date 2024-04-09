@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 const TabContext = createContext();
 const useStyles = makeStyles((theme) => ({
   tabsContainer: {
-    borderBottom: `2px solid gray`,
+    borderBottom: `1px solid #D3D3D3`,
     marginBottom: theme.spacing(2)
   }
 }));
