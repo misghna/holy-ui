@@ -1,5 +1,5 @@
 on: push
-name: 🚀 Deploy website on push
+name: 🚀 Build&Deploy
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -24,3 +24,5 @@ jobs:
         server: holydemo.com
         username: u483864572.holydemo_ftp_admin
         password: ${{ secrets.FTP_PASSWORD }}
+        server-dir : /public_html/ 
+        local-dir : ./dist/
