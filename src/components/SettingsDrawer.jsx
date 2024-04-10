@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import CloseIcon from "@mui/icons-material/Close";
@@ -16,10 +15,11 @@ import {
   Select,
   MenuItem,
   Typography,
-  Button
+  Button,
+  Paper,
+  Drawer,
+  IconButton
 } from "@mui/material";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
 import PropTypes from "prop-types"; // Import PropTypes for prop validation
 import { useNavigate } from "react-router-dom";
 
@@ -28,13 +28,12 @@ import useSetting from "~/hooks/useSetting";
 const SettingsDrawer = ({ open, handleClose }) => {
   const [themeMode, setThemeMode] = React.useState("light"); // 'light' or 'dark'
   const [language, setLanguage] = React.useState("English"); // Default language
-  const languageList = ["English", "Spanish", "French", "German", "Italian"]; // Example language list
 
   const { state } = useSetting(); // Assuming useSetting manages local state
   const navigate = useNavigate();
 
-  const handleThemeChange = (event) => {
-    setThemeMode(event.target.value);
+  const handleThemeChange = (mode) => {
+    setThemeMode(mode);
     // You can implement theme change logic here
   };
 
@@ -51,20 +50,40 @@ const SettingsDrawer = ({ open, handleClose }) => {
   };
 
   const isAuthenticated = state.setting.authenticated;
+  const languageList = state.setting.langs || [];
 
   return (
-    <div>
-      <Drawer anchor="right" open={open} onClose={handleClose} sx={{ width: "60vw" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 16px" }}>
+    <Drawer anchor="right" open={open} onClose={handleClose} sx={{ width: "80vw" }}>
+      <Paper sx={{ height: "100%", padding: "16px", display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <Typography variant="h6">Settings</Typography>
           <IconButton onClick={handleClose} edge="end" color="inherit" aria-label="close">
             <CloseIcon />
           </IconButton>
         </div>
         <Divider />
-        <div style={{ padding: "8px 16px" }}>
-          <Typography variant="subtitle1">Mode</Typography>
-          <Box sx={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+        <List sx={{ flexGrow: 1 }}>
+          <ListItem button sx={{ marginBottom: "8px" }}>
+            <ListItemIcon>
+              <LanguageIcon />
+            </ListItemIcon>
+            <ListItemText primary="Language" />
+            <Select value={language} onChange={handleLanguageChange} size="small">
+              {languageList.map((lang) => (
+                <MenuItem key={lang} value={lang}>
+                  {lang}
+                </MenuItem>
+              ))}
+            </Select>
+          </ListItem>
+          <Divider />
+          <ListItem button sx={{ marginBottom: "8px" }}>
+            <ListItemIcon>
+              <SettingsBrightnessIcon />
+            </ListItemIcon>
+            <ListItemText primary="Theme Mode" />
+          </ListItem>
+          <Box sx={{ display: "flex", gap: "8px", marginTop: "8px", marginLeft: "48px" }}>
             <Button
               variant={themeMode === "light" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("light")}
@@ -87,38 +106,21 @@ const SettingsDrawer = ({ open, handleClose }) => {
               Dark
             </Button>
           </Box>
+        </List>
+        <Divider />
+        <div style={{ marginTop: "16px" }}>
+          {isAuthenticated ? (
+            <Button onClick={handleLogout} fullWidth variant="contained" color="primary">
+              Logout
+            </Button>
+          ) : (
+            <Button onClick={handleLogin} fullWidth variant="contained" color="primary">
+              Login
+            </Button>
+          )}
         </div>
-        <Box sx={{ width: "100%" }}>
-          <List>
-            <ListItem button>
-              <ListItemIcon>
-                <LanguageIcon />
-              </ListItemIcon>
-              <ListItemText primary="Language" />
-              <Select value={language} onChange={handleLanguageChange}>
-                {languageList.map((lang) => (
-                  <MenuItem key={lang} value={lang}>
-                    {lang}
-                  </MenuItem>
-                ))}
-              </Select>
-            </ListItem>
-            <Divider />
-            <div style={{ padding: "8px 16px" }}>
-              {isAuthenticated ? (
-                <Button onClick={handleLogout} fullWidth>
-                  Logout
-                </Button>
-              ) : (
-                <Button onClick={handleLogin} fullWidth>
-                  Login
-                </Button>
-              )}
-            </div>
-          </List>
-        </Box>
-      </Drawer>
-    </div>
+      </Paper>
+    </Drawer>
   );
 };
 

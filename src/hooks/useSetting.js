@@ -8,7 +8,7 @@ const initialState = {
     authenticated: true,
     avatar: "",
     default_theme_color: "",
-    langs: [],
+    langs: ["English", "Tigriyna"],
     product_release_no: "",
     user_name: ""
   },
