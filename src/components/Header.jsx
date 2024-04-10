@@ -6,7 +6,7 @@ import { Box, Toolbar, Typography } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import { styled } from "@mui/material/styles";
-import { string } from "prop-types";
+import { bool, string } from "prop-types";
 
 import SettingsDrawer from "~/components/SettingsDrawer";
 import { DRAWER_WIDTH } from "~/constants/theme";
@@ -31,7 +31,7 @@ const AppBar = styled(MuiAppBar, {
   })
 }));
 
-export default function NavigationHeader() {
+export default function NavigationHeader({ drawerAlwaysOpen = false }) {
   const { state, dispatch } = useLayout();
   const { open } = state;
 
@@ -54,18 +54,20 @@ export default function NavigationHeader() {
   }, [dispatch]);
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" open={open}>
+      <AppBar position="fixed" open={drawerAlwaysOpen || open}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={handleDrawerOpen}
-          >
-            <MenuIcon />
-          </IconButton>
+          {!open && !drawerAlwaysOpen && (
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+              onClick={handleDrawerOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Church
           </Typography>
@@ -81,5 +83,6 @@ export default function NavigationHeader() {
 }
 
 NavigationHeader.propTypes = {
-  title: string
+  title: string,
+  drawerAlwaysOpen: bool
 };
