@@ -1,11 +1,16 @@
-import React from "react";
+import { useState, useEffect } from "react";
 
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import CloseIcon from "@mui/icons-material/Close";
-import LanguageIcon from "@mui/icons-material/Language";
-import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 import {
+  Brightness4 as Brightness4Icon,
+  Brightness7 as Brightness7Icon,
+  Close as CloseIcon,
+  Language as LanguageIcon,
+  Business as BusinessIcon,
+  SettingsBrightness as SettingsBrightnessIcon
+} from "@mui/icons-material";
+import {
+  Drawer,
+  Paper,
   Box,
   List,
   ListItem,
@@ -16,29 +21,44 @@ import {
   MenuItem,
   Typography,
   Button,
-  Paper,
-  Drawer,
-  IconButton
+  IconButton,
+  Avatar
 } from "@mui/material";
-import PropTypes from "prop-types"; // Import PropTypes for prop validation
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import useSetting from "~/hooks/useSetting";
 
 const SettingsDrawer = ({ open, handleClose }) => {
-  const [themeMode, setThemeMode] = React.useState("light"); // 'light' or 'dark'
-  const [language, setLanguage] = React.useState("English"); // Default language
-
-  const { state } = useSetting(); // Assuming useSetting manages local state
+  const [themeMode, setThemeMode] = useState("light");
+  const [language, setLanguage] = useState("English");
+  const [themeColor, setThemeColor] = useState("");
+  const [selectedTenant, setSelectedTenant] = useState("tenant1");
+  const { state } = useSetting();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state.setting.default_theme_color) {
+      setThemeColor(state.setting.default_theme_color);
+    }
+  }, [state.setting.default_theme_color]);
 
   const handleThemeChange = (mode) => {
     setThemeMode(mode);
-    // You can implement theme change logic here
+    // Implement theme change logic here
+  };
+
+  const handleColorChange = (color) => {
+    setThemeColor(color);
+    // Implement theme color change logic here
   };
 
   const handleLanguageChange = (event) => {
     setLanguage(event.target.value);
+  };
+
+  const handleTenantChange = (event) => {
+    setSelectedTenant(event.target.value);
   };
 
   const handleLogin = () => {
@@ -51,16 +71,22 @@ const SettingsDrawer = ({ open, handleClose }) => {
 
   const isAuthenticated = state.setting.authenticated;
   const languageList = state.setting.langs || [];
+  const themeColors = ["#ff0000", "#00ff00", "#0000ff"];
+  const tenantList = [
+    { id: "tenant1", name: "Tenant 1" },
+    { id: "tenant2", name: "Tenant 2" },
+    { id: "tenant3", name: "Tenant 3" }
+  ];
 
   return (
     <Drawer anchor="right" open={open} onClose={handleClose} sx={{ width: "80vw" }}>
       <Paper sx={{ height: "100%", padding: "16px", display: "flex", flexDirection: "column" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
           <Typography variant="h6">Settings</Typography>
           <IconButton onClick={handleClose} edge="end" color="inherit" aria-label="close">
             <CloseIcon />
           </IconButton>
-        </div>
+        </Box>
         <Divider />
         <List sx={{ flexGrow: 1 }}>
           <ListItem button sx={{ marginBottom: "8px" }}>
@@ -106,6 +132,46 @@ const SettingsDrawer = ({ open, handleClose }) => {
               Dark
             </Button>
           </Box>
+          <Divider />
+          <ListItem sx={{ marginBottom: "8px" }}>
+            <ListItemIcon>
+              <Avatar variant="rounded" sx={{ bgcolor: themeColor, width: 24, height: 24 }} />
+            </ListItemIcon>
+            <ListItemText primary="Theme Color" />
+          </ListItem>
+          <Box sx={{ display: "flex", gap: "8px", marginTop: "8px", marginLeft: "48px" }}>
+            {themeColors.map((color, index) => (
+              <Button
+                key={color}
+                variant={themeColor === color ? "contained" : "outlined"}
+                onClick={() => handleColorChange(color)}
+                sx={{
+                  width: "64px",
+                  height: "64px",
+                  borderRadius: 0,
+                  backgroundColor: color,
+                  color: "white",
+                  textTransform: "capitalize"
+                }}
+              >
+                {index === 0 ? "Blue" : index === 1 ? "Purple" : "Red"}
+              </Button>
+            ))}
+          </Box>
+          <Divider />
+          <ListItem sx={{ marginBottom: "8px", display: "flex", alignItems: "center" }}>
+            <ListItemIcon>
+              <BusinessIcon />
+            </ListItemIcon>
+            <ListItemText primary="Tenant" />
+            <Select value={selectedTenant} onChange={handleTenantChange} size="small" sx={{ marginLeft: "auto" }}>
+              {tenantList.map((tenant) => (
+                <MenuItem key={tenant.id} value={tenant.id}>
+                  {tenant.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </ListItem>
         </List>
         <Divider />
         <div style={{ marginTop: "16px" }}>
@@ -124,7 +190,6 @@ const SettingsDrawer = ({ open, handleClose }) => {
   );
 };
 
-// Prop validation
 SettingsDrawer.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired
