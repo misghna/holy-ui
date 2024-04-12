@@ -9,7 +9,8 @@ const useStyles = makeStyles(() => ({
     flexGrow: 1
   },
   grid: {
-    width: "100%"
+    width: "100%",
+    justifyContent: "center"
   }
 }));
 import config from "../constants/endpoints.json";
@@ -24,7 +25,7 @@ export default function GridView() {
     <Grid container className={classes.grid}>
       {cardData &&
         cardData.map((data) => (
-          <Grid item xs={12} sm={4} key={data.id}>
+          <Grid item xs={12} sm={6} lg={4} key={data.id}>
             <CardView data={data} />
           </Grid>
         ))}
