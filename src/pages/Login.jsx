@@ -58,7 +58,7 @@ function Login() {
 
   useEffect(() => {
     if (authState.token?.accessToken) {
-      let routePath = "/admin";
+      let routePath = "/secure";
       if (location?.state?.pathname) {
         routePath = location.state?.pathname;
       }
@@ -81,7 +81,7 @@ function Login() {
     };
     localStorage.setItem("auth", JSON.stringify(data));
     setAuthState(data);
-    navigate("/admin");
+    navigate("/secure");
   };
 
   return (

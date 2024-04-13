@@ -1,0 +1,28 @@
+on: push
+name: 🚀 Build&Deploy
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 21
+      uses: actions/setup-node@v2
+      with:
+        node-version: '21'
+      
+    - name: 🔨 Build Project
+      run: |
+        npm install --legacy-peer-deps
+        npm run build
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: holydemo.com
+        username: u483864572.holydemo_ftp_admin
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir : dist/
+        server-dir : /public_html/

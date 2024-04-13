@@ -1,62 +1,61 @@
-import { useState } from "react";
+import { useEffect } from "react";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import { Outlet } from "react-router-dom";
+import { makeStyles } from "@mui/styles";
+import { Outlet, useParams } from "react-router-dom";
 
-import SideBar from "~/components/AdminLayout/SideBar";
+import { DrawerHeader } from "~/components/Drawer";
+import NavigationHeader from "~/components/Header";
+import { useLayout, actionTypes } from "~/contexts/LayoutProvider";
 
-const drawerWidth = 240;
+const DRAWER_WIDTH = 240;
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    minHeight: "100dvh",
+    maxHeight: "100dvh",
+    display: "flex",
+    flexDirection: "column"
+  },
+  headerSection: {
+    position: "relative"
+  },
+  bodySection: {
+    position: "relative",
+    maxHeight: "90dvh",
+    minHeight: "90dvh",
+    overflow: "auto",
+    width: `calc(100vw - ${DRAWER_WIDTH})`,
+    transition: theme.transitions.create("margin", {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen
+    }),
+    marginLeft: `${DRAWER_WIDTH}px`
+  }
+}));
 function AdminLayout() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+  const { dispatch } = useLayout();
+  const params = useParams();
+  const classes = useStyles();
 
-  const handleDrawerToggle = () => {
-    if (!isClosing) {
-      setMobileOpen(!mobileOpen);
-    }
-  };
+  useEffect(() => {
+    dispatch({ type: actionTypes.TOGGLE_DRAWER });
+  }, [dispatch]);
 
+  useEffect(() => {
+    document.title = params.category;
+  }, [params?.category]);
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` }
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Dashboard
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <SideBar
-        setIsClosing={setIsClosing}
-        setMobileOpen={setMobileOpen}
-        drawerWidth={drawerWidth}
-        mobileOpen={mobileOpen}
-      />
-      <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
-        <Toolbar />
+    <div className={classes.root}>
+      <section className={classes.headerSection}>
+        <NavigationHeader title={params.category || ""} drawerAlwaysOpen />
+        <DrawerHeader />
+      </section>
+
+      <div className={classes.bodySection}>
         <Outlet />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 export default AdminLayout;
