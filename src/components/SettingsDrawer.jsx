@@ -22,20 +22,24 @@ import {
   Typography,
   Button,
   IconButton,
-  Avatar
+  Avatar,
+  ToggleButtonGroup,
+  ToggleButton
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
+import { getSetting, setSetting } from "~/hooks/settingsService";
 import useSetting from "~/hooks/useSetting";
 
 const SettingsDrawer = ({ open, handleClose }) => {
-  const [themeMode, setThemeMode] = useState("light");
-  const [language, setLanguage] = useState("English");
-  const [themeColor, setThemeColor] = useState("");
-  const [selectedTenant, setSelectedTenant] = useState("tenant1");
+  const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
+  const [language, setLanguage] = useState(() => getSetting("language", "English"));
+  const [themeColor, setThemeColor] = useState(() => getSetting("themeColor", ""));
+  const [selectedTenant, setSelectedTenant] = useState(() => getSetting("selectedTenant", "tenant1"));
   const { state } = useSetting();
   const navigate = useNavigate();
+  const [alignment, setAlignment] = useState(null);
 
   useEffect(() => {
     if (state.setting.default_theme_color) {
@@ -45,20 +49,26 @@ const SettingsDrawer = ({ open, handleClose }) => {
 
   const handleThemeChange = (mode) => {
     setThemeMode(mode);
+    setSetting("themeMode", mode);
     // Implement theme change logic here
   };
 
   const handleColorChange = (color) => {
     setThemeColor(color);
+    setSetting("themeColor", color);
     // Implement theme color change logic here
   };
 
   const handleLanguageChange = (event) => {
-    setLanguage(event.target.value);
+    const selectedLanguage = event.target.value;
+    setLanguage(selectedLanguage);
+    setSetting("language", selectedLanguage);
   };
 
   const handleTenantChange = (event) => {
-    setSelectedTenant(event.target.value);
+    const selectedTenant = event.target.value;
+    setSelectedTenant(selectedTenant);
+    setSetting("selectedTenant", selectedTenant);
   };
 
   const handleLogin = () => {
@@ -139,24 +149,24 @@ const SettingsDrawer = ({ open, handleClose }) => {
             </ListItemIcon>
             <ListItemText primary="Theme Color" />
           </ListItem>
-          <Box sx={{ display: "flex", gap: "8px", marginTop: "8px", marginLeft: "48px" }}>
-            {themeColors.map((color, index) => (
-              <Button
-                key={color}
-                variant={themeColor === color ? "contained" : "outlined"}
-                onClick={() => handleColorChange(color)}
-                sx={{
-                  width: "64px",
-                  height: "64px",
-                  borderRadius: 0,
-                  backgroundColor: color,
-                  color: "white",
-                  textTransform: "capitalize"
-                }}
-              >
-                {index === 0 ? "Blue" : index === 1 ? "Purple" : "Red"}
-              </Button>
-            ))}
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
+            <ToggleButtonGroup
+              value={alignment}
+              exclusive
+              onChange={(event, newAlignment) => {
+                if (newAlignment !== null) {
+                  setAlignment(newAlignment);
+                  handleColorChange(themeColors[newAlignment]);
+                }
+              }}
+              size="small"
+            >
+              {themeColors.map((color, index) => (
+                <ToggleButton key={color} value={index} sx={{ width: "64px", height: "64px", borderRadius: 0 }}>
+                  {index === 0 ? "Blue" : index === 1 ? "Purple" : "Red"}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
           </Box>
           <Divider />
           <ListItem sx={{ marginBottom: "8px", display: "flex", alignItems: "center" }}>
