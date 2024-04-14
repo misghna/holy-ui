@@ -17,6 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import image from "~/assets/home1bg.jpg";
 import { useAuth } from "~/contexts/AuthContext";
+import useLogin from "~/hooks/useLogin";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,9 +53,10 @@ function Login() {
   const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
-  const { authState, setAuthState } = useAuth();
+  const { authState } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useLogin();
 
   useEffect(() => {
     if (authState.token?.accessToken) {
@@ -68,19 +70,7 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // DUMMY
-    const data = {
-      token: {
-        refresh: "asdnaksldn",
-        accessToken: "esdxasdkjn"
-      },
-      user: {
-        name: "Esteban",
-        email
-      }
-    };
-    localStorage.setItem("auth", JSON.stringify(data));
-    setAuthState(data);
+    login({ email, password });
     navigate("/secure");
   };
 

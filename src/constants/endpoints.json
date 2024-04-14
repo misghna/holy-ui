@@ -1,10 +1,12 @@
 {
   "test": {
-    "globalSetting": "be1c2b989ea6642b387a",
-    "contentData": "a5a4743103745caca161"
+    "globalSetting": "43b6c78f83ac57000c94",
+    "contentData": "a5a4743103745caca161",
+    "login": "https://holydemo.com/api/login"
   },
   "prod": {
     "globalSetting": "be1c2b989ea6642b387a",
-    "contentData": "a5a4743103745caca161"
+    "contentData": "a5a4743103745caca161",
+    "login": "https://holydemo.com/api/login"
   }
 }
