@@ -8,6 +8,7 @@ import {
   Business as BusinessIcon,
   SettingsBrightness as SettingsBrightnessIcon
 } from "@mui/icons-material";
+import PaletteIcon from "@mui/icons-material/Palette";
 import {
   Drawer,
   Paper,
@@ -21,31 +22,27 @@ import {
   MenuItem,
   Typography,
   Button,
-  IconButton,
-  Avatar,
-  ToggleButtonGroup,
-  ToggleButton
+  IconButton
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
+import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { getSetting, setSetting } from "~/hooks/settingsService";
-import useSetting from "~/hooks/useSetting";
 
 const SettingsDrawer = ({ open, handleClose }) => {
   const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
-  const [language, setLanguage] = useState(() => getSetting("language", "English"));
+  const [language, setLanguage] = useState(() => getSetting("language", "english"));
   const [themeColor, setThemeColor] = useState(() => getSetting("themeColor", ""));
-  const [selectedTenant, setSelectedTenant] = useState(() => getSetting("selectedTenant", "tenant1"));
-  const { state } = useSetting();
+  const [selectedTenant, setSelectedTenant] = useState(() => getSetting("selectedTenant", "1801"));
+  const { setting } = useGlobalSetting();
   const navigate = useNavigate();
-  const [alignment, setAlignment] = useState(null);
 
   useEffect(() => {
-    if (state.setting.default_theme_color) {
-      setThemeColor(state.setting.default_theme_color);
+    if (setting.default_theme_color) {
+      setThemeColor(setting.default_theme_color);
     }
-  }, [state.setting.default_theme_color]);
+  }, [setting.default_theme_color]);
 
   const handleThemeChange = (mode) => {
     setThemeMode(mode);
@@ -79,14 +76,10 @@ const SettingsDrawer = ({ open, handleClose }) => {
     navigate("/logout");
   };
 
-  const isAuthenticated = state.setting.authenticated;
-  const languageList = state.setting.langs || [];
-  const themeColors = ["#ff0000", "#00ff00", "#0000ff"];
-  const tenantList = [
-    { id: "tenant1", name: "Tenant 1" },
-    { id: "tenant2", name: "Tenant 2" },
-    { id: "tenant3", name: "Tenant 3" }
-  ];
+  const isAuthenticated = setting.authenticated;
+  const languageList = setting.langs ? Object.values(setting.langs[0]) : [];
+  const tenantList = setting.tenants || [];
+  const themeColors = setting.theme_colors || ["#ff0000", "#00ff00", "#0000ff"]; // Get theme colors from global settings or provide default colors
 
   return (
     <Drawer anchor="right" open={open} onClose={handleClose} sx={{ width: "80vw" }}>
@@ -145,28 +138,21 @@ const SettingsDrawer = ({ open, handleClose }) => {
           <Divider />
           <ListItem sx={{ marginBottom: "8px" }}>
             <ListItemIcon>
-              <Avatar variant="rounded" sx={{ bgcolor: themeColor, width: 24, height: 24 }} />
+              <PaletteIcon sx={{ color: "gray" }} />
             </ListItemIcon>
             <ListItemText primary="Theme Color" />
           </ListItem>
-          <Box sx={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
-            <ToggleButtonGroup
-              value={alignment}
-              exclusive
-              onChange={(event, newAlignment) => {
-                if (newAlignment !== null) {
-                  setAlignment(newAlignment);
-                  handleColorChange(themeColors[newAlignment]);
-                }
-              }}
-              size="small"
-            >
-              {themeColors.map((color, index) => (
-                <ToggleButton key={color} value={index} sx={{ width: "64px", height: "64px", borderRadius: 0 }}>
-                  {index === 0 ? "Blue" : index === 1 ? "Purple" : "Red"}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: "8px", gap: "8px", marginLeft: "48px" }}>
+            {themeColors.map((color) => (
+              <Button
+                key={color}
+                variant={themeColor === color ? "contained" : "outlined"}
+                style={{ marginRight: "8px" }}
+                onClick={() => handleColorChange(color)}
+              >
+                <Typography>{color}</Typography>
+              </Button>
+            ))}
           </Box>
           <Divider />
           <ListItem sx={{ marginBottom: "8px", display: "flex", alignItems: "center" }}>
