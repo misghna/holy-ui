@@ -55,9 +55,11 @@ export default function NavigationHeader({ drawerAlwaysOpen = false }) {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Church
-          </Typography>
+          {!open && !drawerAlwaysOpen && (
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className="pageTitle">
+              Church
+            </Typography>
+          )}
         </Toolbar>
       </AppBar>
       <ChurchDrawer handleDrawerClose={handleDrawerClose} drawerAlwaysOpen={drawerAlwaysOpen} />
