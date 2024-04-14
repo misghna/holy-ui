@@ -20,11 +20,11 @@ const useLogin = () => {
 
     const data = {
       token: {
-        refresh: "asdnaksldn",
+        refresh: authData.token,
         accessToken: authData.token
       },
       user: {
-        name: "Esteban",
+        name: "",
         email
       }
     };
