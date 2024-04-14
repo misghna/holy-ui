@@ -45,9 +45,7 @@ function ContentManager() {
   );
 
   const renderTabContent = useMemo(() => {
-    return function render() {
-      return <div>{`Content for ${labels[MAPPING[activeTab]]}`}</div>;
-    };
+    return <div>{`Content for ${labels[MAPPING[activeTab]]}`}</div>;
   }, [activeTab, labels]);
 
   const handleSearchIcon = useCallback(() => {
@@ -94,7 +92,7 @@ function ContentManager() {
         <Tab label={labels?.document} />
       </Tabs>
 
-      {renderTabContent()}
+      {renderTabContent}
       <DynamicModal header={labels.search_title} open={modelOpen} handleClose={handleModelClose}></DynamicModal>
     </Container>
   );
