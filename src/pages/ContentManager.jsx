@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import SaveIcon from "@mui/icons-material/Save";
 import SearchIcon from "@mui/icons-material/Search";
@@ -27,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const MAPPING = { 0: "page_config", 1: "content_manager", 2: "document" };
+
 function ContentManager() {
   const [activeTab, setActiveTab] = React.useState(1);
   const { setting } = useGlobalSetting();
@@ -42,18 +44,12 @@ function ContentManager() {
     [setActiveTab]
   );
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 0:
-        return <div>{`Content for ${labels.page_config}`}</div>;
-      case 1:
-        return <div>{`Content for ${labels.content_manager}`}</div>;
-      case 2:
-        return <div>{`Content for ${labels.document}`}</div>;
-      default:
-        return null;
-    }
-  };
+  const renderTabContent = useMemo(() => {
+    return function render() {
+      return <div>{`Content for ${labels[MAPPING[activeTab]]}`}</div>;
+    };
+  }, [activeTab, labels]);
+
   const handleSearchIcon = useCallback(() => {
     setModelOpen(true);
   }, [setModelOpen]);
