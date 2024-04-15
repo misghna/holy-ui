@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      port: 3001,
+      port: 3000,
       proxy: {
         // string shorthand: http://localhost:5173/foo -> http://localhost:4567/foo
         "/auth": env.VITE_BASE_URL,
