@@ -1,17 +1,25 @@
 import { useEffect } from "react";
 
+import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { Outlet, useParams } from "react-router-dom";
 
 import { DrawerHeader } from "~/components/Drawer";
 import NavigationHeader from "~/components/Header";
-import { useLayout, actionTypes } from "~/contexts/LayoutProvider";
+import { useLayout } from "~/contexts/LayoutProvider";
 
-const DRAWER_WIDTH = 240;
+const Section = styled("section")(({ theme }) => ({
+  flexGrow: { md: 1, xs: 0 },
+  padding: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  })
+}));
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
-    flexGrow: 1,
+    flexGrow: { md: 1, xs: 0 },
     minHeight: "100dvh",
     maxHeight: "100dvh",
     display: "flex",
@@ -22,40 +30,30 @@ const useStyles = makeStyles((theme) => ({
   },
   bodySection: {
     position: "relative",
-    maxHeight: "90dvh",
-    minHeight: "90dvh",
-    overflow: "auto",
-    width: `calc(100vw - ${DRAWER_WIDTH})`,
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen
-    }),
-    marginLeft: `${DRAWER_WIDTH}px`
+    maxHeight: "100dvh",
+    overflow: "auto"
   }
 }));
-function AdminLayout() {
-  const { dispatch } = useLayout();
-  const params = useParams();
+const AdminLayout = () => {
+  const { state } = useLayout();
+  const { open } = state;
+
   const classes = useStyles();
-
+  const params = useParams();
   useEffect(() => {
-    dispatch({ type: actionTypes.TOGGLE_DRAWER });
-  }, [dispatch]);
-
-  useEffect(() => {
-    document.title = params.category;
-  }, [params?.category]);
+    if (params.type) document.title = params.type;
+  }, [params?.type]);
   return (
     <div className={classes.root}>
       <section className={classes.headerSection}>
-        <NavigationHeader title={params.category || ""} drawerAlwaysOpen />
+        <NavigationHeader title={params.type || ""} />
         <DrawerHeader />
       </section>
 
-      <div className={classes.bodySection}>
+      <Section open={open}>
         <Outlet />
-      </div>
+      </Section>
     </div>
   );
-}
+};
 export default AdminLayout;

@@ -86,7 +86,7 @@ function Login() {
         <Stack spacing={2}>
           <h2>Login</h2>
           <Box component="form" onSubmit={handleSubmit} noValidate>
-            {error && <h4 style={{ color: "red" }}> {error}</h4>}
+            {error && <span style={{ color: "#8B0000" }}> {error}</span>}
             <TextField
               margin="normal"
               required
