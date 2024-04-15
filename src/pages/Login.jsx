@@ -57,6 +57,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useLogin();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (authState.token?.accessToken) {
@@ -70,8 +71,13 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    login({ email, password });
-    navigate("/secure");
+    login({ email, password })
+      .then(() => {
+        navigate("/secure");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   };
 
   return (
@@ -80,6 +86,7 @@ function Login() {
         <Stack spacing={2}>
           <h2>Login</h2>
           <Box component="form" onSubmit={handleSubmit} noValidate>
+            {error && <h4 style={{ color: "red" }}> {error}</h4>}
             <TextField
               margin="normal"
               required
