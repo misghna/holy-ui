@@ -1,10 +1,11 @@
 import { Box, Typography, Divider } from "@mui/material";
+import { object, bool, func, array } from "prop-types";
 
-const YouTubeDisplayer = (item, onDoubleClick, displayContent) => {
+const YouTubeDisplayer = ({ item, onDoubleClick, displayContent }) => {
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
-        <YouTubePlayer videoId={item.content} />
+        item.mediaLink.map((video, index) => <YouTubePlayer videoId={video} key={index} />)
       ) : (
         <Box sx={{ p: 2 }}>
           <Typography variant="caption" display="block" gutterBottom>
@@ -21,7 +22,7 @@ const YouTubeDisplayer = (item, onDoubleClick, displayContent) => {
 };
 export default YouTubeDisplayer;
 
-export const YouTubePlayer = (videoId) => {
+export const YouTubePlayer = ({ videoId }) => {
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
   return (
@@ -49,4 +50,14 @@ export const YouTubePlayer = (videoId) => {
       />
     </Box>
   );
+};
+
+YouTubeDisplayer.propTypes = {
+  item: object,
+  displayContent: bool,
+  onDoubleClick: func
+};
+
+YouTubePlayer.propTypes = {
+  videoId: array
 };

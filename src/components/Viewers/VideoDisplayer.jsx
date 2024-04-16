@@ -1,10 +1,12 @@
 import { Box, Typography, Divider } from "@mui/material";
+import { object, bool, func, string } from "prop-types";
 
-const VideoDisplayer = (item, onDoubleClick, displayContent) => {
+const VideoDisplayer = ({ item, onDoubleClick, displayContent }) => {
+  const videosArray = item.mediaLink;
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
-        <VideoPlayer videoSrc={item.content} />
+        videosArray.map((video, index) => <VideoPlayer videoSrc={video} key={index} />)
       ) : (
         <Box sx={{ p: 2 }}>
           <Typography variant="caption" display="block" gutterBottom>
@@ -21,7 +23,7 @@ const VideoDisplayer = (item, onDoubleClick, displayContent) => {
 };
 export default VideoDisplayer;
 
-export const VideoPlayer = (videoSrc) => {
+export const VideoPlayer = ({ videoSrc }) => {
   return (
     <Box
       sx={{
@@ -41,4 +43,14 @@ export const VideoPlayer = (videoSrc) => {
       <video controls src={videoSrc} style={{ width: "100%", height: "100%" }} />
     </Box>
   );
+};
+
+VideoDisplayer.propTypes = {
+  item: object,
+  displayContent: bool,
+  onDoubleClick: func
+};
+
+VideoPlayer.propTypes = {
+  videoSrc: string
 };

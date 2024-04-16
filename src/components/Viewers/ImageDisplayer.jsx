@@ -1,10 +1,11 @@
 import { Box, Typography, Divider, Grid } from "@mui/material";
+import { object, bool, func, array } from "prop-types";
 
-const ImageDisplayer = (item, onDoubleClick, displayContent) => {
+const ImageDisplayer = ({ item, onDoubleClick, displayContent }) => {
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
-        <ImageGallery images={item.content} />
+        <ImageGallery images={item.mediaLink} />
       ) : (
         <Box sx={{ p: 2 }}>
           <Typography variant="caption" display="block" gutterBottom>
@@ -21,7 +22,7 @@ const ImageDisplayer = (item, onDoubleClick, displayContent) => {
 };
 export default ImageDisplayer;
 
-export const ImageGallery = (images) => {
+export const ImageGallery = ({ images }) => {
   return (
     <Grid container spacing={2}>
       {images.map((image, index) => (
@@ -48,4 +49,14 @@ export const ImageGallery = (images) => {
       ))}
     </Grid>
   );
+};
+
+ImageDisplayer.propTypes = {
+  item: object,
+  displayContent: bool,
+  onDoubleClick: func
+};
+
+ImageGallery.propTypes = {
+  images: array
 };

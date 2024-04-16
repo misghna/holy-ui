@@ -1,22 +1,19 @@
 import { Box, Typography, Divider } from "@mui/material";
+import { object, bool, func } from "prop-types";
 
-const TextDisplayer = (item, onDoubleClick, displayContent) => {
-  const partialContent = `${item.content.substring(0, 100)}...`; // Adjust the number based on your needs
+const TextDisplayer = ({ item, onDoubleClick, displayContent }) => {
+  // const partialContent = `${item.content.substring(0, 100)}...`; // Adjust the number based on your needs
 
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
-      <Box>
-        <Typography variant="body2" gutterBottom>
-          {displayContent ? item.content : partialContent}
-        </Typography>
-      </Box>
-      <Typography variant="caption" display="block" gutterBottom>
+      {displayContent && <div dangerouslySetInnerHTML={{ __html: item.content_html }}></div>}
+      {/* <Typography variant="caption" display="block" gutterBottom>
         {item.date}
       </Typography>
       <Divider sx={{ my: 1 }} />
       <Typography variant="body2" gutterBottom>
         {item.description}
-      </Typography>
+      </Typography> */}
 
       {/* <Modal
                 open={isModalOpen}
@@ -47,3 +44,9 @@ const TextDisplayer = (item, onDoubleClick, displayContent) => {
 };
 
 export default TextDisplayer;
+
+TextDisplayer.propTypes = {
+  item: object,
+  displayContent: bool,
+  onDoubleClick: func
+};

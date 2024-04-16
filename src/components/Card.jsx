@@ -4,7 +4,7 @@ import { Favorite } from "@mui/icons-material";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-import { Box } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
@@ -53,7 +53,7 @@ function CardView({ data }) {
     setModalData({});
   };
   function handleCardAction() {
-    if (data.content?.length > 0) {
+    if (data.mediaLink?.length > 0 || data.content_html) {
       setModalData({ open: true, data });
     }
   }
@@ -71,7 +71,7 @@ function CardView({ data }) {
             height={200}
             component="img"
             alt={data.title}
-            image={data.content[0] || DefaultBgImage}
+            image={data.backgroundImg || DefaultBgImage}
             title={data.title}
           />
         );
@@ -129,10 +129,10 @@ function CardView({ data }) {
         />
 
         <CardContent classes={{ root: classes.cardBody }}>
-          {/* <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
-            {data?.content}
-          </Typography> */}
-          <ContentViewer item={data} displayContent={false} />
+          <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
+            {data?.description}
+          </Typography>
+          {/* <ContentViewer item={data} displayContent={false} /> */}
         </CardContent>
 
         <CardActions sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
