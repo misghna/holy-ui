@@ -1,4 +1,5 @@
-import { Box, Typography, Divider } from "@mui/material";
+import { Box } from "@mui/material";
+import purify from "dompurify";
 import { object, bool, func } from "prop-types";
 
 const TextDisplayer = ({ item, onDoubleClick, displayContent }) => {
@@ -6,7 +7,7 @@ const TextDisplayer = ({ item, onDoubleClick, displayContent }) => {
 
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
-      {displayContent && <div dangerouslySetInnerHTML={{ __html: item.content_html }}></div>}
+      {displayContent && <div dangerouslySetInnerHTML={{ __html: purify.sanitize(item.content_html) }}></div>}
       {/* <Typography variant="caption" display="block" gutterBottom>
         {item.date}
       </Typography>

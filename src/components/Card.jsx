@@ -65,16 +65,6 @@ function CardView({ data }) {
   // Conditional rendering of CardMedia based on the data type
   const renderCardMedia = () => {
     switch (data.type) {
-      case "image":
-        return (
-          <CardMedia
-            height={200}
-            component="img"
-            alt={data.title}
-            image={data.backgroundImg || DefaultBgImage}
-            title={data.title}
-          />
-        );
       case "video":
       case "youtube":
       case "audio":
@@ -94,6 +84,7 @@ function CardView({ data }) {
             </IconButton>
           </Box>
         );
+      case "image":
       case "pdf":
         // For PDFs, might directly use an image if provided or a default one
         return (

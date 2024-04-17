@@ -11,23 +11,16 @@ const ContentViewer = ({ item, displayContent }) => {
   if (!displayContent && ["image"].includes(item.type)) {
     return item.mediaLink[0]; // Assuming item.content is an array of URLs
   }
-  
-  switch (item.type) {
-    case "html":
-      return <TextDisplayer item={item} displayContent={displayContent} />;
-    case "image":
-      return <ImageDisplayer item={item} displayContent={displayContent} />;
-    case "audio":
-      return <AudioTrackDisplay item={item} displayContent={displayContent} />;
-    case "youtube":
-      return <YouTubeDisplayer item={item} displayContent={displayContent} />;
-    case "video":
-      return <VideoDisplayer item={item} displayContent={displayContent} />;
-    case "pdf":
-      return <PdfDisplayer item={item} displayContent={displayContent} />;
-    default:
-      return <div>Unsupported content type</div>;
-  }
+
+  const mapping = {
+    html: <TextDisplayer item={item} displayContent={displayContent} />,
+    image: <ImageDisplayer item={item} displayContent={displayContent} />,
+    audio: <AudioTrackDisplay item={item} displayContent={displayContent} />,
+    youtube: <YouTubeDisplayer item={item} displayContent={displayContent} />,
+    video: <VideoDisplayer item={item} displayContent={displayContent} />,
+    pdf: <PdfDisplayer item={item} displayContent={displayContent} />
+  };
+  return mapping[item.type] || <div>Unsupported content type</div>;
 };
 
 ContentViewer.propTypes = {
