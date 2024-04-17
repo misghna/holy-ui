@@ -77,7 +77,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
   };
 
   const isAuthenticated = setting.authenticated;
-  const languageList = setting.langs ? Object.values(setting.langs[0]) : [];
+  const languageList = setting.langs || [];
   const tenantList = setting.tenants || [];
   const themeColors = setting.theme_colors || ["#ff0000", "#00ff00", "#0000ff"]; // Get theme colors from global settings or provide default colors
 
