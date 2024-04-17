@@ -8,14 +8,14 @@ import { Box, IconButton, Button } from "@mui/material";
 
 const AudioPlayer = (item) => {
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0); // Track current audio index
-  const [audio, setAudio] = useState(new Audio(item.mediaLink[0]));
+  const [audio, setAudio] = useState(new Audio(item.media_link[0]));
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0); // Progress of the song in percentage
   const progressBarRef = useRef(); // Reference to the progress bar for calculating click positions
 
   useEffect(() => {
     // Setup a new Audio object whenever the currentAudioIndex changes
-    const newAudio = new Audio(item.mediaLink[currentAudioIndex]);
+    const newAudio = new Audio(item.media_link[currentAudioIndex]);
     setAudio(newAudio);
     setProgress(0); // Reset progress
     if (isPlaying) {
@@ -27,7 +27,7 @@ const AudioPlayer = (item) => {
     return () => {
       newAudio.pause();
     };
-  }, [currentAudioIndex, item.mediaLink, isPlaying]);
+  }, [currentAudioIndex, item.media_link, isPlaying]);
 
   useEffect(() => {
     const handlePlay = () => setIsPlaying(true);
@@ -66,7 +66,7 @@ const AudioPlayer = (item) => {
   };
 
   const goToNextTrack = () => {
-    if (currentAudioIndex < item.mediaLink.length - 1) {
+    if (currentAudioIndex < item.media_link.length - 1) {
       setCurrentAudioIndex(currentAudioIndex + 1);
     }
   };
@@ -125,7 +125,7 @@ const AudioPlayer = (item) => {
           }}
         ></Box>
       </Box>
-      {item.mediaLink.length > 1 && (
+      {item.media_link.length > 1 && (
         <Box sx={{ display: "flex", flexDirection: "row" }}>
           <Button
             startIcon={<SkipPreviousIcon />}
@@ -137,7 +137,7 @@ const AudioPlayer = (item) => {
           <Button
             startIcon={<SkipNextIcon />}
             onClick={goToNextTrack}
-            disabled={currentAudioIndex >= item.mediaLink.length - 1}
+            disabled={currentAudioIndex >= item.media_link.length - 1}
           >
             {/* Next */}
           </Button>

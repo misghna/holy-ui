@@ -53,7 +53,7 @@ function CardView({ data }) {
     setModalData({});
   };
   function handleCardAction() {
-    if (data.mediaLink?.length > 0 || data.content_html) {
+    if (data.media_link?.length > 0 || data.content_html) {
       setModalData({ open: true, data });
     }
   }
@@ -75,7 +75,7 @@ function CardView({ data }) {
             <CardMedia
               component="img"
               alt={data.title}
-              image={data.backgroundImg || DefaultBgImage}
+              image={data.background_img || DefaultBgImage}
               title={data.title}
               style={{ height: "100%", width: "100%", position: "absolute" }}
             />
@@ -92,7 +92,7 @@ function CardView({ data }) {
             height={200}
             component="img"
             alt={data.title}
-            image={data.backgroundImg || DefaultBgImage}
+            image={data.background_img || DefaultBgImage}
             title={data.title}
           />
         );
@@ -145,7 +145,7 @@ function CardView({ data }) {
 }
 CardView.propTypes = {
   data: shape({
-    backgroundImg: string,
+    background_img: string,
     title: string.isRequired,
     content: string
   })

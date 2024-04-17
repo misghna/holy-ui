@@ -9,7 +9,7 @@ import YouTubeDisplayer from "./YouTubeDisplayer";
 
 const ContentViewer = ({ item, displayContent }) => {
   if (!displayContent && ["image"].includes(item.type)) {
-    return item.mediaLink[0]; // Assuming item.content is an array of URLs
+    return item.media_link[0]; // Assuming item.content is an array of URLs
   }
 
   const mapping = {

@@ -5,7 +5,7 @@ const YouTubeDisplayer = ({ item, onDoubleClick, displayContent }) => {
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
-        item.mediaLink.map((video, index) => <YouTubePlayer videoId={video} key={index} />)
+        item.media_link.map((video, index) => <YouTubePlayer videoId={video} key={index} />)
       ) : (
         <Box sx={{ p: 2 }}>
           <Typography variant="caption" display="block" gutterBottom>

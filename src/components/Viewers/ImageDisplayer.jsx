@@ -5,7 +5,7 @@ const ImageDisplayer = ({ item, onDoubleClick, displayContent }) => {
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
-        <ImageGallery images={item.mediaLink} />
+        <ImageGallery images={item.media_link} />
       ) : (
         <Box sx={{ p: 2 }}>
           <Typography variant="caption" display="block" gutterBottom>

@@ -2,7 +2,7 @@ import { Box, Typography, Divider } from "@mui/material";
 import { object, bool, func, string } from "prop-types";
 
 const VideoDisplayer = ({ item, onDoubleClick, displayContent }) => {
-  const videosArray = item.mediaLink;
+  const videosArray = item.media_link;
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
