@@ -1,26 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
 import ReactDOM from "react-dom/client";
 
 import App from "~/App.jsx";
-import { theme } from "~/constants/theme";
+
+import ThemeProvider from "./contexts/ThemeProvider";
 
 import "~/index.css";
 
 function Main() {
-  const [themeMode, setThemeMode] = useState("light");
-
-  const toggleThemeMode = () => {
-    setThemeMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
-  };
-
   return (
     <React.StrictMode>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <CssBaseline />
-        <App themeMode={themeMode} toggleThemeMode={toggleThemeMode} />
+        <App />
       </ThemeProvider>
     </React.StrictMode>
   );

@@ -28,15 +28,17 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import { useTheme } from "~/contexts/ThemeProvider";
 import { getSetting, setSetting } from "~/hooks/settingsService";
 
 const SettingsDrawer = ({ open, handleClose }) => {
-  const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
+  // const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
   const [language, setLanguage] = useState(() => getSetting("language", "english"));
   const [themeColor, setThemeColor] = useState(() => getSetting("themeColor", ""));
   const [selectedTenant, setSelectedTenant] = useState(() => getSetting("selectedTenant", "1801"));
   const { setting } = useGlobalSetting();
   const navigate = useNavigate();
+  const { toggleTheme, theme } = useTheme();
 
   useEffect(() => {
     if (setting.default_theme_color) {
@@ -45,9 +47,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
   }, [setting.default_theme_color]);
 
   const handleThemeChange = (mode) => {
-    setThemeMode(mode);
-    setSetting("themeMode", mode);
-    // Implement theme change logic here
+    toggleTheme(mode);
   };
 
   const handleColorChange = (color) => {
@@ -99,8 +99,8 @@ const SettingsDrawer = ({ open, handleClose }) => {
             <ListItemText primary="Language" />
             <Select value={language} onChange={handleLanguageChange} size="small">
               {languageList.map((lang) => (
-                <MenuItem key={lang} value={lang}>
-                  {lang}
+                <MenuItem key={lang.id} value={lang.name}>
+                  {lang.name}
                 </MenuItem>
               ))}
             </Select>
@@ -114,23 +114,25 @@ const SettingsDrawer = ({ open, handleClose }) => {
           </ListItem>
           <Box sx={{ display: "flex", gap: "8px", marginTop: "8px", marginLeft: "48px" }}>
             <Button
-              variant={themeMode === "light" ? "contained" : "outlined"}
+              variant={theme.palette.type === "light" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("light")}
               startIcon={<Brightness7Icon />}
             >
               Light
             </Button>
-            <Button
-              variant={themeMode === "system" ? "contained" : "outlined"}
+            {/* <Button
+              variant={theme.palette.type === "dark" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("system")}
               startIcon={<SettingsBrightnessIcon />}
+              color="primary"
             >
               System
-            </Button>
+            </Button> */}
             <Button
-              variant={themeMode === "dark" ? "contained" : "outlined"}
+              variant={theme.palette.type === "dark" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("dark")}
               startIcon={<Brightness4Icon />}
+              color="primary"
             >
               Dark
             </Button>

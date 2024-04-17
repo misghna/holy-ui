@@ -9,7 +9,7 @@ import { styled } from "@mui/material/styles";
 import { bool, string } from "prop-types";
 
 import SettingsDrawer from "~/components/SettingsDrawer";
-import { DRAWER_WIDTH } from "~/constants/theme";
+import { DRAWER_WIDTH, theme } from "~/constants/theme";
 import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
 
 import ChurchDrawer from "./Drawer";
@@ -54,7 +54,7 @@ export default function NavigationHeader({ drawerAlwaysOpen = false }) {
   }, [dispatch]);
   return (
     <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" open={drawerAlwaysOpen || open}>
+      <AppBar position="fixed" open={drawerAlwaysOpen || open} theme={theme}>
         <Toolbar>
           {!open && !drawerAlwaysOpen && (
             <IconButton
