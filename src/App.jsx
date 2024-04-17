@@ -7,8 +7,8 @@ import Layout from "~/layouts";
 import AdminLayout from "~/layouts/AdminLayout";
 import ProtectedLayout from "~/layouts/ProtectedLayout";
 import NotFoundPage from "~/pages/404";
+import AdminSettings from "~/pages/AdminSettings";
 import ContentManager from "~/pages/ContentManager";
-import AdminSettings from "./pages/Admin Settings";
 import Login from "~/pages/Login";
 import CategoryPages from "~/pages/WebsiteCategoryPages";
 
