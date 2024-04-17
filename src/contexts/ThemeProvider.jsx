@@ -9,7 +9,7 @@ const ThemeContext = createContext();
 
 const ThemeProvider = ({ children }) => {
   const [themeSetting, setThemeSetting] = useState({ ...theme });
-  console.log("themee", themeSetting);
+
   const toggleTheme = (themeValue) => {
     const newTheme = {
       palette: {
