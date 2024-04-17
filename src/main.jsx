@@ -5,17 +5,17 @@ import ReactDOM from "react-dom/client";
 
 import App from "~/App.jsx";
 
-import ThemeProvider from "./contexts/ThemeProvider";
+import HolyThemeProvider from "./contexts/ThemeProvider";
 
 import "~/index.css";
 
 function Main() {
   return (
     <React.StrictMode>
-      <ThemeProvider>
+      <HolyThemeProvider>
         <CssBaseline />
         <App />
-      </ThemeProvider>
+      </HolyThemeProvider>
     </React.StrictMode>
   );
 }

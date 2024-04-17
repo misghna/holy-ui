@@ -7,7 +7,7 @@ import { theme } from "~/constants/theme";
 
 const ThemeContext = createContext();
 
-const ThemeProvider = ({ children }) => {
+const HolyThemeProvider = ({ children }) => {
   const [themeSetting, setThemeSetting] = useState({ ...theme });
 
   const toggleTheme = (themeValue) => {
@@ -30,8 +30,8 @@ const ThemeProvider = ({ children }) => {
   );
 };
 export const useTheme = () => useContext(ThemeContext);
-ThemeProvider.propTypes = {
+HolyThemeProvider.propTypes = {
   children: node.isRequired
 };
 
-export default ThemeProvider;
+export default HolyThemeProvider;
