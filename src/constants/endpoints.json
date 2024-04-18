@@ -4,7 +4,7 @@
     "contentData": "/api/contents?content_category=Home&start=0&lang=english"
   },
   "prod": {
-    "globalSetting": "/api/global_settings",
-    "contentData": "/api/contents?content_category=Home&start=0&lang=english"
+    "globalSetting": "global_setting",
+    "contentData": "contents?content_category=Home&start=0&lang=english"
   }
 }
