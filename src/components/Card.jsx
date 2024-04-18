@@ -52,7 +52,7 @@ function CardView({ data }) {
             height={200}
             component="img"
             alt="Contemplative Reptile"
-            image={data?.backgroundImg}
+            image={data?.background_image}
             title={data?.title}
           />
         </CardActionArea>
