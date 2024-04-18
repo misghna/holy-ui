@@ -2,7 +2,9 @@ import axios from "axios";
 
 import useRefreshToken from "~/hooks/useRefreshToken";
 
-const axiosPrivate = axios.create();
+const axiosPrivate = axios.create({
+  baseURL: import.meta.env.VITE_BASE_URL
+});
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
 
