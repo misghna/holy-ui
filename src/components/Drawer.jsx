@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Drawer,
+  SwipeableDrawer,
   Divider,
   ListItemButton,
   Box,
@@ -38,7 +38,8 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
-  borderBottom: `1px solid ${theme.palette.primary.main}`
+  borderBottom: `1px solid ${theme.palette.primary.main}`,
+  backgroundColor: "white"
 }));
 
 const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
@@ -47,10 +48,11 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
   const { open } = drawerState;
 
   const theme = useTheme();
-  const { state } = useGlobalSetting();
+  const { setting } = useGlobalSetting();
+
   const navigate = useNavigate();
-  const { setting } = state;
-  const menu = setting?.menu;
+
+  const menu = useMemo(() => setting?.menu || [], [setting?.menu]);
 
   const groupedMenu = useMemo(
     () =>
@@ -73,7 +75,7 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
   const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
-    if (submenu?.length == 0) return null;
+    if (submenu?.length == 0 || isSubMenOpen.length === 0) return null;
     return (
       <Collapse in={isSubMenOpen[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
         <List disablePadding>
@@ -96,7 +98,7 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
   };
   const showMoreOrLessIcon = (submenu, typeIndex, menuIndex) => {
     if (submenu.length === 0) return null;
-    if (isSubMenOpen[typeIndex][menuIndex])
+    if (isSubMenOpen.length > 0 && isSubMenOpen[typeIndex][menuIndex])
       return (
         <ExpandLessIcon
           onClick={() => {
@@ -130,7 +132,7 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
   };
 
   return (
-    <Drawer
+    <SwipeableDrawer
       sx={{
         width: DRAWER_WIDTH,
         flexShrink: 0,
@@ -181,15 +183,15 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.name} />
 
-                    {showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
+                    {item.sub_menu && showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
                   </ListItem>
-                  {renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
+                  {item.sub_menu && renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
                 </>
               ))}
             </Fragment>
           ))}
       </List>
-    </Drawer>
+    </SwipeableDrawer>
   );
 });
 
