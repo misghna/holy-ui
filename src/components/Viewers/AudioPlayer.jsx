@@ -5,8 +5,9 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextIcon from "@mui/icons-material/SkipNext";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import { Box, IconButton, Button } from "@mui/material";
+import { object } from "prop-types";
 
-const AudioPlayer = (item) => {
+const AudioPlayer = ({ item }) => {
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0); // Track current audio index
   const [audio, setAudio] = useState(new Audio(item.media_link[0]));
   const [isPlaying, setIsPlaying] = useState(false);
@@ -148,3 +149,7 @@ const AudioPlayer = (item) => {
 };
 
 export default AudioPlayer;
+
+AudioPlayer.propTypes = {
+  item: object
+};

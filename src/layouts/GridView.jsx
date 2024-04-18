@@ -4,6 +4,10 @@ import { makeStyles } from "@mui/styles";
 import CardView from "~/components/Card";
 import useGridData from "~/hooks/useGridData";
 
+import config from "../constants/endpoints.json";
+
+const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
+
 const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1
@@ -13,11 +17,10 @@ const useStyles = makeStyles(() => ({
     justifyContent: "center"
   }
 }));
-const partialUrl = "e93c4ce2bdbb532d2c46";
 
 export default function GridView() {
   const classes = useStyles();
-  const { cardData } = useGridData(partialUrl);
+  const { cardData } = useGridData(currentConfig.contentData);
 
   return (
     <Grid container className={classes.grid}>
