@@ -34,7 +34,7 @@ import { getSetting, setSetting } from "~/hooks/settingsService";
 const SettingsDrawer = ({ open, handleClose }) => {
   // const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
   const [language, setLanguage] = useState(() => getSetting("language", "english"));
-  const [themeColor, setThemeColor] = useState(() => getSetting("themeColor", ""));
+  const [themeColor, setThemeColor] = useState(() => getSetting("themeColor", "#808080"));
   const [selectedTenant, setSelectedTenant] = useState(() => getSetting("selectedTenant", "1801"));
   const { setting } = useGlobalSetting();
   const navigate = useNavigate();
@@ -79,7 +79,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
   const isAuthenticated = setting.authenticated;
   const languageList = setting.langs || [];
   const tenantList = setting.tenants || [];
-  const themeColors = setting.theme_colors || ["#ff0000", "#00ff00", "#0000ff"]; // Get theme colors from global settings or provide default colors
+  const themeColors = setting.theme_colors; // Get theme colors from global settings or provide default colors
 
   return (
     <Drawer anchor="right" open={open} onClose={handleClose} sx={{ width: "80vw" }}>
@@ -99,7 +99,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
             <ListItemText primary="Language" />
             <Select value={language} onChange={handleLanguageChange} size="small">
               {languageList.map((lang) => (
-                <MenuItem key={lang.id} value={lang.name}>
+                <MenuItem key={lang.id} value={lang.id}>
                   {lang.name}
                 </MenuItem>
               ))}
@@ -121,8 +121,8 @@ const SettingsDrawer = ({ open, handleClose }) => {
               Light
             </Button>
             {/* <Button
-              variant={theme.palette.type === "dark" ? "contained" : "outlined"}
-              onClick={() => handleThemeChange("system")}
+              variant={theme.palette.type === "system" ? "contained" : "outlined"}
+              onClick={() => {}}
               startIcon={<SettingsBrightnessIcon />}
               color="primary"
             >
@@ -145,14 +145,14 @@ const SettingsDrawer = ({ open, handleClose }) => {
             <ListItemText primary="Theme Color" />
           </ListItem>
           <Box sx={{ display: "flex", justifyContent: "center", marginTop: "8px", gap: "8px", marginLeft: "48px" }}>
-            {themeColors.map((color) => (
+            {themeColors.map((colorObj) => (
               <Button
-                key={color}
-                variant={themeColor === color ? "contained" : "outlined"}
+                key={colorObj.hexCode}
+                variant={themeColor === colorObj.hexCode ? "contained" : "outlined"}
                 style={{ marginRight: "8px" }}
-                onClick={() => handleColorChange(color)}
+                onClick={() => handleColorChange(colorObj.hexCode)}
               >
-                <Typography>{color}</Typography>
+                <Typography>{colorObj.label}</Typography>
               </Button>
             ))}
           </Box>
