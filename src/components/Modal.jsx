@@ -39,11 +39,13 @@ export default function DynamicModal({
           </IconButton>
         </>
       )}
+
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>
           <>{children}</>
         </DialogContentText>
       </DialogContent>
+
       {!hideFooter && (
         <DialogActions>
           <Button variant="outlined" onClick={handleClose}>
