@@ -32,40 +32,50 @@ import { useTheme } from "~/contexts/ThemeProvider";
 import { getSetting, setSetting } from "~/utils/settingsService";
 
 const SettingsDrawer = ({ open, handleClose }) => {
-  // const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
-  const [language, setLanguage] = useState(() => getSetting("language", "english"));
-  const [themeColor, setThemeColor] = useState(() => getSetting("themeColor", "#808080"));
-  const [selectedTenant, setSelectedTenant] = useState(() => getSetting("selectedTenant", "1801"));
+  const [settings, setSettings] = useState(() => {
+    return {
+      language: getSetting("language", "english"),
+      themeColor: getSetting("themeColor", "#808080"),
+      selectedTenant: getSetting("selectedTenant", "1801")
+    };
+  });
   const { setting } = useGlobalSetting();
   const navigate = useNavigate();
   const { toggleTheme, theme } = useTheme();
 
   useEffect(() => {
     if (setting.default_theme_color) {
-      setThemeColor(setting.default_theme_color);
+      setSettings((prevSettings) => ({
+        ...prevSettings,
+        themeColor: setting.default_theme_color
+      }));
     }
   }, [setting.default_theme_color]);
+
+  const handleSettingChange = (key, value) => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [key]: value
+    }));
+    setSetting(key, value);
+  };
 
   const handleThemeChange = (mode) => {
     toggleTheme(mode);
   };
 
   const handleColorChange = (color) => {
-    setThemeColor(color);
-    setSetting("themeColor", color);
-    // Implement theme color change logic here
+    handleSettingChange("themeColor", color);
   };
 
   const handleLanguageChange = (event) => {
     const selectedLanguage = event.target.value;
-    setLanguage(selectedLanguage);
-    setSetting("language", selectedLanguage);
+    handleSettingChange("language", selectedLanguage);
   };
 
   const handleTenantChange = (event) => {
     const selectedTenant = event.target.value;
-    setSelectedTenant(selectedTenant);
-    setSetting("selectedTenant", selectedTenant);
+    handleSettingChange("selectedTenant", selectedTenant);
   };
 
   const handleLogin = () => {
@@ -97,7 +107,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
               <LanguageIcon />
             </ListItemIcon>
             <ListItemText primary="Language" />
-            <Select value={language} onChange={handleLanguageChange} size="small">
+            <Select value={settings.language} onChange={handleLanguageChange} size="small">
               {languageList.map((lang) => (
                 <MenuItem key={lang.id} value={lang.id}>
                   {lang.name}
@@ -148,7 +158,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
             {themeColors.map((colorObj) => (
               <Button
                 key={colorObj.hexCode}
-                variant={themeColor === colorObj.hexCode ? "contained" : "outlined"}
+                variant={settings.themeColor === colorObj.hexCode ? "contained" : "outlined"}
                 style={{ marginRight: "8px" }}
                 onClick={() => handleColorChange(colorObj.hexCode)}
               >
@@ -162,7 +172,12 @@ const SettingsDrawer = ({ open, handleClose }) => {
               <BusinessIcon />
             </ListItemIcon>
             <ListItemText primary="Tenant" />
-            <Select value={selectedTenant} onChange={handleTenantChange} size="small" sx={{ marginLeft: "auto" }}>
+            <Select
+              value={settings.selectedTenant}
+              onChange={handleTenantChange}
+              size="small"
+              sx={{ marginLeft: "auto" }}
+            >
               {tenantList.map((tenant) => (
                 <MenuItem key={tenant.id} value={tenant.id}>
                   {tenant.name}
