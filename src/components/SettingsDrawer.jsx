@@ -24,12 +24,17 @@ import {
   Button,
   IconButton
 } from "@mui/material";
+import { styled } from "@mui/system";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { useTheme } from "~/contexts/ThemeProvider";
 import { getSetting, setSetting } from "~/utils/settingsService";
+
+const StyledButton = styled(Button)({
+  marginTop: "16px"
+});
 
 const SettingsDrawer = ({ open, handleClose }) => {
   const [settings, setSettings] = useState(() => {
@@ -78,12 +83,8 @@ const SettingsDrawer = ({ open, handleClose }) => {
     handleSettingChange("selectedTenant", selectedTenant);
   };
 
-  const handleLogin = () => {
-    navigate("/login");
-  };
-
-  const handleLogout = () => {
-    navigate("/logout");
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
   const isAuthenticated = setting.authenticated;
@@ -187,17 +188,14 @@ const SettingsDrawer = ({ open, handleClose }) => {
           </ListItem>
         </List>
         <Divider />
-        <div style={{ marginTop: "16px" }}>
-          {isAuthenticated ? (
-            <Button onClick={handleLogout} fullWidth variant="contained" color="primary">
-              Logout
-            </Button>
-          ) : (
-            <Button onClick={handleLogin} fullWidth variant="contained" color="primary">
-              Login
-            </Button>
-          )}
-        </div>
+        <StyledButton
+          onClick={() => handleNavigation(isAuthenticated ? "/logout" : "/login")}
+          fullWidth
+          variant="contained"
+          color="primary"
+        >
+          {isAuthenticated ? "Logout" : "Login"}
+        </StyledButton>
       </Paper>
     </Drawer>
   );
