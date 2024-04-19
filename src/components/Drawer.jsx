@@ -147,6 +147,8 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
       variant="persistent"
       anchor="left"
       open={open}
+      onClose={handleDrawerClose}
+      onOpen={() => {}}
     >
       <DrawerHeader>
         <Box sx={{ width: "100%", backgroundColor: "white" }} display="flex" alignItems="center">
