@@ -11,7 +11,7 @@ const useLogin = () => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
-    const response = await axiosPrivate.post(currentConfig.login, formData, {
+    const response = await axiosPrivate.post(`/api/${currentConfig.login}`, formData, {
       headers: {
         "Content-Type": "multipart/form-data"
       }

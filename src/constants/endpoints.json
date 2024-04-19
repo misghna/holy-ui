@@ -1,10 +1,12 @@
 {
   "test": {
     "globalSetting": "global_setting",
-    "contentData": "contents?content_category=Home&start=0&lang=english"
+    "contentData": "contents?content_category=Home&start=0&lang=english",
+    "login": "login"
   },
   "prod": {
     "globalSetting": "global_setting",
-    "contentData": "contents?content_category=Home&start=0&lang=english"
+    "contentData": "contents?content_category=Home&start=0&lang=english",
+    "login": "login"
   }
 }
