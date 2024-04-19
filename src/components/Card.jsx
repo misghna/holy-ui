@@ -75,7 +75,7 @@ function CardView({ data }) {
             <CardMedia
               component="img"
               alt={data.title}
-              image={data.background_img || DefaultBgImage}
+              image={data.background_image || DefaultBgImage}
               title={data.title}
               style={{ height: "100%", width: "100%", position: "absolute" }}
             />
@@ -92,7 +92,7 @@ function CardView({ data }) {
             height={200}
             component="img"
             alt={data.title}
-            image={data.background_img || DefaultBgImage}
+            image={data.background_image || DefaultBgImage}
             title={data.title}
           />
         );
@@ -145,7 +145,7 @@ function CardView({ data }) {
 }
 CardView.propTypes = {
   data: shape({
-    background_img: string,
+    background_image: string,
     title: string.isRequired,
     content: string
   })
