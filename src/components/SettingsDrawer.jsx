@@ -29,7 +29,7 @@ import { useNavigate } from "react-router-dom";
 
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { useTheme } from "~/contexts/ThemeProvider";
-import { getSetting, setSetting } from "~/hooks/settingsService";
+import { getSetting, setSetting } from "~/utils/settingsService";
 
 const SettingsDrawer = ({ open, handleClose }) => {
   // const [themeMode, setThemeMode] = useState(() => getSetting("themeMode", "light"));
@@ -79,7 +79,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
   const isAuthenticated = setting.authenticated;
   const languageList = setting.langs || [];
   const tenantList = setting.tenants || [];
-  const themeColors = setting.theme_colors; // Get theme colors from global settings or provide default colors
+  const themeColors = setting.theme_colors || []; // Get theme colors from global settings or provide default colors
 
   return (
     <Drawer anchor="right" open={open} onClose={handleClose} sx={{ width: "80vw" }}>

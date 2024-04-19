@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Drawer,
+  SwipeableDrawer,
   Divider,
   ListItemButton,
   Box,
@@ -38,7 +38,8 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
-  borderBottom: `1px solid ${theme.palette.primary.main}`
+  borderBottom: `1px solid ${theme.palette.primary.main}`,
+  backgroundColor: "white"
 }));
 
 const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
@@ -131,7 +132,7 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
   };
 
   return (
-    <Drawer
+    <SwipeableDrawer
       sx={{
         width: DRAWER_WIDTH,
         flexShrink: 0,
@@ -190,7 +191,7 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
             </Fragment>
           ))}
       </List>
-    </Drawer>
+    </SwipeableDrawer>
   );
 });
 
