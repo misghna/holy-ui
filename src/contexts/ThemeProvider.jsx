@@ -8,7 +8,7 @@ import { theme } from "~/constants/theme";
 const ThemeContext = createContext();
 
 const HolyThemeProvider = ({ children }) => {
-  const [themeSetting, setThemeSetting] = useState({ ...theme });
+  const [themeSetting, setThemeSetting] = useState(theme);
 
   const toggleTheme = (themeValue) => {
     const newTheme = {
