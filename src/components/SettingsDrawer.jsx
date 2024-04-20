@@ -125,14 +125,14 @@ const SettingsDrawer = ({ open, handleClose }) => {
           </ListItem>
           <Box sx={{ display: "flex", gap: "8px", marginTop: "8px", marginLeft: "48px" }}>
             <Button
-              variant={theme.palette.type === "light" ? "contained" : "outlined"}
+              variant={theme.palette?.type === "light" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("light")}
               startIcon={<Brightness7Icon />}
             >
               Light
             </Button>
             {/* <Button
-              variant={theme.palette.type === "system" ? "contained" : "outlined"}
+              variant={theme.palette?.type === "system" ? "contained" : "outlined"}
               onClick={() => {}}
               startIcon={<SettingsBrightnessIcon />}
               color="primary"
@@ -140,7 +140,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
               System
             </Button> */}
             <Button
-              variant={theme.palette.type === "dark" ? "contained" : "outlined"}
+              variant={theme.palette?.type === "dark" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("dark")}
               startIcon={<Brightness4Icon />}
               color="primary"
