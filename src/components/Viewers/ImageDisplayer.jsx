@@ -43,7 +43,7 @@ export const ImageGallery = ({ images }) => {
               }
             }}
           >
-            <img src={image} alt={`Gallery image ${index + 1}`} />
+            <img src={image.file_name} alt={`Gallery image ${index + 1}`} />
           </Box>
         </Grid>
       ))}
