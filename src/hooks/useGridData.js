@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import useAxiosPrivate from "~/hooks/useAxiosPrivate";
+import { axiosPrivate } from "~/_api";
 
 const useGridData = (url) => {
   const [cardData, setCardData] = useState(null);
-  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,7 +15,7 @@ const useGridData = (url) => {
       }
     };
     fetchData();
-  }, [axiosPrivate, url]);
+  }, [url]);
 
   return { cardData };
 };

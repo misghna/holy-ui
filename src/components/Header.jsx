@@ -10,7 +10,7 @@ import { bool, string } from "prop-types";
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
 
-import ChurchDrawer from "./Drawer";
+import SideMenuDrawer from "./Drawer";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open"
@@ -57,12 +57,12 @@ export default function NavigationHeader({ drawerAlwaysOpen = false }) {
           )}
           {!open && !drawerAlwaysOpen && (
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} className="pageTitle">
-              Church
+              Holy
             </Typography>
           )}
         </Toolbar>
       </AppBar>
-      <ChurchDrawer handleDrawerClose={handleDrawerClose} drawerAlwaysOpen={drawerAlwaysOpen} />
+      <SideMenuDrawer handleDrawerClose={handleDrawerClose} drawerAlwaysOpen={drawerAlwaysOpen} />
     </Box>
   );
 }

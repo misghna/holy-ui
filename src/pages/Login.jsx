@@ -145,7 +145,7 @@ function Login() {
         >
           <Typography variant="h4">Join us in faith and fellowship as we grow together in love and service.</Typography>
           <Typography variant="overline">
-            Discover the joy of belonging to a vibrant church community where you can deepen your relationship with God
+            Discover the joy of belonging to a vibrant holy community where you can deepen your relationship with God
             and make lifelong friendships
           </Typography>
         </Stack>
