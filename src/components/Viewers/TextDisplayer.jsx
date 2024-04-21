@@ -7,7 +7,7 @@ const TextDisplayer = ({ item, onDoubleClick, displayContent }) => {
 
   return (
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
-      {displayContent && <div dangerouslySetInnerHTML={{ __html: purify.sanitize(item.content_html) }}></div>}
+      {displayContent && <div dangerouslySetInnerHTML={{ __html: purify.sanitize(item.content_text) }}></div>}
       {/* <Typography variant="caption" display="block" gutterBottom>
         {item.date}
       </Typography>
