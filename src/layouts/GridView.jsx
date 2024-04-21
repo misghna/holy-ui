@@ -32,7 +32,8 @@ export default function GridView() {
       .get(`/api/${currentConfig.contentData}`, {
         params: {
           content_category: category,
-          lang: "english"
+          lang: "english",
+          start: 0
         }
       })
       .then(({ data }) => {
@@ -84,7 +85,7 @@ export default function GridView() {
             color: "text.secondary"
           }}
         >
-          Unable to Fetch Data
+          No Data Available
         </Typography>
       </Box>
     );
