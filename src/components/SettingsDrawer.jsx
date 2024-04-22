@@ -6,6 +6,7 @@ import {
   Business as BusinessIcon
 } from "@mui/icons-material";
 import PaletteIcon from "@mui/icons-material/Palette";
+import SettingsBrightnessIcon from "@mui/icons-material/SettingsBrightness";
 import {
   Drawer,
   Paper,
@@ -95,7 +96,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
           <Divider />
           <ListItem button sx={{ marginBottom: "8px" }}>
             <ListItemIcon>
-              <personalSettingBrightnessIcon />
+              <SettingsBrightnessIcon />
             </ListItemIcon>
             <ListItemText primary="Theme Mode" />
           </ListItem>
@@ -110,7 +111,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
             {/* <Button
               variant={theme.palette?.type === "system" ? "contained" : "outlined"}
               onClick={() => {}}
-              startIcon={<personalSettingBrightnessIcon />}
+              startIcon={<SettingsBrightnessIcon  />}
               color="primary"
             >
               System
