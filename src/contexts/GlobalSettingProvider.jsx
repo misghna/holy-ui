@@ -43,6 +43,7 @@ const reducer = (state, action) => {
       personal.language = langs[0].id;
       personal.themeColor = theme_colors[0].hexCode;
       personal.selectedTenant = tenants[0].id;
+      personal.themeMode = "light";
       setSetting("personalSetting", personal);
       return { ...state, setting: action.payload, personalSetting: personal };
     case actionTypes.UPDATE_PERSONAL_SETTING:

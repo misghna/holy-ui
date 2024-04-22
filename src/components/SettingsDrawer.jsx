@@ -42,6 +42,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
   };
 
   const handleThemeChange = (mode) => {
+    dispatch({ type: actionTypes.UPDATE_PERSONAL_SETTING, payload: { themeMode: mode } });
     toggleTheme(mode);
   };
 
