@@ -28,6 +28,7 @@ export default function GridView() {
   const [loading, setLoading] = useState(true);
 
   const fetchData = () => {
+    setLoading(true);
     axiosPrivate
       .get(`/api/${currentConfig.contentData}`, {
         params: {
