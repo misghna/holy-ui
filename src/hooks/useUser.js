@@ -1,12 +1,12 @@
+import { axiosPrivate } from "~/_api";
 import { useAuth } from "~/contexts/AuthContext";
 
-import useAxiosPrivate from "./useAxiosPrivate";
 import config from "../constants/endpoints.json";
 
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
-const useLogin = () => {
+const useUser = () => {
   const { setAuthState } = useAuth();
-  const axiosPrivate = useAxiosPrivate();
+
   const login = async ({ email, password }) => {
     const formData = new FormData();
     formData.append("email", email);
@@ -35,4 +35,4 @@ const useLogin = () => {
   return { login };
 };
 
-export default useLogin;
+export default useUser;
