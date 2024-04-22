@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
-
 import {
   Brightness4 as Brightness4Icon,
   Brightness7 as Brightness7Icon,
   Close as CloseIcon,
   Language as LanguageIcon,
-  Business as BusinessIcon,
-  SettingsBrightness as SettingsBrightnessIcon
+  Business as BusinessIcon
 } from "@mui/icons-material";
 import PaletteIcon from "@mui/icons-material/Palette";
 import {
@@ -28,41 +25,20 @@ import { styled } from "@mui/system";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import { actionTypes, useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { useTheme } from "~/contexts/ThemeProvider";
-import { getSetting, setSetting } from "~/utils/settingsService";
 
 const StyledButton = styled(Button)({
   marginTop: "16px"
 });
 
 const SettingsDrawer = ({ open, handleClose }) => {
-  const [settings, setSettings] = useState(() => {
-    return {
-      language: getSetting("language", "english"),
-      themeColor: getSetting("themeColor", "#808080"),
-      selectedTenant: getSetting("selectedTenant", "1801")
-    };
-  });
-  const { setting } = useGlobalSetting();
+  const { setting, personalSetting, dispatch } = useGlobalSetting();
   const navigate = useNavigate();
   const { toggleTheme, theme } = useTheme();
 
-  useEffect(() => {
-    if (setting.default_theme_color) {
-      setSettings((prevSettings) => ({
-        ...prevSettings,
-        themeColor: setting.default_theme_color
-      }));
-    }
-  }, [setting.default_theme_color]);
-
   const handleSettingChange = (key, value) => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      [key]: value
-    }));
-    setSetting(key, value);
+    dispatch({ type: actionTypes.UPDATE_PERSONAL_SETTING, payload: { [key]: value } });
   };
 
   const handleThemeChange = (mode) => {
@@ -108,7 +84,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
               <LanguageIcon />
             </ListItemIcon>
             <ListItemText primary="Language" />
-            <Select value={settings.language} onChange={handleLanguageChange} size="small">
+            <Select value={personalSetting.language} onChange={handleLanguageChange} size="small">
               {languageList.map((lang) => (
                 <MenuItem key={lang.id} value={lang.id}>
                   {lang.name}
@@ -119,7 +95,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
           <Divider />
           <ListItem button sx={{ marginBottom: "8px" }}>
             <ListItemIcon>
-              <SettingsBrightnessIcon />
+              <personalSettingBrightnessIcon />
             </ListItemIcon>
             <ListItemText primary="Theme Mode" />
           </ListItem>
@@ -134,7 +110,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
             {/* <Button
               variant={theme.palette?.type === "system" ? "contained" : "outlined"}
               onClick={() => {}}
-              startIcon={<SettingsBrightnessIcon />}
+              startIcon={<personalSettingBrightnessIcon />}
               color="primary"
             >
               System
@@ -159,7 +135,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
             {themeColors.map((colorObj) => (
               <Button
                 key={colorObj.hexCode}
-                variant={settings.themeColor === colorObj.hexCode ? "contained" : "outlined"}
+                variant={personalSetting.themeColor === colorObj.hexCode ? "contained" : "outlined"}
                 style={{ marginRight: "8px" }}
                 onClick={() => handleColorChange(colorObj.hexCode)}
               >
@@ -174,7 +150,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
             </ListItemIcon>
             <ListItemText primary="Tenant" />
             <Select
-              value={settings.selectedTenant}
+              value={personalSetting.selectedTenant}
               onChange={handleTenantChange}
               size="small"
               sx={{ marginLeft: "auto" }}
