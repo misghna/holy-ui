@@ -42,7 +42,7 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   backgroundColor: "white"
 }));
 
-const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
+const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
   const { state: drawerState } = useLayout();
 
   const { open } = drawerState;
@@ -197,9 +197,9 @@ const ChurchDrawer = React.memo(function ChurchDrawer({ handleDrawerClose, drawe
   );
 });
 
-ChurchDrawer.propTypes = {
+SideMenuDrawer.propTypes = {
   handleDrawerClose: func.isRequired,
   drawerAlwaysOpen: bool
 };
 
-export default ChurchDrawer;
+export default SideMenuDrawer;

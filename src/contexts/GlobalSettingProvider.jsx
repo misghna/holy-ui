@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 
 import PropTypes from "prop-types";
 
-import useAxiosPrivate from "~/hooks/useAxiosPrivate";
+import { axiosPrivate } from "~/_api";
 
 import config from "../constants/endpoints.json";
 
@@ -19,7 +19,6 @@ const initialState = {
   user_name: ""
 };
 export const GlobalSettingProvider = ({ children }) => {
-  const axiosPrivate = useAxiosPrivate();
   const [setting, setSetting] = useState(initialState);
 
   const fetchSetting = useCallback(async () => {
@@ -31,7 +30,7 @@ export const GlobalSettingProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching menu data", error);
     }
-  }, [axiosPrivate, setSetting]);
+  }, [setSetting]);
   useEffect(() => {
     fetchSetting();
   }, [fetchSetting]);

@@ -40,7 +40,7 @@ export const VideoPlayer = ({ videoSrc }) => {
         }
       }}
     >
-      <video controls src={videoSrc} style={{ width: "100%", height: "100%" }} />
+      <video controls src={videoSrc.file_name} style={{ width: "100%", height: "100%" }} />
     </Box>
   );
 };
