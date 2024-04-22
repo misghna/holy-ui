@@ -35,18 +35,19 @@ const StyledButton = styled(Button)({
 const SettingsDrawer = ({ open, handleClose }) => {
   const { setting, personalSetting, dispatch } = useGlobalSetting();
   const navigate = useNavigate();
-  const { toggleTheme, theme } = useTheme();
+  const { toggleTheme, changeThemeColor, theme } = useTheme();
 
   const handleSettingChange = (key, value) => {
     dispatch({ type: actionTypes.UPDATE_PERSONAL_SETTING, payload: { [key]: value } });
   };
 
   const handleThemeChange = (mode) => {
-    dispatch({ type: actionTypes.UPDATE_PERSONAL_SETTING, payload: { themeMode: mode } });
     toggleTheme(mode);
+    handleSettingChange("themeMode", mode);
   };
 
   const handleColorChange = (color) => {
+    changeThemeColor(color);
     handleSettingChange("themeColor", color);
   };
 
@@ -95,9 +96,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
           </ListItem>
           <Divider />
           <ListItem button sx={{ marginBottom: "8px" }}>
-            <ListItemIcon>
-              <personalSettingBrightnessIcon />
-            </ListItemIcon>
+            <ListItemIcon>{/* <personalSettingBrightnessIcon /> */}</ListItemIcon>
             <ListItemText primary="Theme Mode" />
           </ListItem>
           <Box sx={{ display: "flex", gap: "8px", marginTop: "8px", marginLeft: "48px" }}>
