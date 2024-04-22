@@ -23,7 +23,7 @@ const YouTubeDisplayer = ({ item, onDoubleClick, displayContent }) => {
 export default YouTubeDisplayer;
 
 export const YouTubePlayer = ({ videoId }) => {
-  const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+  const embedUrl = `${videoId.file_name}`;
 
   return (
     <Box
