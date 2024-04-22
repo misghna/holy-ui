@@ -17,7 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import image from "~/assets/home1bg.jpg";
 import { useAuth } from "~/contexts/AuthContext";
-import useLogin from "~/hooks/useLogin";
+import useUser from "~/hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,7 +56,7 @@ function Login() {
   const { authState } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useLogin();
+  const { login } = useUser();
   const [error, setError] = useState("");
 
   useEffect(() => {
