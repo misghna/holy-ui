@@ -13,28 +13,61 @@ const HolyThemeProvider = ({ children }) => {
 
   const toggleTheme = useCallback(
     (themeValue) => {
+      const personalSettingInStorage = getSetting("personalSetting");
       const newTheme = {
         palette: {
-          ...themeSetting.palette,
+          ...theme.palette,
           mode: themeValue,
-          type: themeValue
+          type: themeValue,
+          primary: {
+            ...theme.palette.primary,
+            main: personalSettingInStorage.themeColor
+          }
         }
       };
       setThemeSetting((prevTheme) => {
         return { ...prevTheme, ...newTheme };
       });
     },
-    [themeSetting.palette, setThemeSetting]
+    [setThemeSetting]
   );
+  const changeThemeColor = useCallback(
+    (colorCode) => {
+      const personalSettingInStorage = getSetting("personalSetting");
+      const newTheme = {
+        palette: {
+          ...theme.palette,
+          mode: personalSettingInStorage.themeMode,
+          type: personalSettingInStorage.themeMode,
+          primary: {
+            ...theme.palette.primary,
+            main: colorCode
+          }
+        }
+      };
+      setThemeSetting((prevTheme) => {
+        return { ...prevTheme, ...newTheme };
+      });
+    },
+    [setThemeSetting]
+  );
+
   useEffect(() => {
     const personalSettingInStorage = getSetting("personalSetting");
-    if (personalSettingInStorage) {
+    if (personalSettingInStorage && personalSettingInStorage?.themeMode) {
       toggleTheme(personalSettingInStorage.themeMode);
     }
   }, [toggleTheme]);
+  useEffect(() => {
+    const personalSettingInStorage = getSetting("personalSetting");
+    if (personalSettingInStorage && personalSettingInStorage?.themeColor) {
+      changeThemeColor(personalSettingInStorage.themeColor);
+    }
+  }, [changeThemeColor]);
+
   const muiTheme = createTheme(themeSetting);
   return (
-    <ThemeContext.Provider value={{ toggleTheme, theme: muiTheme }}>
+    <ThemeContext.Provider value={{ toggleTheme, changeThemeColor, theme: muiTheme }}>
       <MuiThemeProvider theme={muiTheme}>{children}</MuiThemeProvider>
     </ThemeContext.Provider>
   );

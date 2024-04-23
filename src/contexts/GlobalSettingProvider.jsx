@@ -58,6 +58,7 @@ export const GlobalSettingProvider = ({ children }) => {
   const axiosPrivate = useAxiosPrivate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setting, personalSetting } = state;
+
   const fetchSetting = useCallback(
     async () => {
       try {
@@ -73,6 +74,7 @@ export const GlobalSettingProvider = ({ children }) => {
   useEffect(() => {
     fetchSetting();
   }, [fetchSetting]);
+
   if (setting.menu.length === 0) return null;
 
   return (
