@@ -82,7 +82,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
         </Box>
         <Divider />
         <List sx={{ flexGrow: 1 }}>
-          <ListItem button sx={{ marginBottom: "8px" }}>
+          <ListItem button sx={{ marginBottom: "8px", flexGrow: 1 }}>
             <ListItemIcon>
               <LanguageIcon />
             </ListItemIcon>
@@ -91,6 +91,25 @@ const SettingsDrawer = ({ open, handleClose }) => {
               {languageList.map((lang) => (
                 <MenuItem key={lang.id} value={lang.id}>
                   {lang.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </ListItem>
+          <Divider />
+          <ListItem sx={{ marginBottom: "8px", display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <ListItemIcon>
+              <BusinessIcon />
+            </ListItemIcon>
+            <ListItemText primary="Tenant" />
+            <Select
+              value={personalSetting.selectedTenant}
+              onChange={handleTenantChange}
+              size="small"
+              sx={{ marginLeft: "auto" }}
+            >
+              {tenantList.map((tenant) => (
+                <MenuItem key={tenant.id} value={tenant.id}>
+                  {tenant.name}
                 </MenuItem>
               ))}
             </Select>
@@ -110,14 +129,14 @@ const SettingsDrawer = ({ open, handleClose }) => {
             >
               Light
             </Button>
-            {/* <Button
-              variant={theme.palette?.type === "system" ? "contained" : "outlined"}
+            <Button
+              // variant={theme.palette?.type === "system" ? "contained" : "outlined"}
               onClick={() => {}}
-              startIcon={<SettingsBrightnessIcon  />}
+              startIcon={<SettingsBrightnessIcon />}
               color="primary"
             >
               System
-            </Button> */}
+            </Button>
             <Button
               variant={theme.palette?.type === "dark" ? "contained" : "outlined"}
               onClick={() => handleThemeChange("dark")}
@@ -146,25 +165,6 @@ const SettingsDrawer = ({ open, handleClose }) => {
               </Button>
             ))}
           </Box>
-          <Divider />
-          <ListItem sx={{ marginBottom: "8px", display: "flex", alignItems: "center" }}>
-            <ListItemIcon>
-              <BusinessIcon />
-            </ListItemIcon>
-            <ListItemText primary="Tenant" />
-            <Select
-              value={personalSetting.selectedTenant}
-              onChange={handleTenantChange}
-              size="small"
-              sx={{ marginLeft: "auto" }}
-            >
-              {tenantList.map((tenant) => (
-                <MenuItem key={tenant.id} value={tenant.id}>
-                  {tenant.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </ListItem>
         </List>
         <Divider />
         <StyledButton
