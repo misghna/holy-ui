@@ -53,7 +53,7 @@ function CardView({ data }) {
     setModalData({});
   };
   function handleCardAction() {
-    if (data.media_link?.length > 0 || data.content_html) {
+    if (data.media_link?.length > 0 || data.content_text) {
       setModalData({ open: true, data });
     }
   }
