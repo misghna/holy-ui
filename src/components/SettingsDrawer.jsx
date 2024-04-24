@@ -130,7 +130,7 @@ const SettingsDrawer = ({ open, handleClose }) => {
               Light
             </Button>
             <Button
-              // variant={theme.palette?.type === "system" ? "contained" : "outlined"}
+              variant={theme.palette?.type === "light" ? "outlined" : "outlined"}
               onClick={() => {}}
               startIcon={<SettingsBrightnessIcon />}
               color="primary"
