@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => {
         // with options: http://localhost:5173/api/bar-> http://jsonplaceholder.typicode.com/bar
         "/api": {
           target: env.VITE_BASE_URL,
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, "")
+          changeOrigin: true
+          //rewrite: (path) => path.replace(/^\/api/, "")
         }
       }
     },

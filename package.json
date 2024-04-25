@@ -16,7 +16,7 @@
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.12",
     "@mui/icons-material": "^5.15.12",
-    "@mui/material": "^5.15.12",
+    "@mui/material": "^5.15.15",
     "@mui/styles": "^5.15.15",
     "@react-pdf/renderer": "^3.4.2",
     "axios": "^1.6.8",
@@ -26,7 +26,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-pdf": "^7.7.1",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "react-table": "^7.8.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",

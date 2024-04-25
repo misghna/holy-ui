@@ -12,6 +12,8 @@ import Tab from "~/components/tabs/Tab";
 import Tabs from "~/components/tabs/Tabs";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 
+import PageConfig from "./PageConfig";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const MAPPING = { 0: "page_config", 1: "content_manager", 2: "document" };
+const MAPPING = { 0: <PageConfig />, 1: "content_manager", 2: "document" };
 
 function ContentManager() {
   const [activeTab, setActiveTab] = React.useState(1);
@@ -45,8 +47,8 @@ function ContentManager() {
   );
 
   const renderTabContent = useMemo(() => {
-    return <div>{`Content for ${labels[MAPPING[activeTab]]}`}</div>;
-  }, [activeTab, labels]);
+    return MAPPING[activeTab];
+  }, [activeTab]);
 
   const handleSearchIcon = useCallback(() => {
     setModelOpen(true);
