@@ -49,9 +49,7 @@ export const ImageGallery = ({ images }) => {
               }
             }}
           >
-
             <img src={image.file_name} alt={`Gallery image ${index + 1}`} />
-
           </Grid>
         );
       })}

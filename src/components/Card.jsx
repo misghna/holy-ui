@@ -112,10 +112,7 @@ function CardView({ data }) {
 
   return (
     <>
-      <Card
-        className={classes.card}
-        onDoubleClick={handleCardAction}
-      >
+      <Card className={classes.card} onDoubleClick={handleCardAction}>
         <Box>
           <CardActionArea>{renderCardMedia()}</CardActionArea>
           <CardHeader
