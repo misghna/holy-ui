@@ -4,11 +4,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import ReactDOM from "react-dom/client";
 
 import App from "~/App.jsx";
+import { AuthProvider } from "~/contexts/AuthContext";
 import { GlobalSettingProvider } from "~/contexts/GlobalSettingProvider";
 import HolyThemeProvider from "~/contexts/ThemeProvider";
 
 import "~/index.css";
-import { AuthProvider } from "./contexts/AuthContext";
 
 function Main() {
   return (
