@@ -26,7 +26,6 @@ export const axiosPrivate = axios.create({
 if (axiosPrivate.interceptors.request.handlers.length === 0) {
   axiosPrivate.interceptors.request.use(
     (config) => {
-      console.log("url ", config.url);
       if (!config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("auth"))?.accessToken}`;
       }

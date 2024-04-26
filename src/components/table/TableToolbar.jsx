@@ -1,5 +1,3 @@
-import { useCallback, useState } from "react";
-
 import AddIcon from "@mui/icons-material/Add";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
@@ -8,21 +6,9 @@ import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 
 import DynamicModal from "~/components/Modal";
-import AddPageConfig from "~/pages/AddPageConfig";
 
 const TableToolbar = (props) => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const {
-    addUserHandler,
-
-    tableTitle
-  } = props;
-  const handleClickOpen = useCallback(() => {
-    setModalOpen(true);
-  }, [setModalOpen]);
-  const handleCloseModal = useCallback(() => {
-    setModalOpen(false);
-  }, [setModalOpen]);
+  const { addUserHandler, tableTitle, children, modalOpen, handleClickOpen, handleCloseModal } = props;
 
   return (
     <Toolbar
@@ -45,7 +31,7 @@ const TableToolbar = (props) => {
           header={"Add Page Config"}
           maxWidth="md"
         >
-          <AddPageConfig />
+          {children}
         </DynamicModal>
       </>
 
@@ -58,8 +44,11 @@ const TableToolbar = (props) => {
 
 TableToolbar.propTypes = {
   addUserHandler: PropTypes.func.isRequired,
-
-  tableTitle: PropTypes.string
+  tableTitle: PropTypes.string,
+  children: PropTypes.node,
+  modalOpen: PropTypes.bool,
+  handleClickOpen: PropTypes.func,
+  handleCloseModal: PropTypes.func
 };
 
 export default TableToolbar;

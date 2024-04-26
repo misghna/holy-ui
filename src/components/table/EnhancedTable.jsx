@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -17,6 +17,7 @@ import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } fro
 
 import TablePaginationActions from "~/components/table/TablePaginationActions";
 import TableToolbar from "~/components/table/TableToolbar";
+import AddPageConfig from "~/pages/AddPageConfig";
 
 const EditableCell = ({
   value: initialValue,
@@ -44,7 +45,22 @@ const defaultColumn = {
   Cell: EditableCell
 };
 
-const EnhancedTable = ({ columns, data, setData, fetchData, updateMyData, skipPageReset }) => {
+const EnhancedTable = ({
+  columns,
+  data,
+
+  fetchData,
+  updateMyData,
+  skipPageReset,
+  formAction,
+  deleteAction,
+  shouldVisibleToolbar = true,
+  pageConfig,
+  handleChange,
+  populateForm
+}) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   const {
     getTableProps,
     headerGroups,
@@ -73,6 +89,13 @@ const EnhancedTable = ({ columns, data, setData, fetchData, updateMyData, skipPa
     useRowSelect
   );
 
+  const handleClickOpen = useCallback(() => {
+    setModalOpen(true);
+  }, [setModalOpen]);
+  const handleCloseModal = useCallback(() => {
+    setModalOpen(false);
+  }, [setModalOpen]);
+
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
   };
@@ -85,23 +108,34 @@ const EnhancedTable = ({ columns, data, setData, fetchData, updateMyData, skipPa
     console.log(event);
   };
 
-  const addUserHandler = (user) => {
-    const newData = data.concat([user]);
-    setData(newData);
-  };
   const handleEdit = (row) => {
-    console.log(row);
+    populateForm(row);
+    handleClickOpen();
   };
-  const handleDelete = (row) => {
-    console.log("row", row);
-  };
+  const handleDelete = useCallback(
+    (row) => {
+      deleteAction(row);
+    },
+    [deleteAction]
+  );
   useEffect(() => {
     fetchData(pageIndex, pageSize);
   }, [fetchData, pageIndex, pageSize]);
-  // Render the UI for your table
+
   return (
     <TableContainer>
-      <TableToolbar deleteUserHandler={deleteUserHandler} addUserHandler={addUserHandler} tableTitle="Page Config" />
+      {shouldVisibleToolbar ? (
+        <TableToolbar
+          modalOpen={modalOpen}
+          handleCloseModal={handleCloseModal}
+          handleClickOpen={handleClickOpen}
+          deleteUserHandler={deleteUserHandler}
+          addUserHandler={formAction}
+          tableTitle="Page Config"
+        >
+          <AddPageConfig pageConfig={pageConfig} handleChange={handleChange} />
+        </TableToolbar>
+      ) : null}
       <MaUTable {...getTableProps()}>
         <TableHead>
           {headerGroups.map((headerGroup, index) => (
@@ -188,7 +222,13 @@ EnhancedTable.propTypes = {
   updateMyData: PropTypes.func.isRequired,
   setData: PropTypes.func.isRequired,
   skipPageReset: PropTypes.bool.isRequired,
-  fetchData: PropTypes.func.isRequired
+  fetchData: PropTypes.func.isRequired,
+  formAction: PropTypes.func,
+  deleteAction: PropTypes.func,
+  shouldVisibleToolbar: PropTypes.bool,
+  pageConfig: PropTypes.object,
+  handleChange: PropTypes.func,
+  populateForm: PropTypes.func
 };
 
 export default EnhancedTable;

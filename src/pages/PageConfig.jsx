@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Box, CircularProgress } from "@mui/material";
 
@@ -60,16 +60,39 @@ const COLUMNS = [
     accessor: "action"
   }
 ];
+
+const pageConfigInitial = {
+  pageType: "",
+  name: "",
+  headerText: "",
+  imageLink: "",
+  parent: "",
+  description: "",
+  language: ""
+};
 const PageConfig = () => {
   const [data, setData] = React.useState([]);
-  const [skipPageReset, setSkipPageReset] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [skipPageReset, setSkipPageReset] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [pageConfig, setPageConfig] = useState(pageConfigInitial);
+
+  const handleChange = useCallback(
+    (event) => {
+      setPageConfig((prevPageConfig) => {
+        return {
+          ...prevPageConfig,
+          [event.target.name]: event.target.value
+        };
+      });
+    },
+    [setPageConfig]
+  );
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      .get(`/api/secure/${currentConfig.pageConfig}`, {
+      .get(`/api/secured/${currentConfig.pageConfig}?`, {
         params: {
-          limit,
-          start
+          start,
+          limit
         }
       })
       .then(({ data }) => {
@@ -84,6 +107,50 @@ const PageConfig = () => {
   useEffect(() => {
     fetchData(0, 10);
   }, [fetchData]);
+
+  const savePageConfig = useCallback(() => {
+    axiosPrivate
+      .post(`/api/secured/${currentConfig.pageConfig}`, pageConfig)
+      .then(({ data }) => {
+        console.log("saved succefylly ", data);
+      })
+      .catch((err) => {
+        console.error("error :>> ", err);
+      });
+  }, [pageConfig]);
+  const updatePageConfig = useCallback(() => {
+    axiosPrivate
+      .put(`/api/secured/${currentConfig.pageConfig}`, pageConfig)
+      .then(({ data }) => {
+        console.log("saved succefylly ", data);
+      })
+      .catch((err) => {
+        console.error("error :>> ", err);
+      });
+    setPageConfig(pageConfigInitial);
+  }, [setPageConfig, pageConfig]);
+  const populatePageConfigForm = useCallback((row) => {
+    const { id, name, page_type, parent, language, header_text, img_link, description } = row.original;
+    const pageConfigTemp = {
+      id: id,
+      pageType: page_type,
+      parent: parent,
+      headerText: header_text,
+      language: language,
+      imageLink: img_link,
+      description,
+      name
+    };
+    setPageConfig((prevPageConfig) => {
+      return {
+        ...prevPageConfig,
+        ...pageConfigTemp
+      };
+    });
+  }, []);
+  const deletePageConfig = useCallback((row) => {
+    console.log(row);
+  }, []);
 
   const updateMyData = (rowIndex, columnId, value) => {
     // We also turn on the flag to not reset the page
@@ -100,6 +167,11 @@ const PageConfig = () => {
       })
     );
   };
+  const currentAction = useMemo(
+    () => (pageConfig.id ? updatePageConfig : savePageConfig),
+    [pageConfig, updatePageConfig, savePageConfig]
+  );
+
   if (loading) {
     return (
       <Box
@@ -127,6 +199,12 @@ const PageConfig = () => {
         setData={setData}
         updateMyData={updateMyData}
         skipPageReset={skipPageReset}
+        formAction={currentAction}
+        deleteAction={deletePageConfig}
+        shouldVisibleToolbar={true}
+        populateForm={populatePageConfigForm}
+        pageConfig={pageConfig}
+        handleChange={handleChange}
       />
     </div>
   );
