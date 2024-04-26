@@ -96,22 +96,31 @@ const EnhancedTable = ({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const handleChangePage = (event, newPage) => {
-    gotoPage(newPage);
-  };
+  const handleChangePage = useCallback(
+    (event, newPage) => {
+      gotoPage(newPage);
+    },
+    [gotoPage]
+  );
 
-  const handleChangeRowsPerPage = (event) => {
-    setPageSize(Number(event.target.value));
-  };
+  const handleChangeRowsPerPage = useCallback(
+    (event) => {
+      setPageSize(Number(event.target.value));
+    },
+    [setPageSize]
+  );
 
-  const deleteUserHandler = (event) => {
+  const deleteUserHandler = useCallback((event) => {
     console.log(event);
-  };
+  }, []);
 
-  const handleEdit = (row) => {
-    populateForm(row);
-    handleClickOpen();
-  };
+  const handleEdit = useCallback(
+    (row) => {
+      populateForm(row);
+      handleClickOpen();
+    },
+    [populateForm, handleClickOpen]
+  );
   const handleDelete = useCallback(
     (row) => {
       deleteAction(row);
