@@ -26,6 +26,10 @@ const COLUMNS = [
     accessor: "img_link"
   },
   {
+    Header: "Language",
+    accessor: "language"
+  },
+  {
     Header: "Parent",
     accessor: "parent"
   },

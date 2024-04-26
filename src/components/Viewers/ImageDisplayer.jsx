@@ -25,10 +25,16 @@ export default ImageDisplayer;
 export const ImageGallery = ({ images }) => {
   return (
     <Grid container spacing={2}>
-      {images.map((image, index) => (
-        <Grid item xs={12} sm={6} md={4} key={index} sx={{ mb: -8 }}>
-          <Box
+      {images.map((image, index) => {
+        return (
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            key={index}
             sx={{
+              mb: "5px",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -44,9 +50,9 @@ export const ImageGallery = ({ images }) => {
             }}
           >
             <img src={image.file_name} alt={`Gallery image ${index + 1}`} />
-          </Box>
-        </Grid>
-      ))}
+          </Grid>
+        );
+      })}
     </Grid>
   );
 };
