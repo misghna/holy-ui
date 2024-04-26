@@ -214,5 +214,4 @@ const PageConfig = () => {
   );
 };
 
-PageConfig.propTypes = {};
 export default PageConfig;
