@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useReducer } from "r
 
 import PropTypes from "prop-types";
 
-import useAxiosPrivate from "~/hooks/useAxiosPrivate";
+import { axiosPrivate } from "~/_api";
 import { getSetting, setSetting } from "~/utils/settingsService";
 
 import config from "../constants/endpoints.json";
@@ -55,22 +55,17 @@ const reducer = (state, action) => {
   }
 };
 export const GlobalSettingProvider = ({ children }) => {
-  const axiosPrivate = useAxiosPrivate();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setting, personalSetting } = state;
 
-  const fetchSetting = useCallback(
-    async () => {
-      try {
-        const response = await axiosPrivate.get(`/api/${currentConfig.globalSetting}`);
-        dispatch({ type: actionTypes.FETCH_SETTING, payload: response.data });
-      } catch (error) {
-        console.error("Error fetching menu data", error);
-      }
-    },
-    [axiosPrivate],
-    dispatch
-  );
+  const fetchSetting = useCallback(async () => {
+    try {
+      const response = await axiosPrivate.get(`/api/${currentConfig.globalSetting}`);
+      dispatch({ type: actionTypes.FETCH_SETTING, payload: response.data });
+    } catch (error) {
+      console.error("Error fetching menu data", error);
+    }
+  }, [dispatch]);
   useEffect(() => {
     fetchSetting();
   }, [fetchSetting]);

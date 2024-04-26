@@ -16,7 +16,7 @@ const AudioPlayer = ({ item }) => {
 
   useEffect(() => {
     // Setup a new Audio object whenever the currentAudioIndex changes
-    const newAudio = new Audio(item.media_link[currentAudioIndex]);
+    const newAudio = new Audio(item.media_link[currentAudioIndex].file_name);
     setAudio(newAudio);
     setProgress(0); // Reset progress
     if (isPlaying) {

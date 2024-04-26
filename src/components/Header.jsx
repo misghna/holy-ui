@@ -12,7 +12,7 @@ import SettingsDrawer from "~/components/SettingsDrawer";
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
 
-import ChurchDrawer from "./Drawer";
+import SideMenuDrawer from "./Drawer";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open"
@@ -76,7 +76,7 @@ export default function NavigationHeader({ drawerAlwaysOpen = false }) {
           </IconButton>
         </Toolbar>
       </AppBar>
-      <ChurchDrawer handleDrawerClose={handleDrawerClose} />
+      <SideMenuDrawer handleDrawerClose={handleDrawerClose} />
       <SettingsDrawer open={settingsOpen} handleClose={handleSettingsClose} />
     </Box>
   );

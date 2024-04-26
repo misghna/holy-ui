@@ -29,8 +29,10 @@ export const VideoPlayer = ({ videoSrc }) => {
       sx={{
         display: "flex",
         justifyContent: "center",
+        boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
         alignItems: "center",
         overflow: "hidden",
+        mb: "5px",
         // Adjust dimensions as needed
         height: 360, // Default height, but consider making this responsive
         width: "100%", // This makes the video player responsive
@@ -40,7 +42,7 @@ export const VideoPlayer = ({ videoSrc }) => {
         }
       }}
     >
-      <video controls src={videoSrc} style={{ width: "100%", height: "100%" }} />
+      <video controls src={videoSrc.file_name} style={{ width: "100%", height: "100%" }} />
     </Box>
   );
 };
