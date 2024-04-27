@@ -31,7 +31,7 @@ if (axiosPrivate.interceptors.request.handlers.length === 0) {
   axiosPrivate.interceptors.request.use(
     (config) => {
       if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("auth"))?.accessToken}`;
+        config.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("auth"))?.token.accessToken}`;
       }
       return config;
     },
