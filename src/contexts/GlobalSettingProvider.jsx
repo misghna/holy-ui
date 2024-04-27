@@ -6,7 +6,6 @@ import { axiosPrivate } from "~/_api";
 import config from "~/constants/endpoints.json";
 import { getSetting, setSetting } from "~/utils/settingsService";
 
-
 const GlobalSettingContext = createContext({ state: {}, dispatch: () => {} });
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 

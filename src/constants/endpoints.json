@@ -1,10 +1,12 @@
 {
   "test": {
     "globalSetting": "global_setting",
-    "contentData": "contents"
+    "contentData": "contents",
+    "login": "login"
   },
   "prod": {
     "globalSetting": "global_setting",
-    "contentData": "contents"
+    "contentData": "contents",
+    "login": "login"
   }
 }

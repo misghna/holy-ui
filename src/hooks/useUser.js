@@ -20,8 +20,8 @@ const useUser = () => {
 
     const data = {
       token: {
-        refresh: authData.token,
-        accessToken: authData.token
+        refresh: authData.access_token,
+        accessToken: authData.refresh_token
       },
       user: {
         name: "",
