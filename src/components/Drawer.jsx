@@ -147,6 +147,8 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
       variant="persistent"
       anchor="left"
       open={open}
+      onClose={handleDrawerClose}
+      onOpen={() => {}}
     >
       <DrawerHeader>
         <Box sx={{ width: "100%", backgroundColor: "white" }} display="flex" alignItems="center">

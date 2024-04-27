@@ -1,7 +1,6 @@
 import { green, purple } from "@mui/material/colors";
-import { createTheme } from "@mui/material/styles";
 
-export const theme = createTheme({
+export const theme = {
   palette: {
     primary: {
       main: purple[900]
@@ -10,6 +9,6 @@ export const theme = createTheme({
       main: green[500]
     }
   }
-});
+};
 
 export const DRAWER_WIDTH = 240;
