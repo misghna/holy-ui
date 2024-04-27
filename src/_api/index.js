@@ -3,12 +3,16 @@ import axios from "axios";
 const refresh = async () => {
   const local = JSON.parse(localStorage.getItem("auth"));
   return axios
-    .get(`/auth/token/refresh`, {
-      // withCredentials: true,
-      headers: {
-        Authorization: `Bearer ${local.token?.refresh}`
+    .post(
+      `/api/refresh-token`,
+      { refresh_token: local.token.accessToken },
+      {
+        // withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${local.token?.refresh}`
+        }
       }
-    })
+    )
     .then(({ data }) => {
       local.accessToken = data.data.access_token;
       localStorage.setItem("auth", JSON.stringify(local));
