@@ -5,11 +5,11 @@ const refresh = async () => {
   return axios
     .post(
       `/api/refresh-token`,
-      { refresh_token: local.token.accessToken },
+      { refresh_token: local.token.refresh },
       {
         // withCredentials: true,
         headers: {
-          Authorization: `Bearer ${local.token?.refresh}`
+          Authorization: `Bearer ${local.token?.acessToken}`
         }
       }
     )
