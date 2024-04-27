@@ -17,6 +17,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import image from "~/assets/home1bg.jpg";
 import { useAuth } from "~/contexts/AuthContext";
+import useUser from "~/hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,9 +53,11 @@ function Login() {
   const classes = useStyles();
   const navigate = useNavigate();
   const location = useLocation();
-  const { authState, setAuthState } = useAuth();
+  const { authState } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useUser();
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (authState.token?.accessToken) {
@@ -68,20 +71,13 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // DUMMY
-    const data = {
-      token: {
-        refresh: "asdnaksldn",
-        accessToken: "esdxasdkjn"
-      },
-      user: {
-        name: "Esteban",
-        email
-      }
-    };
-    localStorage.setItem("auth", JSON.stringify(data));
-    setAuthState(data);
-    navigate("/secure");
+    login({ email, password })
+      .then(() => {
+        navigate("/secure");
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   };
 
   return (
@@ -90,6 +86,7 @@ function Login() {
         <Stack spacing={2}>
           <h2>Login</h2>
           <Box component="form" onSubmit={handleSubmit} noValidate>
+            {error && <span style={{ color: "#8B0000" }}> {error}</span>}
             <TextField
               margin="normal"
               required
