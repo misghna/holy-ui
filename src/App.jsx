@@ -19,22 +19,27 @@ function App() {
         <GlobalSettingProvider>
           <LayoutProvider>
             <Routes>
-              <Route path="/login" exact element={<Login />} />
-              <Route exact path="/secure" element={<ProtectedLayout />}>
-                <Route path="" element={<AdminLayout />}>
-                  <Route path=":type" exact element={<CategoryPages />} />
-                  <Route path="*" exact element={<Navigate to="/secure" />} />
-                </Route>
-              </Route>
-              <Route path="/" exact element={<Layout />}>
-                <Route index element={<Navigate to="/home" replace />} />
-                <Route path="/:category" exact element={<CategoryPages />} />
-                <Route path="*" exact element={<NotFoundPage />} />
+              <Route path="/login" element={<Login />} />
 
-                <Route exact path="/secure" element={<ProtectedLayout />}>
-                  <Route path="content_manager" element={<ContentManager />} />
-                  <Route path="admin_settings" exact element={<AdminSettings />} />
-                </Route>
+              {/* Routes for admin panel */}
+              <Route path="/admin/*" element={<ProtectedLayout />}>
+                <Route index element={<AdminLayout />} />
+                <Route path=":type" element={<CategoryPages />} />
+                <Route path="*" element={<Navigate to="/admin" />} />
+              </Route>
+
+              {/* Routes for regular users */}
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Navigate to="/home" replace />} />
+                <Route path="/:category" element={<CategoryPages />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+
+              {/* Routes for secure/admin functionalities */}
+              <Route path="/secure/*" element={<ProtectedLayout />}>
+                <Route index element={<Navigate to="/secure/content_manager" replace />} />
+                <Route path="content_manager" element={<ContentManager />} />
+                <Route path="admin_settings" element={<AdminSettings />} />
               </Route>
             </Routes>
           </LayoutProvider>
