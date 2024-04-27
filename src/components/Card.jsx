@@ -29,16 +29,23 @@ const useStyles = makeStyles((theme) => {
     },
     card: {
       margin: theme.spacing(2),
-      minHeight: "93%"
+      height: "95%",
+      display: "flex",
+      justifyContent: "space-between",
+      flexDirection: "column"
     },
     cardTitle: {
-      padding: 0,
+      paddingBottom: 0,
       color: "#696969",
       textTransform: "uppercase"
     },
     cardBody: {
       color: "#999999",
       paddingTop: 0
+    },
+    headerContent: {
+      display: "flex",
+      justifyContent: "space-between"
     }
   };
 });
@@ -53,7 +60,7 @@ function CardView({ data }) {
     setModalData({});
   };
   function handleCardAction() {
-    if (data.media_link?.length > 0 || data.content_html) {
+    if (data.media_link?.length > 0 || data.content_text) {
       setModalData({ open: true, data });
     }
   }
@@ -75,7 +82,7 @@ function CardView({ data }) {
             <CardMedia
               component="img"
               alt={data.title}
-              image={data.background_img || DefaultBgImage}
+              image={data.background_image || DefaultBgImage}
               title={data.title}
               style={{ height: "100%", width: "100%", position: "absolute" }}
             />
@@ -86,13 +93,14 @@ function CardView({ data }) {
         );
       case "image":
       case "pdf":
+      case "html":
         // For PDFs, might directly use an image if provided or a default one
         return (
           <CardMedia
-            height={200}
+            height={data.type === "html" ? 80 : 200}
             component="img"
             alt={data.title}
-            image={data.background_img || DefaultBgImage}
+            image={data.background_image || DefaultBgImage}
             title={data.title}
           />
         );
@@ -105,36 +113,53 @@ function CardView({ data }) {
   return (
     <>
       <Card className={classes.card} onDoubleClick={handleCardAction}>
-        <CardActionArea>{renderCardMedia()}</CardActionArea>
+        <Box>
+          <CardActionArea>{renderCardMedia()}</CardActionArea>
+          <CardHeader
+            title={data.title}
+            titleTypographyProps={{
+              variant: "h6",
+              fontWeight: 300,
+              lineHeight: "1.5rem"
+            }}
+            subheader={new Date(data.release_date_time).toDateString()}
+            subheaderTypographyProps={{
+              variant: "h6",
+              fontWeight: 300,
+              lineHeight: "1.rem",
+              textAlign: "end",
+              fontSize: "body2.fontSize",
+              color: "#999999",
+              paddingTop: 0
+            }}
+            classes={{
+              root: classes.cardTitle,
+              content: classes.headerContent
+            }}
+          />
+          <CardContent classes={{ root: classes.cardBody }}>
+            <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
+              {data?.description}
+            </Typography>
+            {/* <ContentViewer item={data} displayContent={false} /> */}
+          </CardContent>
+        </Box>
 
-        <CardHeader
-          title={data.title}
-          titleTypographyProps={{
-            variant: "h6",
-            fontWeight: 300,
-            lineHeight: "1.5rem"
-          }}
-          classes={{
-            root: classes.cardTitle
-          }}
-        />
-
-        <CardContent classes={{ root: classes.cardBody }}>
-          <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
-            {data?.description}
-          </Typography>
-          {/* <ContentViewer item={data} displayContent={false} /> */}
-        </CardContent>
-
-        <CardActions sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-          <IconButton onClick={handleLike} aria-label="like">
-            {liked ? <Favorite sx={{ color: "red" }} /> : <FavoriteBorderIcon />}{" "}
-          </IconButton>
-          <IconButton aria-label="comment">
-            <CommentIcon />
-          </IconButton>
-          <Button onClick={() => navigate(`/${data.type?.toLowerCase()}`)}>More</Button>
-        </CardActions>
+        <Box>
+          <CardActions sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
+            <IconButton onClick={handleLike} aria-label="like">
+              {liked ? <Favorite sx={{ color: "red" }} /> : <FavoriteBorderIcon />}{" "}
+            </IconButton>
+            <IconButton aria-label="comment">
+              <CommentIcon />
+            </IconButton>
+            <Button
+              onClick={() => (data.type === "group" ? navigate(`/${data.type?.toLowerCase()}`) : handleCardAction())}
+            >
+              More
+            </Button>
+          </CardActions>
+        </Box>
       </Card>
       <DynamicModal open={modalData.open} handleClose={handleModalClose} header={data.title} hideFooter={true}>
         <ContentViewer item={data} displayContent={true} />
@@ -145,7 +170,7 @@ function CardView({ data }) {
 }
 CardView.propTypes = {
   data: shape({
-    background_img: string,
+    background_image: string,
     title: string.isRequired,
     content: string
   })
