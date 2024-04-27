@@ -93,7 +93,7 @@ const PageConfig = () => {
   );
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      .get(`/api/secured/${currentConfig.pageConfig}?`, {
+      .get(`/api/protected/${currentConfig.pageConfig}?`, {
         params: {
           start,
           limit
@@ -114,7 +114,7 @@ const PageConfig = () => {
 
   const savePageConfig = useCallback(() => {
     axiosPrivate
-      .post(`/api/secured/${currentConfig.pageConfig}`, pageConfig)
+      .post(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
@@ -124,7 +124,7 @@ const PageConfig = () => {
   }, [pageConfig]);
   const updatePageConfig = useCallback(() => {
     axiosPrivate
-      .put(`/api/secured/${currentConfig.pageConfig}`, pageConfig)
+      .put(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
