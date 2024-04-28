@@ -6,6 +6,8 @@ import { axiosPrivate } from "~/_api";
 import EnhancedTable from "~/components/table/EnhancedTable";
 import config from "~/constants/endpoints.json";
 
+import AddPageConfig from "./AddPageConfig";
+
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
 const COLUMNS = [
@@ -204,6 +206,7 @@ const PageConfig = () => {
         setData={setData}
         updateMyData={updateMyData}
         skipPageReset={skipPageReset}
+        formDialog={<AddPageConfig pageConfig={pageConfig} handleChange={handleChange} />}
         formAction={currentAction}
         deleteAction={deletePageConfig}
         shouldVisibleToolbar={true}

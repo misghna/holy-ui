@@ -17,7 +17,6 @@ import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } fro
 
 import TablePaginationActions from "~/components/table/TablePaginationActions";
 import TableToolbar from "~/components/table/TableToolbar";
-import AddPageConfig from "~/pages/AddPageConfig";
 
 const EditableCell = ({
   value: initialValue,
@@ -55,8 +54,7 @@ const EnhancedTable = ({
   formAction,
   deleteAction,
   shouldVisibleToolbar = true,
-  pageConfig,
-  handleChange,
+  formDialog,
   populateForm
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -142,7 +140,7 @@ const EnhancedTable = ({
           addUserHandler={formAction}
           tableTitle="Page Config"
         >
-          <AddPageConfig pageConfig={pageConfig} handleChange={handleChange} />
+          {formDialog}
         </TableToolbar>
       ) : null}
       <MaUTable {...getTableProps()}>
@@ -237,7 +235,8 @@ EnhancedTable.propTypes = {
   shouldVisibleToolbar: PropTypes.bool,
   pageConfig: PropTypes.object,
   handleChange: PropTypes.func,
-  populateForm: PropTypes.func
+  populateForm: PropTypes.func,
+  formDialog: PropTypes.node
 };
 
 export default EnhancedTable;
