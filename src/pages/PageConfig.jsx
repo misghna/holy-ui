@@ -82,10 +82,11 @@ const PageConfig = () => {
 
   const handleChange = useCallback(
     (event) => {
+      const { name, value } = event.target;
       setPageConfig((prevPageConfig) => {
         return {
           ...prevPageConfig,
-          [event.target.name]: event.target.value
+          [name]: value
         };
       });
     },
