@@ -21,7 +21,11 @@ const CustomTextField = ({ label, helperText, handleChange, ...rest }) => {
           }}
         />
       </div>
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      {helperText && (
+        <FormHelperText error={Boolean(helperText)} sx={{ alignSelf: "center" }}>
+          {helperText}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };

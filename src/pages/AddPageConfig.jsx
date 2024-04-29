@@ -9,7 +9,7 @@ const options = [
   { label: "option2", value: "option2" },
   { label: "option3", value: "option3" }
 ];
-const AddPageConfig = ({ pageConfig, handleChange }) => {
+const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
   return (
     <Grid container spacing={2} alignItems="baseline">
       <Grid item xs={12} sm={6}>
@@ -20,11 +20,19 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
           name="pageType"
           value={pageConfig.pageType}
           handleChange={handleChange}
+          helperText={(errors && errors?.pageType) || ""}
         />
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <CustomTextField label="Name" fullWidth name="name" value={pageConfig.name} handleChange={handleChange} />
+        <CustomTextField
+          label="Name"
+          fullWidth
+          name="name"
+          value={pageConfig.name}
+          handleChange={handleChange}
+          helperText={(errors && errors?.name) || ""}
+        />
       </Grid>
 
       <Grid item xs={12} sm={6}>
@@ -34,6 +42,7 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
           name="headerText"
           value={pageConfig.headerText}
           handleChange={handleChange}
+          helperText={(errors && errors?.headerText) || ""}
         />
       </Grid>
 
@@ -45,6 +54,7 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
           name="imageLink"
           value={pageConfig.imageLink}
           handleChange={handleChange}
+          helperText={(errors && errors?.imageLink) || ""}
         />
       </Grid>
 
@@ -56,6 +66,7 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
           name="parent"
           value={pageConfig.parent}
           handleChange={handleChange}
+          helperText={(errors && errors?.parent) || ""}
         />
       </Grid>
 
@@ -67,6 +78,7 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
           name="language"
           value={pageConfig.language}
           handleChange={handleChange}
+          helperText={(errors && errors?.language) || ""}
         />
       </Grid>
 
@@ -76,6 +88,7 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
           name="description"
           value={pageConfig.description}
           handleChange={handleChange}
+          helperText={(errors && errors?.description) || ""}
         />
       </Grid>
     </Grid>
@@ -84,7 +97,8 @@ const AddPageConfig = ({ pageConfig, handleChange }) => {
 AddPageConfig.propTypes = {
   pageConfig: PropTypes.object.isRequired,
 
-  handleChange: PropTypes.func.isRequired
+  handleChange: PropTypes.func.isRequired,
+  errors: PropTypes.object
 };
 
 export default AddPageConfig;

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Box, CircularProgress } from "@mui/material";
+import * as Yup from "yup";
 
 import { axiosPrivate } from "~/_api";
 import EnhancedTable from "~/components/table/EnhancedTable";
 import config from "~/constants/endpoints.json";
-
-import AddPageConfig from "./AddPageConfig";
+import AddPageConfig from "~/pages/AddPageConfig";
 
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
@@ -81,6 +81,40 @@ const PageConfig = () => {
   const [skipPageReset, setSkipPageReset] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pageConfig, setPageConfig] = useState(pageConfigInitial);
+  const [errors, setErrors] = useState({});
+
+  const schema = Yup.object().shape({
+    pageType: Yup.string().required("Page Type is required"),
+    name: Yup.string().required("name is required"),
+    headerText: Yup.string().required("Header text is required "),
+    parent: Yup.string().required("parent is required"),
+    description: Yup.string(),
+    language: Yup.string().required("language is required")
+  });
+
+  const validateField = useCallback(
+    (name, value) => {
+      schema
+        .validateAt(name, { [name]: value })
+        .then(() => {
+          setErrors((prevErrors) => {
+            return {
+              ...prevErrors,
+              [name]: ""
+            };
+          });
+        })
+        .catch((error) => {
+          setErrors((prevErrors) => {
+            return {
+              ...prevErrors,
+              [name]: error.message
+            };
+          });
+        });
+    },
+    [schema]
+  );
 
   const handleChange = useCallback(
     (event) => {
@@ -91,8 +125,9 @@ const PageConfig = () => {
           [name]: value
         };
       });
+      validateField(name, value);
     },
-    [setPageConfig]
+    [validateField, setPageConfig]
   );
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
@@ -116,6 +151,7 @@ const PageConfig = () => {
   }, [fetchData]);
 
   const savePageConfig = useCallback(() => {
+    validateField(pageConfig, { abortEarly: false });
     axiosPrivate
       .post(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
       .then(({ data }) => {
@@ -124,8 +160,9 @@ const PageConfig = () => {
       .catch((err) => {
         console.error("error :>> ", err);
       });
-  }, [pageConfig]);
+  }, [pageConfig, validateField]);
   const updatePageConfig = useCallback(() => {
+    validateField(pageConfig, { abortEarly: false });
     axiosPrivate
       .put(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
       .then(({ data }) => {
@@ -135,7 +172,7 @@ const PageConfig = () => {
         console.error("error :>> ", err);
       });
     setPageConfig(pageConfigInitial);
-  }, [setPageConfig, pageConfig]);
+  }, [validateField, pageConfig]);
   const populatePageConfigForm = useCallback((row) => {
     const { id, name, page_type, parent, language, header_text, img_link, description } = row.original;
     const pageConfigTemp = {
@@ -206,7 +243,7 @@ const PageConfig = () => {
         setData={setData}
         updateMyData={updateMyData}
         skipPageReset={skipPageReset}
-        formDialog={<AddPageConfig pageConfig={pageConfig} handleChange={handleChange} />}
+        formDialog={<AddPageConfig pageConfig={pageConfig} handleChange={handleChange} errors={errors} />}
         formAction={currentAction}
         deleteAction={deletePageConfig}
         shouldVisibleToolbar={true}
