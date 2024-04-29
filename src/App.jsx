@@ -29,13 +29,13 @@ function App() {
             <Route index element={<Navigate to="/home" replace />} />
             <Route path="/:category" element={<CategoryPages />} />
             <Route path="*" element={<NotFoundPage />} />
-          </Route>
 
-          {/* Routes for secure/admin functionalities */}
-          <Route path="/secure/*" element={<ProtectedLayout />}>
-            <Route index element={<Navigate to="/secure/content_manager" replace />} />
-            <Route path="content_manager" element={<ContentManager />} />
-            <Route path="admin_settings" element={<AdminSettings />} />
+            {/* Routes for secure/admin functionalities */}
+            <Route path="/secure/*" element={<ProtectedLayout />}>
+              <Route index element={<Navigate to="/secure/content_manager" replace />} />
+              <Route path="content_manager" element={<ContentManager />} />
+              <Route path="admin_settings" element={<AdminSettings />} />
+            </Route>
           </Route>
         </Routes>
       </LayoutProvider>
