@@ -193,7 +193,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
           border: "1px solid black"
         }}
       >
-        {!isAuthenticated ? "Login" : "lOgin"}
+        {!isAuthenticated ? "Login" : "login"}
       </Button>
     </SwipeableDrawer>
   );
