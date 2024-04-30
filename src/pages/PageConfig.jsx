@@ -74,7 +74,9 @@ const pageConfigInitial = {
   imageLink: "",
   parent: "",
   description: "",
-  language: ""
+  language: "",
+  headerImage: "",
+  orderNumber: 0
 };
 const PageConfig = () => {
   const [data, setData] = React.useState([]);
@@ -174,7 +176,8 @@ const PageConfig = () => {
     setPageConfig(pageConfigInitial);
   }, [validateField, pageConfig]);
   const populatePageConfigForm = useCallback((row) => {
-    const { id, name, page_type, parent, language, header_text, img_link, description } = row.original;
+    const { id, name, page_type, parent, language, header_text, img_link, header_image, order_number, description } =
+      row.original;
     const pageConfigTemp = {
       id: id,
       pageType: page_type,
@@ -182,6 +185,8 @@ const PageConfig = () => {
       headerText: header_text,
       language: language,
       imageLink: img_link,
+      headerImage: header_image,
+      orderNumber: order_number,
       description,
       name
     };

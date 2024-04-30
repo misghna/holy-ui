@@ -2,7 +2,7 @@ import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import CardView from "~/components/Card";
-import useGridData from "~/hooks/useGridData";
+import { useGridData } from "~/contexts/GridDataProvider";
 
 const useStyles = makeStyles(() => ({
   root: {

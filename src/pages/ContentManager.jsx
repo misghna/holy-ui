@@ -78,7 +78,7 @@ function ContentManager() {
         </div>
         <Box className={classes.searchContainer}>
           <SearchIcon fontSize="large" onClick={handleSearchIcon} />
-          <ActionMenu handleClick={handleClick} handleClose={handleClose} anchorEl={anchorEl}>
+          <ActionMenu handleClick={handleClick} handleClose={handleClose} actio anchorEl={anchorEl}>
             <MenuItem onClick={() => handleMenuItemClick("Action 1")}>
               <ListItemIcon>
                 <SaveIcon />
@@ -95,7 +95,12 @@ function ContentManager() {
       </Tabs>
 
       {renderTabContent}
-      <DynamicModal header={labels.search_title} open={modelOpen} handleClose={handleModelClose}></DynamicModal>
+      <DynamicModal
+        header={labels.search_title}
+        open={modelOpen}
+        handleClose={handleModelClose}
+        actionLabel="Search"
+      ></DynamicModal>
     </Container>
   );
 }

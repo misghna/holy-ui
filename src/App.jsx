@@ -10,34 +10,38 @@ import ContentManager from "~/pages/ContentManager";
 import Login from "~/pages/Login";
 import CategoryPages from "~/pages/WebsiteCategoryPages";
 
+import { GridDataProvider } from "./contexts/GridDataProvider";
+
 function App() {
   return (
     <BrowserRouter>
       <LayoutProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+        <GridDataProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
 
-          {/* Routes for admin panel */}
-          <Route path="/admin/*" element={<ProtectedLayout />}>
-            <Route index element={<AdminLayout />} />
-            <Route path=":type" element={<CategoryPages />} />
-            <Route path="*" element={<Navigate to="/admin" />} />
-          </Route>
-
-          {/* Routes for regular users */}
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/home" replace />} />
-            <Route path="/:category" element={<CategoryPages />} />
-            <Route path="*" element={<NotFoundPage />} />
-
-            {/* Routes for secure/admin functionalities */}
-            <Route path="/secure/*" element={<ProtectedLayout />}>
-              <Route index element={<Navigate to="/secure/content_manager" replace />} />
-              <Route path="content_manager" element={<ContentManager />} />
-              <Route path="admin_settings" element={<AdminSettings />} />
+            {/* Routes for admin panel */}
+            <Route path="/admin/*" element={<ProtectedLayout />}>
+              <Route index element={<AdminLayout />} />
+              <Route path=":type" element={<CategoryPages />} />
+              <Route path="*" element={<Navigate to="/admin" />} />
             </Route>
-          </Route>
-        </Routes>
+
+            {/* Routes for regular users */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Navigate to="/home" replace />} />
+              <Route path="/:category" element={<CategoryPages />} />
+              <Route path="*" element={<NotFoundPage />} />
+
+              {/* Routes for secure/admin functionalities */}
+              <Route path="/secure/*" element={<ProtectedLayout />}>
+                <Route index element={<Navigate to="/secure/content_manager" replace />} />
+                <Route path="content_manager" element={<ContentManager />} />
+                <Route path="admin_settings" element={<AdminSettings />} />
+              </Route>
+            </Route>
+          </Routes>
+        </GridDataProvider>
       </LayoutProvider>
     </BrowserRouter>
   );

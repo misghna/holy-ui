@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
+import PropTypes from "prop-types";
 import { useParams } from "react-router-dom";
 
 import { axiosPrivate } from "~/_api";
@@ -7,11 +8,17 @@ import config from "~/constants/endpoints.json";
 
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
-const useGridData = () => {
+// Create a new context
+const GridDataContext = createContext();
+
+export const useGridData = () => useContext(GridDataContext);
+
+export const GridDataProvider = ({ children }) => {
   const [contents, setContents] = useState([]);
   const { category = "home" } = useParams();
   const [loading, setLoading] = useState(true);
-  const fetchData = () => {
+
+  const fetchData = useCallback(() => {
     axiosPrivate
       .get(`/api/${currentConfig.contentData}`, {
         params: {
@@ -28,10 +35,15 @@ const useGridData = () => {
         console.error("error :>> ", err);
         setLoading(false);
       });
-  };
+  }, [category]);
 
-  useEffect(fetchData, [category]);
-  return { contents, loading };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return <GridDataContext.Provider value={{ contents, loading }}>{children}</GridDataContext.Provider>;
 };
 
-export default useGridData;
+GridDataProvider.propTypes = {
+  children: PropTypes.node
+};

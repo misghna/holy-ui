@@ -7,7 +7,7 @@ import CustomDropdown from "~/components/CustomDropdown";
 import CustomTextarea from "~/components/CustomTextArea";
 import CustomTextField from "~/components/CustomTextField";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
-import useGridData from "~/hooks/useGridData";
+import { useGridData } from "~/contexts/GridDataProvider";
 import { capitalizeFirstLetter } from "~/utils/settingsService";
 
 const options = [];
@@ -133,8 +133,29 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
           helperText={(errors && errors?.language) || ""}
         />
       </Grid>
+      <Grid item xs={12} sm={6}>
+        <CustomTextField
+          label="Header Image"
+          fullWidth
+          name="headerImage"
+          value={pageConfig.headerImage}
+          handleChange={handleChange}
+          helperText={(errors && errors?.headerText) || ""}
+        />
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <CustomTextField
+          label="Order Number"
+          type="number"
+          fullWidth
+          name="orderNumber"
+          value={pageConfig.orderNumber}
+          handleChange={handleChange}
+          helperText={(errors && errors?.headerText) || ""}
+        />
+      </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={12}>
         <CustomTextarea
           label="description"
           name="description"
