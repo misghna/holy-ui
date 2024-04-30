@@ -4,19 +4,23 @@ import PropTypes from "prop-types";
 const CustomTextarea = ({ label, helperText, handleChange, ...rest }) => {
   return (
     <FormControl fullWidth>
-      <Typography style={{ marginBottom: "8px", whiteSpace: "nowrap", minWidth: "100px" }}>{label}</Typography>
+      <Typography sx={{ marginBottom: "8px", whiteSpace: "nowrap", minWidth: "100px" }}>{label}</Typography>
       <TextareaAutosize
         {...rest}
         onChange={handleChange}
-        style={{
-          width: "100%",
+        sx={{
+          maxWidth: "90%",
           padding: "10px",
           border: "1px solid #ced4da",
           borderRadius: "4px",
           color: "#333",
-          minHeight: "100px",
-          resize: "vertical"
+          resize: "vertical",
+
+          "&:focus": {
+            outline: "none" // Remove outline on focus
+          }
         }}
+        minRows={4}
       />
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>

@@ -1,23 +1,37 @@
 import { useEffect, useState } from "react";
 
+import { useParams } from "react-router-dom";
+
 import { axiosPrivate } from "~/_api";
+import config from "~/constants/endpoints.json";
 
-const useGridData = (url) => {
-  const [cardData, setCardData] = useState(null);
+const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axiosPrivate.get(`/api/${url}`);
-        setCardData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [url]);
+const useGridData = () => {
+  const [contents, setContents] = useState([]);
+  const { category = "home" } = useParams();
+  const [loading, setLoading] = useState(true);
+  const fetchData = () => {
+    axiosPrivate
+      .get(`/api/${currentConfig.contentData}`, {
+        params: {
+          content_category: category,
+          lang: "english",
+          start: 0
+        }
+      })
+      .then(({ data }) => {
+        setContents(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("error :>> ", err);
+        setLoading(false);
+      });
+  };
 
-  return { cardData };
+  useEffect(fetchData, [category]);
+  return { contents, loading };
 };
 
 export default useGridData;

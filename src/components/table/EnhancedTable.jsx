@@ -25,7 +25,7 @@ const EditableCell = ({
 }) => {
   const value = initialValue;
 
-  const updatedValue = type === "date" ? new Date(Number(value)).toLocaleDateString() : value;
+  const updatedValue = type === "date" ? new Date(value).toLocaleDateString() : value;
   return updatedValue;
 };
 
@@ -203,7 +203,7 @@ const EnhancedTable = ({
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: data.length }]}
+              rowsPerPageOptions={[10, 100, { label: "All", value: data.length }]}
               colSpan={3}
               count={data.length}
               rowsPerPage={pageSize}

@@ -147,7 +147,7 @@ const PageConfig = () => {
       });
   }, []);
   useEffect(() => {
-    fetchData(0, 10);
+    fetchData(0, 100);
   }, [fetchData]);
 
   const savePageConfig = useCallback(() => {

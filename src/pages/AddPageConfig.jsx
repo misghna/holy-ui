@@ -1,21 +1,73 @@
+import { useMemo } from "react";
+
 import { Grid } from "@mui/material";
 import PropTypes from "prop-types";
 
 import CustomDropdown from "~/components/CustomDropdown";
 import CustomTextarea from "~/components/CustomTextArea";
 import CustomTextField from "~/components/CustomTextField";
-const options = [
-  { label: "option1fdsfddasdsd", value: "option1cfsdsdsdsadsa" },
-  { label: "option2", value: "option2" },
-  { label: "option3", value: "option3" }
-];
+import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import useGridData from "~/hooks/useGridData";
+import { capitalizeFirstLetter } from "~/utils/settingsService";
+
+const options = [];
+function removeDuplicate(contents, key) {
+  const unique = contents.reduce((accumulator, currentValue) => {
+    const isDuplicate = accumulator.some((item) => item[key] === currentValue[key]);
+
+    if (!isDuplicate) {
+      accumulator.push(currentValue);
+    }
+
+    return accumulator;
+  }, []);
+  return unique || [];
+}
+
 const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
+  const { contents } = useGridData();
+  const { setting } = useGlobalSetting();
+
+  const uniquePageTypeOptions = useMemo(
+    () =>
+      removeDuplicate(contents, "type").map((content) => {
+        const { type } = content;
+        return {
+          label: capitalizeFirstLetter(type),
+          value: type
+        };
+      }),
+    [contents]
+  );
+
+  const uniqueParentOptions = useMemo(
+    () =>
+      removeDuplicate([...contents], "title").map((content) => {
+        const { id, title } = content;
+        return {
+          label: capitalizeFirstLetter(title),
+          value: id
+        };
+      }),
+    [contents]
+  );
+  const languagesOptions = useMemo(
+    () =>
+      setting.langs.map((lang) => {
+        const { id, name } = lang;
+        return {
+          label: name,
+          value: id
+        };
+      }),
+    [setting.langs]
+  );
   return (
     <Grid container spacing={2} alignItems="baseline">
       <Grid item xs={12} sm={6}>
         <CustomDropdown
           label="Page Type"
-          options={options}
+          options={uniquePageTypeOptions}
           fullWidth
           name="pageType"
           value={pageConfig.pageType}
@@ -61,7 +113,7 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
       <Grid item xs={12} sm={6}>
         <CustomDropdown
           label="Parent"
-          options={options}
+          options={uniqueParentOptions}
           fullWidth
           name="parent"
           value={pageConfig.parent}
@@ -73,7 +125,7 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
       <Grid item xs={12} sm={6}>
         <CustomDropdown
           label="Language"
-          options={options}
+          options={languagesOptions}
           fullWidth
           name="language"
           value={pageConfig.language}
