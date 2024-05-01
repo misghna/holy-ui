@@ -35,12 +35,22 @@ export const DrawerHeader = styled("div")(({ theme }) => ({
   left: 0,
   zIndex: 10,
   width: "100%",
-  padding: theme.spacing(0, 1),
+  padding: theme.spacing(1),
   ...theme.mixins.toolbar,
   justifyContent: "flex-end",
   borderBottom: `1px solid ${theme.palette.primary.main}`,
   backgroundColor: "white"
 }));
+
+const StyledCustomButtons = styled(Button)({
+  width: "100%",
+  height: 30,
+  margin: "0 auto",
+  zIndex: 15,
+  background: "white",
+  color: "black",
+  border: "1px solid black"
+});
 
 const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
   const { state: drawerState } = useLayout();
@@ -69,17 +79,16 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
-    if (submenu?.length == 0 || isSubMenOpen.length === 0) return null;
+    if (submenu?.length === 0 || isSubMenOpen.length === 0) return null;
     return (
       <Collapse in={isSubMenOpen[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
         <List disablePadding>
-          {submenu &&
-            submenu.map((item) => (
-              <ListItemButton key={item.name} onClick={() => navigate(item.url, { replace: true })}>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.name} />
-              </ListItemButton>
-            ))}
+          {submenu.map((item) => (
+            <ListItemButton key={item.name} onClick={() => navigate(item.url, { replace: true })}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.name} />
+            </ListItemButton>
+          ))}
         </List>
         <Divider />
       </Collapse>
@@ -88,31 +97,25 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
 
   const showMoreOrLessIcon = (submenu, typeIndex, menuIndex) => {
     if (submenu.length === 0) return null;
-    if (isSubMenOpen.length > 0 && isSubMenOpen[typeIndex][menuIndex])
-      return <ExpandLessIcon onClick={() => handleSubMenCloseClick(typeIndex, menuIndex)} />;
-    return <ExpandMoreIcon onClick={() => handleSubMenOpenClick(typeIndex, menuIndex)} />;
+    return isSubMenOpen.length > 0 && isSubMenOpen[typeIndex][menuIndex] ? (
+      <ExpandLessIcon onClick={() => handleSubMenCloseClick(typeIndex, menuIndex)} />
+    ) : (
+      <ExpandMoreIcon onClick={() => handleSubMenOpenClick(typeIndex, menuIndex)} />
+    );
   };
 
   const handleSubMenOpenClick = (typeIndex, menuIndex) => {
     const arr = [...submenus];
-    let typeOpens = arr[typeIndex];
-    typeOpens = typeOpens.map(() => false);
-    typeOpens[menuIndex] = true;
-    arr[typeIndex] = [...typeOpens];
+    arr[typeIndex] = arr[typeIndex].map(() => false);
+    arr[typeIndex][menuIndex] = true;
     setIsSubMenOpen(arr);
   };
 
   const handleSubMenCloseClick = (typeIndex, menuIndex) => {
     const arr = [...submenus];
-    let typeOpens = arr[typeIndex];
-    typeOpens[menuIndex] = false;
-    arr[typeIndex] = [...typeOpens];
+    arr[typeIndex][menuIndex] = false;
     setIsSubMenOpen(arr);
   };
-
-  const StyledButton = styled(Button)({
-    marginTop: "16px"
-  });
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -136,8 +139,12 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
       open={open}
     >
       <DrawerHeader>
-        <Box sx={{ width: "100%", backgroundColor: "white" }} display="flex" alignItems="center">
-          <Typography variant="h6" textAlign="center" noWrap flexGrow={1} sx={{ width: "100%" }}>
+        <Box
+          sx={{ width: "100%", backgroundColor: "white", display: "flex", justifyContent: "center" }}
+          display="flex"
+          alignItems="center"
+        >
+          <Typography variant="h6" textAlign="center" noWrap flexGrow={1}>
             Holy-UI
           </Typography>
           {!drawerAlwaysOpen && (
@@ -147,54 +154,49 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
           )}
         </Box>
       </DrawerHeader>
-      <List style={{ marginBottom: "64px" }}>
-        {groupedMenu &&
-          Object.entries(groupedMenu).map((items, typeIndex) => (
-            <Fragment key={items?.at(0)}>
-              <ListSubheader>{items?.at(0) === "public" ? "Public" : "Secure"}</ListSubheader>
-              <Divider />
-              {items?.at(1)?.map((item, menuIndex) => (
-                <>
-                  <ListItem
-                    key={item.name}
-                    button
-                    onClick={() => {
-                      if (item.sub_menu.length > 0 && !isSubMenOpen[typeIndex][menuIndex]) {
-                        handleSubMenOpenClick(typeIndex, menuIndex);
-                      }
-                      if (item.sub_menu.length == 0) {
-                        navigate(item.url);
-                      }
-                    }}
-                  >
-                    <ListItemIcon>{item.icon}</ListItemIcon>
-                    <ListItemText primary={item.name} />
-                    {item.sub_menu && showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
-                  </ListItem>
-                  {item.sub_menu && renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
-                </>
-              ))}
-            </Fragment>
-          ))}
-      </List>
-      <Divider className="home" style={{ paddingTop: "10px" }} />
-
-      <Button
-        onClick={() => handleNavigation(!isAuthenticated ? "/login" : "")}
-        variant="contained"
-        color="primary"
-        style={{
-          position: "fixed",
-          bottom: 0,
-          width: 225,
-          zIndex: 999,
-          background: "white",
-          color: "black",
-          border: "1px solid black"
-        }}
-      >
-        {!isAuthenticated ? "Login" : "login"}
-      </Button>
+      {/* Added container with fixed height and overflow */}
+      <Box style={{ overflow: "auto", maxHeight: "calc(100vh - 64px)" }}>
+        <List style={{ padding: "2px 0" }}>
+          {groupedMenu &&
+            Object.entries(groupedMenu).map(([type, items], typeIndex) => (
+              <Fragment key={type}>
+                <ListSubheader sx={{ fontWeight: "bold" }}>{type === "public" ? "Public" : "Secure"}</ListSubheader>
+                <Divider sx={{ marginBottom: 1 }} /> {/* Adjusted margin bottom */}
+                {items.map((item, menuIndex) => (
+                  <Fragment key={item.name}>
+                    <ListItem
+                      button
+                      dense
+                      onClick={() => {
+                        if (item.sub_menu.length > 0 && !isSubMenOpen[typeIndex][menuIndex]) {
+                          handleSubMenOpenClick(typeIndex, menuIndex);
+                        }
+                        if (item.sub_menu.length === 0) {
+                          navigate(item.url);
+                        }
+                      }}
+                      sx={{ py: 1 }} // Adjusted vertical padding
+                    >
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      <ListItemText primary={item.name} />
+                      {item.sub_menu && showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
+                    </ListItem>
+                    {item.sub_menu && renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
+                  </Fragment>
+                ))}
+              </Fragment>
+            ))}
+          {!isAuthenticated ? (
+            <StyledCustomButtons onClick={() => handleNavigation("/login")} color="primary">
+              Login
+            </StyledCustomButtons>
+          ) : (
+            <StyledCustomButtons onClick={() => handleNavigation("/logout")} color="primary">
+              Logout
+            </StyledCustomButtons>
+          )}
+        </List>
+      </Box>
     </SwipeableDrawer>
   );
 });
