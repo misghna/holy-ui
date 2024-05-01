@@ -83,20 +83,20 @@ function ContentManager() {
               <ListItemIcon>
                 <SaveIcon />
               </ListItemIcon>
-              {labels.action_menu_save}
+              {labels && labels.action_menu_save}
             </MenuItem>
           </ActionMenu>
         </Box>
       </Box>
       <Tabs activeTab={activeTab} handleTabChange={handleTabChange}>
-        <Tab label={labels?.page_config} />
-        <Tab label={labels?.content_manager} />
-        <Tab label={labels?.document} />
+        <Tab label={labels && labels?.page_config} />
+        <Tab label={labels && labels?.content_manager} />
+        <Tab label={labels && labels?.document} />
       </Tabs>
 
       {renderTabContent}
       <DynamicModal
-        header={labels.search_title}
+        header={labels && labels.search_title}
         open={modelOpen}
         handleClose={handleModelClose}
         actionLabel="Search"

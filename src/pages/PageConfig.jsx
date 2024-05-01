@@ -91,7 +91,9 @@ const PageConfig = () => {
     headerText: Yup.string().required("Header text is required "),
     parent: Yup.string().required("parent is required"),
     description: Yup.string(),
-    language: Yup.string().required("language is required")
+    language: Yup.string().required("language is required"),
+    headerImage: Yup.string(),
+    orderNumber: Yup.number()
   });
 
   const validateField = useCallback(

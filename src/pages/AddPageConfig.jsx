@@ -7,57 +7,41 @@ import CustomDropdown from "~/components/CustomDropdown";
 import CustomTextarea from "~/components/CustomTextArea";
 import CustomTextField from "~/components/CustomTextField";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
-import { useGridData } from "~/contexts/GridDataProvider";
-import { capitalizeFirstLetter } from "~/utils/settingsService";
-
-const options = [];
-function removeDuplicate(contents, key) {
-  const unique = contents.reduce((accumulator, currentValue) => {
-    const isDuplicate = accumulator.some((item) => item[key] === currentValue[key]);
-
-    if (!isDuplicate) {
-      accumulator.push(currentValue);
-    }
-
-    return accumulator;
-  }, []);
-  return unique || [];
-}
 
 const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
-  const { contents } = useGridData();
   const { setting } = useGlobalSetting();
 
   const uniquePageTypeOptions = useMemo(
     () =>
-      removeDuplicate(contents, "type").map((content) => {
-        const { type } = content;
+      setting.page_types.map((content) => {
+        const { key, value } = content;
         return {
-          label: capitalizeFirstLetter(type),
-          value: type
+          label: value,
+          value: key
         };
       }),
-    [contents]
+    [setting.page_types]
   );
 
   const uniqueParentOptions = useMemo(
     () =>
-      removeDuplicate([...contents], "title").map((content) => {
-        const { id, title } = content;
+      setting.content_pages.map((content) => {
+        const { id, name } = content;
         return {
-          label: capitalizeFirstLetter(title),
+          label: name,
           value: id
         };
       }),
-    [contents]
+    [setting.content_pages]
   );
   const languagesOptions = useMemo(
     () =>
       setting.langs.map((lang) => {
-        const { id, name } = lang;
+        const { lang_id, name } = lang;
+
         return {
           label: name,
-          value: id
+          value: lang_id
         };
       }),
     [setting.langs]
@@ -101,7 +85,7 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
       <Grid item xs={12} sm={6}>
         <CustomDropdown
           label="Image Link"
-          options={options}
+          options={[]}
           fullWidth
           name="imageLink"
           value={pageConfig.imageLink}
@@ -145,7 +129,7 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
       </Grid>
       <Grid item xs={12} sm={6}>
         <CustomTextField
-          label="Order Number"
+          label="Sequence No"
           type="number"
           fullWidth
           name="orderNumber"
@@ -157,7 +141,7 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
 
       <Grid item xs={12} sm={12}>
         <CustomTextarea
-          label="description"
+          label="Description"
           name="description"
           value={pageConfig.description}
           handleChange={handleChange}

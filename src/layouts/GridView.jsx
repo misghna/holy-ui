@@ -1,8 +1,14 @@
+import { useCallback, useEffect, useState } from "react";
+
 import { Box, CircularProgress, Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { useParams } from "react-router-dom";
 
+import { axiosPrivate } from "~/_api";
 import CardView from "~/components/Card";
-import { useGridData } from "~/contexts/GridDataProvider";
+import config from "~/constants/endpoints.json";
+
+const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -16,7 +22,30 @@ const useStyles = makeStyles(() => ({
 
 export default function GridView() {
   const classes = useStyles();
-  const { contents: cardData, loading } = useGridData();
+  const [cardData, setCardData] = useState([]);
+  const { category = "home" } = useParams();
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = useCallback(() => {
+    axiosPrivate
+      .get(`/api/${currentConfig.contentData}`, {
+        params: {
+          content_category: category,
+          lang: "english",
+          start: 0
+        }
+      })
+      .then(({ data }) => {
+        setCardData(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("error :>> ", err);
+        setLoading(false);
+      });
+  }, [category]);
+
+  useEffect(fetchData, [fetchData]);
 
   if (loading) {
     return (
