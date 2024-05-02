@@ -21,7 +21,6 @@ import Collapse from "@mui/material/Collapse";
 import { styled, useTheme } from "@mui/material/styles";
 import { bool, func } from "prop-types";
 import { useNavigate } from "react-router-dom";
-
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { useLayout } from "~/contexts/LayoutProvider";
@@ -70,16 +69,19 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
       }, {}),
     [menu]
   );
+
   const submenus = useMemo(() => {
     const rows = Object.keys(groupedMenu).length;
     const columns = Object.values(groupedMenu).reduce((max, group) => Math.max(max, group.length), 0);
     const nestedArray = Array.from({ length: rows }, () => Array.from({ length: columns }, () => false));
     return nestedArray;
   }, [groupedMenu]);
+
   const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
     if (submenu?.length === 0 || isSubMenOpen.length === 0) return null;
+
     return (
       <Collapse in={isSubMenOpen[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
         <List disablePadding>
@@ -97,6 +99,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
 
   const showMoreOrLessIcon = (submenu, typeIndex, menuIndex) => {
     if (submenu.length === 0) return null;
+
     return isSubMenOpen.length > 0 && isSubMenOpen[typeIndex][menuIndex] ? (
       <ExpandLessIcon onClick={() => handleSubMenCloseClick(typeIndex, menuIndex)} />
     ) : (
@@ -154,6 +157,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
           )}
         </Box>
       </DrawerHeader>
+
       {/* Added container with fixed height and overflow */}
       <Box style={{ overflow: "auto", maxHeight: "calc(100vh - 64px)" }}>
         <List style={{ padding: "2px 0" }}>
@@ -161,7 +165,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
             Object.entries(groupedMenu).map(([type, items], typeIndex) => (
               <Fragment key={type}>
                 <ListSubheader sx={{ fontWeight: "bold" }}>{type === "public" ? "Public" : "Secure"}</ListSubheader>
-                <Divider sx={{ marginBottom: 1 }} /> {/* Adjusted margin bottom */}
+                <Divider sx={{ marginBottom: 1 }} />
                 {items.map((item, menuIndex) => (
                   <Fragment key={item.name}>
                     <ListItem
