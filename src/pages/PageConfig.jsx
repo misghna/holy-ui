@@ -135,7 +135,7 @@ const PageConfig = () => {
   );
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      .get(`/api/protected/${currentConfig.pageConfig}?`, {
+      .get(`/api/protected/${currentConfig.pageConfig}`, {
         params: {
           start,
           limit
