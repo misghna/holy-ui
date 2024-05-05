@@ -9,7 +9,7 @@ const refresh = async () => {
       {
         // withCredentials: true,
         headers: {
-          Authorization: `Bearer ${local.token?.acessToken}`
+          Authorization: `Bearer ${local.token?.access}`
         }
       }
     )
@@ -20,6 +20,7 @@ const refresh = async () => {
     })
     .catch((err) => {
       console.log("Refresh err", err);
+      localStorage.removeItem("auth");
       window.location.href = "/login";
     });
 };
