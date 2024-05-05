@@ -37,10 +37,10 @@ if (axiosPrivate.interceptors.request.handlers.length === 0) {
       if (!config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${local?.token?.accessToken}`;
       }
-      if (!config.headers.tenant_id && personalSetting?.selectedTenant) {
+      if (!config.headers.Tenant_id && personalSetting?.selectedTenant) {
         config.headers.tenant_id = `${personalSetting?.selectedTenant}`;
       }
-      if (!config.headers.language && personalSetting?.language) {
+      if (!config.headers.Language && personalSetting?.language) {
         config.headers.language = `${personalSetting?.language}`;
       }
       return config;
