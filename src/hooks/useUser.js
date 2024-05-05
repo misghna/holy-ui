@@ -1,4 +1,5 @@
-import { axiosPrivate } from "~/_api";
+import axios from "axios";
+
 import { useAuth } from "~/contexts/AuthContext";
 
 import config from "../constants/endpoints.json";
@@ -11,11 +12,7 @@ const useUser = () => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
-    const response = await axiosPrivate.post(`/api/${currentConfig.login}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    });
+    const response = await axios.post(`/api/${currentConfig.login}`, formData);
     const authData = response.data;
 
     const data = {
