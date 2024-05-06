@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { useLayout } from "~/contexts/LayoutProvider";
-import Login from "~/pages/Login";
+
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -70,20 +70,20 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
     [menu]
   );
 
-  const submenus = useMemo(() => {
+  const subMenuOpenStateInitial = useMemo(() => {
     const rows = Object.keys(groupedMenu).length;
     const columns = Object.values(groupedMenu).reduce((max, group) => Math.max(max, group.length), 0);
     const nestedArray = Array.from({ length: rows }, () => Array.from({ length: columns }, () => false));
     return nestedArray;
   }, [groupedMenu]);
 
-  const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
+  const [subMenuOpenState, setSubMenuOpenState] = useState([...subMenuOpenStateInitial]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
-    if (submenu?.length === 0 || isSubMenOpen.length === 0) return null;
+    if (submenu?.length === 0 || subMenuOpenState.length === 0) return null;
 
     return (
-      <Collapse in={isSubMenOpen[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
+      <Collapse in={subMenuOpenState[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
         <List disablePadding>
           {submenu.map((item) => (
             <ListItemButton key={item.name} onClick={() => navigate(item.url, { replace: true })}>
@@ -100,7 +100,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   const showMoreOrLessIcon = (submenu, typeIndex, menuIndex) => {
     if (submenu.length === 0) return null;
 
-    return isSubMenOpen.length > 0 && isSubMenOpen[typeIndex][menuIndex] ? (
+    return subMenuOpenState.length > 0 && subMenuOpenState[typeIndex][menuIndex] ? (
       <ExpandLessIcon onClick={() => handleSubMenCloseClick(typeIndex, menuIndex)} />
     ) : (
       <ExpandMoreIcon onClick={() => handleSubMenOpenClick(typeIndex, menuIndex)} />
@@ -108,16 +108,20 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   };
 
   const handleSubMenOpenClick = (typeIndex, menuIndex) => {
-    const arr = [...submenus];
-    arr[typeIndex] = arr[typeIndex].map(() => false);
-    arr[typeIndex][menuIndex] = true;
-    setIsSubMenOpen(arr);
+
+    const newState = [...subMenuOpenState];
+    newState[typeIndex] = newState[typeIndex].map(() => false);
+    newState[typeIndex][menuIndex] = true;
+    setSubMenuOpenState(newState);
+
   };
 
   const handleSubMenCloseClick = (typeIndex, menuIndex) => {
-    const arr = [...submenus];
-    arr[typeIndex][menuIndex] = false;
-    setIsSubMenOpen(arr);
+
+    const newState = [...subMenuOpenState];
+    newState[typeIndex][menuIndex] = false;
+    setSubMenuOpenState(newState);
+
   };
 
   const handleNavigation = (path) => {
@@ -172,7 +176,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
                       button
                       dense
                       onClick={() => {
-                        if (item.sub_menu.length > 0 && !isSubMenOpen[typeIndex][menuIndex]) {
+                        if (item.sub_menu.length > 0 && !subMenuOpenState[typeIndex][menuIndex]) {
                           handleSubMenOpenClick(typeIndex, menuIndex);
                         }
                         if (item.sub_menu.length === 0) {
