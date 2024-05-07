@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import MaUTable from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,6 +14,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import PropTypes from "prop-types";
 import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
@@ -51,14 +54,10 @@ const EnhancedTable = ({
   fetchData,
   updateMyData,
   skipPageReset,
-  formAction,
   deleteAction,
   shouldVisibleToolbar = true,
-  formDialog,
   populateForm
 }) => {
-  const [modalOpen, setModalOpen] = useState(false);
-
   const {
     getTableProps,
     headerGroups,
@@ -66,8 +65,9 @@ const EnhancedTable = ({
     page,
     gotoPage,
     setPageSize,
-
-    state: { pageIndex, pageSize }
+    preGlobalFilteredRows,
+    setGlobalFilter,
+    state: { pageIndex, pageSize, globalFilter }
   } = useTable(
     {
       columns,
@@ -87,13 +87,6 @@ const EnhancedTable = ({
     useRowSelect
   );
 
-  const handleClickOpen = useCallback(() => {
-    setModalOpen(true);
-  }, [setModalOpen]);
-  const handleCloseModal = useCallback(() => {
-    setModalOpen(false);
-  }, [setModalOpen]);
-
   const handleChangePage = useCallback(
     (event, newPage) => {
       gotoPage(newPage);
@@ -108,16 +101,11 @@ const EnhancedTable = ({
     [setPageSize]
   );
 
-  const deleteUserHandler = useCallback((event) => {
-    console.log(event);
-  }, []);
-
   const handleEdit = useCallback(
     (row) => {
       populateForm(row);
-      handleClickOpen();
     },
-    [populateForm, handleClickOpen]
+    [populateForm]
   );
   const handleDelete = useCallback(
     (row) => {
@@ -133,15 +121,10 @@ const EnhancedTable = ({
     <TableContainer>
       {shouldVisibleToolbar ? (
         <TableToolbar
-          modalOpen={modalOpen}
-          handleCloseModal={handleCloseModal}
-          handleClickOpen={handleClickOpen}
-          deleteUserHandler={deleteUserHandler}
-          addUserHandler={formAction}
-          tableTitle="Page Config"
-        >
-          {formDialog}
-        </TableToolbar>
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          setGlobalFilter={setGlobalFilter}
+          globalFilter={globalFilter}
+        />
       ) : null}
       <MaUTable {...getTableProps()}>
         <TableHead>
@@ -153,7 +136,7 @@ const EnhancedTable = ({
                   {...(column.id === "selection"
                     ? column.getHeaderProps()
                     : column.getHeaderProps(column.getSortByToggleProps()))}
-                  style={{ whiteSpace: "nowrap" }} // Ensure content does not wrap
+                  style={{ whiteSpace: "nowrap", fontWeight: "bold" }} // Ensure content does not wrap
                 >
                   {column.render("Header")}
                   {column.id !== "selection" ? (
@@ -172,18 +155,37 @@ const EnhancedTable = ({
           {page.map((row, i) => {
             prepareRow(row);
             return (
-              <TableRow key={i} {...row.getRowProps()}>
+              <TableRow key={i} {...row.getRowProps()} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
                 {row.cells.map((cell, index) => {
                   if (index === row.cells.length - 1) {
                     // Render actions in the last cell
                     return (
                       <TableCell key={index}>
-                        <IconButton onClick={() => handleEdit(row)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => handleDelete(row)}>
-                          <DeleteIcon />
-                        </IconButton>
+                        <PopupState variant="popover" popupId="demo-popup-menu">
+                          {(popupState) => (
+                            <>
+                              <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
+                              <Menu {...bindMenu(popupState)}>
+                                <MenuItem
+                                  onClick={() => {
+                                    handleEdit(row);
+                                    popupState.close();
+                                  }}
+                                >
+                                  <EditIcon sx={{ marginRight: 1 }} /> Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() => {
+                                    handleDelete(row);
+                                    popupState.close();
+                                  }}
+                                >
+                                  <DeleteIcon sx={{ marginRight: 1 }} /> Delete
+                                </MenuItem>
+                              </Menu>
+                            </>
+                          )}
+                        </PopupState>
                       </TableCell>
                     );
                   } else {
@@ -230,7 +232,7 @@ EnhancedTable.propTypes = {
   setData: PropTypes.func.isRequired,
   skipPageReset: PropTypes.bool.isRequired,
   fetchData: PropTypes.func.isRequired,
-  formAction: PropTypes.func,
+
   deleteAction: PropTypes.func,
   shouldVisibleToolbar: PropTypes.bool,
   pageConfig: PropTypes.object,

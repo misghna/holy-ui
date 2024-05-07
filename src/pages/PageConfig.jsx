@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Box, CircularProgress } from "@mui/material";
-import * as Yup from "yup";
+import PropTypes from "prop-types";
 
 import { axiosPrivate } from "~/_api";
 import EnhancedTable from "~/components/table/EnhancedTable";
 import config from "~/constants/endpoints.json";
-import AddPageConfig from "~/pages/AddPageConfig";
 
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
@@ -67,72 +66,11 @@ const COLUMNS = [
   }
 ];
 
-const pageConfigInitial = {
-  pageType: "",
-  name: "",
-  headerText: "",
-  imageLink: "",
-  parent: "",
-  description: "",
-  language: "",
-  headerImage: "",
-  orderNumber: 0
-};
-const PageConfig = () => {
+const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
   const [data, setData] = React.useState([]);
   const [skipPageReset, setSkipPageReset] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [pageConfig, setPageConfig] = useState(pageConfigInitial);
-  const [errors, setErrors] = useState({});
 
-  const schema = Yup.object().shape({
-    pageType: Yup.string().required("Page Type is required"),
-    name: Yup.string().required("name is required"),
-    headerText: Yup.string().required("Header text is required "),
-    parent: Yup.string().required("parent is required"),
-    description: Yup.string(),
-    language: Yup.string().required("language is required"),
-    headerImage: Yup.string(),
-    orderNumber: Yup.number()
-  });
-
-  const validateField = useCallback(
-    (name, value) => {
-      schema
-        .validateAt(name, { [name]: value })
-        .then(() => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: ""
-            };
-          });
-        })
-        .catch((error) => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: error.message
-            };
-          });
-        });
-    },
-    [schema]
-  );
-
-  const handleChange = useCallback(
-    (event) => {
-      const { name, value } = event.target;
-      setPageConfig((prevPageConfig) => {
-        return {
-          ...prevPageConfig,
-          [name]: value
-        };
-      });
-      validateField(name, value);
-    },
-    [validateField, setPageConfig]
-  );
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
       .get(`/api/protected/${currentConfig.pageConfig}`, {
@@ -154,55 +92,6 @@ const PageConfig = () => {
     fetchData(0, 100);
   }, [fetchData]);
 
-  const savePageConfig = useCallback(() => {
-    validateField(pageConfig, { abortEarly: false });
-    axiosPrivate
-      .post(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
-      .then(({ data }) => {
-        console.log("saved succefylly ", data);
-      })
-      .catch((err) => {
-        console.error("error :>> ", err);
-      });
-  }, [pageConfig, validateField]);
-  const updatePageConfig = useCallback(() => {
-    validateField(pageConfig, { abortEarly: false });
-    axiosPrivate
-      .put(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
-      .then(({ data }) => {
-        console.log("saved succefylly ", data);
-      })
-      .catch((err) => {
-        console.error("error :>> ", err);
-      });
-    setPageConfig(pageConfigInitial);
-  }, [validateField, pageConfig]);
-  const populatePageConfigForm = useCallback((row) => {
-    const { id, name, page_type, parent, language, header_text, img_link, header_image, order_number, description } =
-      row.original;
-    const pageConfigTemp = {
-      id: id,
-      pageType: page_type,
-      parent: parent,
-      headerText: header_text,
-      language: language,
-      imageLink: img_link,
-      headerImage: header_image,
-      orderNumber: order_number,
-      description,
-      name
-    };
-    setPageConfig((prevPageConfig) => {
-      return {
-        ...prevPageConfig,
-        ...pageConfigTemp
-      };
-    });
-  }, []);
-  const deletePageConfig = useCallback((row) => {
-    console.log(row);
-  }, []);
-
   const updateMyData = (rowIndex, columnId, value) => {
     // We also turn on the flag to not reset the page
     setSkipPageReset(true);
@@ -218,10 +107,6 @@ const PageConfig = () => {
       })
     );
   };
-  const currentAction = useMemo(
-    () => (pageConfig.id ? updatePageConfig : savePageConfig),
-    [pageConfig, updatePageConfig, savePageConfig]
-  );
 
   if (loading) {
     return (
@@ -250,16 +135,17 @@ const PageConfig = () => {
         setData={setData}
         updateMyData={updateMyData}
         skipPageReset={skipPageReset}
-        formDialog={<AddPageConfig pageConfig={pageConfig} handleChange={handleChange} errors={errors} />}
-        formAction={currentAction}
         deleteAction={deletePageConfig}
         shouldVisibleToolbar={true}
         populateForm={populatePageConfigForm}
-        pageConfig={pageConfig}
-        handleChange={handleChange}
       />
     </div>
   );
+};
+PageConfig.propTypes = {
+  deletePageConfig: PropTypes.func,
+  populatePageConfigForm: PropTypes.func,
+  handleAddModalOpen: PropTypes.func
 };
 
 export default PageConfig;

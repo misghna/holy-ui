@@ -16,7 +16,7 @@ export default function DynamicModal({
   open,
   handleClose,
   maxWidth = "sm",
-  action,
+  actionHandler,
   hideFooter,
   hideTitle,
   actionLabel,
@@ -52,7 +52,7 @@ export default function DynamicModal({
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={action}>
+          <Button variant="contained" onClick={actionHandler}>
             {actionLabel}
           </Button>
         </DialogActions>
@@ -66,7 +66,7 @@ DynamicModal.propTypes = {
   maxWidth: string,
   open: bool,
   handleClose: func,
-  action: func,
+  actionHandler: func,
   hideFooter: bool,
   hideTitle: bool,
   actionLabel: string,

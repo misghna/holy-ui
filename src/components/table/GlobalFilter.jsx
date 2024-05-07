@@ -6,18 +6,15 @@ import PropTypes from "prop-types";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
+  width: "100%",
   borderRadius: theme.shape.borderRadius,
+  border: "2px solid #f4f4f4",
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
     backgroundColor: alpha(theme.palette.common.white, 0.25)
   },
   marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto"
-  }
+  marginLeft: 0
 }));
 
 const SearchIconWrapper = styled("div")(({ theme }) => ({
@@ -32,16 +29,19 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const Input = styled(InputBase)(({ theme }) => ({
   color: "inherit",
+
   padding: theme.spacing(1, 1, 1, 7),
   transition: theme.transitions.create("width"),
   width: "100%",
+
   [theme.breakpoints.up("md")]: {
-    width: 200
+    width: "100%"
   }
 }));
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
   const count = preGlobalFilteredRows.length;
+  console.log("count ", count);
 
   return (
     <Search>
@@ -51,9 +51,9 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
       <Input
         value={globalFilter || ""}
         onChange={(e) => {
-          setGlobalFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+          setGlobalFilter(e.target.value || undefined);
         }}
-        placeholder={`${count} records...`}
+        placeholder={"Search"}
         inputProps={{ "aria-label": "search" }}
       />
     </Search>

@@ -8,7 +8,7 @@ import CustomTextarea from "~/components/CustomTextArea";
 import CustomTextField from "~/components/CustomTextField";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 
-const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
+const PageConfigForm = ({ pageConfig, handleChange, errors }) => {
   const { setting } = useGlobalSetting();
 
   const uniquePageTypeOptions = useMemo(
@@ -37,11 +37,11 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
   const languagesOptions = useMemo(
     () =>
       setting.langs.map((lang) => {
-        const { lang_id, name } = lang;
+        const { id, name } = lang;
 
         return {
           label: name,
-          value: lang_id
+          value: id
         };
       }),
     [setting.langs]
@@ -83,14 +83,13 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <CustomDropdown
-          label="Image Link"
-          options={[]}
+        <CustomTextField
+          label="Header Image"
           fullWidth
-          name="imageLink"
-          value={pageConfig.imageLink}
+          name="headerImage"
+          value={pageConfig.headerImage}
           handleChange={handleChange}
-          helperText={(errors && errors?.imageLink) || ""}
+          helperText={(errors && errors?.headerText) || ""}
         />
       </Grid>
 
@@ -118,15 +117,17 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <CustomTextField
-          label="Header Image"
+        <CustomDropdown
+          label="BG Image"
+          options={[]}
           fullWidth
-          name="headerImage"
-          value={pageConfig.headerImage}
+          name="imageLink"
+          value={pageConfig.imageLink}
           handleChange={handleChange}
-          helperText={(errors && errors?.headerText) || ""}
+          helperText={(errors && errors?.imageLink) || ""}
         />
       </Grid>
+
       <Grid item xs={12} sm={6}>
         <CustomTextField
           label="Sequence No"
@@ -151,11 +152,11 @@ const AddPageConfig = ({ pageConfig, handleChange, errors }) => {
     </Grid>
   );
 };
-AddPageConfig.propTypes = {
+PageConfigForm.propTypes = {
   pageConfig: PropTypes.object.isRequired,
 
   handleChange: PropTypes.func.isRequired,
   errors: PropTypes.object
 };
 
-export default AddPageConfig;
+export default PageConfigForm;
