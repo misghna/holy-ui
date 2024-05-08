@@ -118,7 +118,7 @@ const EnhancedTable = ({
   }, [fetchData, pageIndex, pageSize]);
 
   return (
-    <TableContainer>
+    <>
       {shouldVisibleToolbar ? (
         <TableToolbar
           preGlobalFilteredRows={preGlobalFilteredRows}
@@ -126,102 +126,104 @@ const EnhancedTable = ({
           globalFilter={globalFilter}
         />
       ) : null}
-      <MaUTable {...getTableProps()}>
-        <TableHead>
-          {headerGroups.map((headerGroup, index) => (
-            <TableRow key={index} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column, index) => (
-                <TableCell
-                  key={index}
-                  {...(column.id === "selection"
-                    ? column.getHeaderProps()
-                    : column.getHeaderProps(column.getSortByToggleProps()))}
-                  style={{ whiteSpace: "nowrap", fontWeight: "bold" }} // Ensure content does not wrap
-                >
-                  {column.render("Header")}
-                  {column.id !== "selection" ? (
-                    <TableSortLabel
-                      active={column.isSorted}
-                      // react-table has a unsorted state which is not treated here
-                      direction={column.isSortedDesc ? "desc" : "asc"}
-                    />
-                  ) : null}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {page.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRow key={i} {...row.getRowProps()} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
-                {row.cells.map((cell, index) => {
-                  if (index === row.cells.length - 1) {
-                    // Render actions in the last cell
-                    return (
-                      <TableCell key={index}>
-                        <PopupState variant="popover" popupId="demo-popup-menu">
-                          {(popupState) => (
-                            <>
-                              <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
-                              <Menu {...bindMenu(popupState)}>
-                                <MenuItem
-                                  onClick={() => {
-                                    handleEdit(row);
-                                    popupState.close();
-                                  }}
-                                >
-                                  <EditIcon sx={{ marginRight: 1 }} /> Edit
-                                </MenuItem>
-                                <MenuItem
-                                  onClick={() => {
-                                    handleDelete(row);
-                                    popupState.close();
-                                  }}
-                                >
-                                  <DeleteIcon sx={{ marginRight: 1 }} /> Delete
-                                </MenuItem>
-                              </Menu>
-                            </>
-                          )}
-                        </PopupState>
-                      </TableCell>
-                    );
-                  } else {
-                    // Render regular cell
-                    return (
-                      <TableCell key={index} {...cell.getCellProps()}>
-                        {cell.render("Cell")}
-                      </TableCell>
-                    );
-                  }
-                })}
+      <TableContainer>
+        <MaUTable {...getTableProps()}>
+          <TableHead>
+            {headerGroups.map((headerGroup, index) => (
+              <TableRow key={index} {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => (
+                  <TableCell
+                    key={index}
+                    {...(column.id === "selection"
+                      ? column.getHeaderProps()
+                      : column.getHeaderProps(column.getSortByToggleProps()))}
+                    style={{ whiteSpace: "nowrap", fontWeight: "bold" }} // Ensure content does not wrap
+                  >
+                    {column.render("Header")}
+                    {column.id !== "selection" ? (
+                      <TableSortLabel
+                        active={column.isSorted}
+                        // react-table has a unsorted state which is not treated here
+                        direction={column.isSortedDesc ? "desc" : "asc"}
+                      />
+                    ) : null}
+                  </TableCell>
+                ))}
               </TableRow>
-            );
-          })}
-        </TableBody>
+            ))}
+          </TableHead>
+          <TableBody>
+            {page.map((row, i) => {
+              prepareRow(row);
+              return (
+                <TableRow key={i} {...row.getRowProps()} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
+                  {row.cells.map((cell, index) => {
+                    if (index === row.cells.length - 1) {
+                      // Render actions in the last cell
+                      return (
+                        <TableCell key={index}>
+                          <PopupState variant="popover" popupId="demo-popup-menu">
+                            {(popupState) => (
+                              <>
+                                <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
+                                <Menu {...bindMenu(popupState)}>
+                                  <MenuItem
+                                    onClick={() => {
+                                      handleEdit(row);
+                                      popupState.close();
+                                    }}
+                                  >
+                                    <EditIcon sx={{ marginRight: 1 }} /> Edit
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() => {
+                                      handleDelete(row);
+                                      popupState.close();
+                                    }}
+                                  >
+                                    <DeleteIcon sx={{ marginRight: 1 }} /> Delete
+                                  </MenuItem>
+                                </Menu>
+                              </>
+                            )}
+                          </PopupState>
+                        </TableCell>
+                      );
+                    } else {
+                      // Render regular cell
+                      return (
+                        <TableCell key={index} {...cell.getCellProps()}>
+                          {cell.render("Cell")}
+                        </TableCell>
+                      );
+                    }
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
 
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[10, 100, { label: "All", value: data.length }]}
-              colSpan={3}
-              count={data.length}
-              rowsPerPage={pageSize}
-              page={pageIndex}
-              slotProps={{
-                inputProps: { "aria-label": "rows per page" },
-                native: true
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </MaUTable>
-    </TableContainer>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[10, 100, { label: "All", value: data.length }]}
+                colSpan={3}
+                count={data.length}
+                rowsPerPage={pageSize}
+                page={pageIndex}
+                slotProps={{
+                  inputProps: { "aria-label": "rows per page" },
+                  native: true
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </MaUTable>
+      </TableContainer>
+    </>
   );
 };
 
