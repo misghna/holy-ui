@@ -9,7 +9,7 @@ const refresh = async () => {
       {
         // withCredentials: true,
         headers: {
-          Authorization: `Bearer ${local.token?.acessToken}`
+          Authorization: `Bearer ${local.token?.access}`
         }
       }
     )
@@ -20,6 +20,7 @@ const refresh = async () => {
     })
     .catch((err) => {
       console.log("Refresh err", err);
+      localStorage.removeItem("auth");
       window.location.href = "/login";
     });
 };
@@ -30,8 +31,17 @@ export const axiosPrivate = axios.create({
 if (axiosPrivate.interceptors.request.handlers.length === 0) {
   axiosPrivate.interceptors.request.use(
     (config) => {
+      const local = JSON.parse(localStorage.getItem("auth") ?? "{}");
+      const personalSetting = JSON.parse(localStorage.getItem("personalSetting") ?? "{}");
+
       if (!config.headers.Authorization) {
-        config.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem("auth"))?.accessToken}`;
+        config.headers.Authorization = `Bearer ${local?.token?.accessToken}`;
+      }
+      if (!config.headers.Tenant_id && personalSetting?.selectedTenant) {
+        config.headers.tenant_id = `${personalSetting?.selectedTenant}`;
+      }
+      if (!config.headers.Language && personalSetting?.language) {
+        config.headers.language = `${personalSetting?.language}`;
       }
       return config;
     },
