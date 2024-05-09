@@ -25,7 +25,6 @@ import { DRAWER_WIDTH } from "~/constants/theme";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { useLayout } from "~/contexts/LayoutProvider";
 
-
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -108,20 +107,16 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   };
 
   const handleSubMenOpenClick = (typeIndex, menuIndex) => {
-
     const newState = [...subMenuOpenState];
     newState[typeIndex] = newState[typeIndex].map(() => false);
     newState[typeIndex][menuIndex] = true;
     setSubMenuOpenState(newState);
-
   };
 
   const handleSubMenCloseClick = (typeIndex, menuIndex) => {
-
     const newState = [...subMenuOpenState];
     newState[typeIndex][menuIndex] = false;
     setSubMenuOpenState(newState);
-
   };
 
   const handleNavigation = (path) => {
@@ -144,6 +139,8 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
       variant="persistent"
       anchor="left"
       open={open}
+      onClose={handleDrawerClose}
+      onOpen={() => {}}
     >
       <DrawerHeader>
         <Box
@@ -154,7 +151,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
           <Typography variant="h6" textAlign="center" noWrap flexGrow={1}>
             Holy-UI
           </Typography>
-          {!drawerAlwaysOpen && (
+          {drawerAlwaysOpen || (
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
@@ -163,8 +160,8 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
       </DrawerHeader>
 
       {/* Added container with fixed height and overflow */}
-      <Box style={{ overflow: "auto", maxHeight: "calc(100vh - 64px)" }}>
-        <List style={{ padding: "2px 0" }}>
+      <Box sx={{ overflow: "auto", maxHeight: "calc(100vh - 64px)" }}>
+        <List sx={{ padding: "2px 0" }}>
           {groupedMenu &&
             Object.entries(groupedMenu).map(([type, items], typeIndex) => (
               <Fragment key={type}>
@@ -183,12 +180,13 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
                           navigate(item.url);
                         }
                       }}
-                      sx={{ py: 1 }} // Adjusted vertical padding
+                      sx={{ py: 1 }} 
                     >
                       <ListItemIcon>{item.icon}</ListItemIcon>
                       <ListItemText primary={item.name} />
                       {item.sub_menu && showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
                     </ListItem>
+
                     {item.sub_menu && renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
                   </Fragment>
                 ))}
