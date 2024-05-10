@@ -44,7 +44,7 @@ export default function DynamicModal({
 
       <DialogContent dividers={true}>
         <DialogContentText tabIndex={-1}>{contentText}</DialogContentText>
-        <> {children}</>
+        {children}
       </DialogContent>
 
       {!hideFooter && (

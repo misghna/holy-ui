@@ -1,10 +1,11 @@
-import { FormControl, Typography, Select, MenuItem, FormHelperText, styled } from "@mui/material";
+import { FormControl, Typography, Select, MenuItem, FormHelperText, styled, Box } from "@mui/material";
 import PropTypes from "prop-types";
 
 const StyledTypography = styled(Typography)({
   marginRight: "8px",
   whiteSpace: "nowrap",
-  minWidth: "100px"
+  minWidth: "100px",
+  textTransform: "capitalize"
 });
 
 const StyledSelect = styled(Select)({
@@ -24,7 +25,7 @@ const StyledSelect = styled(Select)({
 const CustomDropdown = ({ label, helperText, options, handleChange, ...rest }) => {
   return (
     <FormControl fullWidth>
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "nowrap" }}>
+      <Box display="flex" alignItems="center" flexWrap="nowrap">
         <StyledTypography>{label}</StyledTypography>
         <StyledSelect onChange={handleChange} {...rest}>
           {options.map((option, index) => (
@@ -33,7 +34,7 @@ const CustomDropdown = ({ label, helperText, options, handleChange, ...rest }) =
             </MenuItem>
           ))}
         </StyledSelect>
-      </div>
+      </Box>
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );

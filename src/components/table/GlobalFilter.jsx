@@ -39,10 +39,7 @@ const Input = styled(InputBase)(({ theme }) => ({
   }
 }));
 
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
-  const count = preGlobalFilteredRows.length;
-  console.log("count ", count);
-
+const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
   return (
     <Search>
       <SearchIconWrapper>
@@ -61,7 +58,7 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
 };
 
 GlobalFilter.propTypes = {
-  preGlobalFilteredRows: PropTypes.array.isRequired,
+  preGlobalFilteredRows: PropTypes.array,
   globalFilter: PropTypes.string.isRequired,
   setGlobalFilter: PropTypes.func.isRequired
 };

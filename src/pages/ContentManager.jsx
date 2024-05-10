@@ -49,7 +49,7 @@ function ContentManager() {
 
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const MAPPING = useMemo(() => {
+  const TAB_MAPPING = useMemo(() => {
     return {
       0: (
         <PageConfig
@@ -64,8 +64,8 @@ function ContentManager() {
   }, [deletePageConfig, handleAddModalOpen, populatePageConfigForm]);
 
   const renderTabContent = useMemo(() => {
-    return MAPPING[activeTab];
-  }, [MAPPING, activeTab]);
+    return TAB_MAPPING[activeTab];
+  }, [TAB_MAPPING, activeTab]);
 
   const handleSearchIcon = useCallback(() => {
     setModelOpen(true);
@@ -130,12 +130,14 @@ function ContentManager() {
   );
 
   const dialogForms = useCallback(() => {
-    if (activeTab === 0) {
-      const { pageConfig, handleChange, errors } = currentDialogFormProps.dialogProps;
-      return <PageConfigForm pageConfig={{ ...pageConfig }} handleChange={handleChange} errors={errors} />;
-    } else if (activeTab === 1) return <ContentForm {...currentDialogFormProps.dialogProps} />;
-    else {
-      return <DocumentForm {...currentDialogFormProps.dialogProps} />;
+    const { pageConfig, handleChange, errors } = currentDialogFormProps.dialogProps;
+    switch (activeTab) {
+      case 0:
+        return <PageConfigForm pageConfig={{ ...pageConfig }} handleChange={handleChange} errors={errors} />;
+      case 1:
+        return <ContentForm {...currentDialogFormProps.dialogProps} />;
+      default:
+        return <DocumentForm {...currentDialogFormProps.dialogProps} />;
     }
   }, [activeTab, currentDialogFormProps.dialogProps]);
   const currentForm = useMemo(() => dialogForms(), [dialogForms]);

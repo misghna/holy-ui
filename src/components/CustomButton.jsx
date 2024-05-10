@@ -9,6 +9,7 @@ const StyledButton = styled(Button)({
   padding: "8px 20px",
   borderRadius: "2px",
   cursor: "pointer",
+  textTransform: "capitalize",
   transition: "background-color 0.3s ease",
   "&:hover": {
     backgroundColor: "white"

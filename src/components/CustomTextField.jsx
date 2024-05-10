@@ -1,4 +1,4 @@
-import { FormControl, Typography, InputBase, FormHelperText, styled } from "@mui/material";
+import { FormControl, Typography, InputBase, FormHelperText, styled, Box } from "@mui/material";
 import PropTypes from "prop-types";
 
 const StyledTypography = styled(Typography)({
@@ -20,10 +20,10 @@ const StyledInputBase = styled(InputBase)({
 const CustomTextField = ({ label, helperText, handleChange, ...rest }) => {
   return (
     <FormControl fullWidth>
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "nowrap" }}>
+      <Box display="flex" alignItems="center" flexWrap="nowrap">
         <StyledTypography>{label}</StyledTypography>
         <StyledInputBase onChange={handleChange} {...rest} />
-      </div>
+      </Box>
       {helperText && (
         <FormHelperText error={Boolean(helperText)} sx={{ alignSelf: "center" }}>
           {helperText}

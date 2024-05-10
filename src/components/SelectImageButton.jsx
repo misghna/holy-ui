@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { FormControl, Typography, styled, useTheme } from "@mui/material";
+import { Box, FormControl, Typography, styled, useTheme } from "@mui/material";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
@@ -12,7 +12,8 @@ import DynamicModal from "~/components/Modal";
 const StyledTypography = styled(Typography)({
   marginBottom: "8px",
   whiteSpace: "nowrap",
-  minWidth: "100px"
+  minWidth: "100px",
+  textTransform: "capitalize"
 });
 
 const SelectImageButton = ({ label, imageData, ...rest }) => {
@@ -30,7 +31,7 @@ const SelectImageButton = ({ label, imageData, ...rest }) => {
   };
   const renderImage = useCallback(() => {
     return (
-      <div style={{ height: "400px", overflowY: "auto", padding: "8px" }}>
+      <Box sx={{ height: "400px", overflowY: "auto", padding: "8px" }}>
         <ImageList>
           {imageData.map((item, index) => (
             <ImageListItem
@@ -50,17 +51,17 @@ const SelectImageButton = ({ label, imageData, ...rest }) => {
             </ImageListItem>
           ))}
         </ImageList>
-      </div>
+      </Box>
     );
   }, [imageData, selectedItem, theme.palette.primary.main]);
 
   return (
     <>
       <FormControl fullWidth>
-        <div style={{ display: "flex", alignItems: "center", flexWrap: "nowrap" }}>
+        <Box display="flex" alignItems="center" flexWrap="nowrap">
           <StyledTypography>{label}</StyledTypography>
           <CustomButton label="Select Image" fullWidth handleClick={handleModalOpen} {...rest} />
-        </div>
+        </Box>
       </FormControl>
       <DynamicModal header={"Select Images"} open={modalOpen} handleClose={handleModalClose} actionLabel="Save">
         {renderImage()}

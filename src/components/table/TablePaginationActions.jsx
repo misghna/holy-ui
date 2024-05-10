@@ -2,6 +2,7 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import { Box } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import PropTypes from "prop-types";
 
@@ -25,7 +26,7 @@ const TablePaginationActions = (props) => {
   };
 
   return (
-    <div style={{ display: "flex", flexShrink: 0, marginLeft: 2.5 }}>
+    <Box display="flex" flexShrink={0} sx={{ marginLeft: 2.5 }}>
       <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0} aria-label="first page">
         <FirstPageIcon />
       </IconButton>
@@ -46,7 +47,7 @@ const TablePaginationActions = (props) => {
       >
         <LastPageIcon />
       </IconButton>
-    </div>
+    </Box>
   );
 };
 

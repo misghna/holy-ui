@@ -5,7 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import MaUTable from "@mui/material/Table";
+import MuiTable from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
@@ -127,7 +127,7 @@ const EnhancedTable = ({
         />
       ) : null}
       <TableContainer>
-        <MaUTable {...getTableProps()}>
+        <MuiTable {...getTableProps()}>
           <TableHead>
             {headerGroups.map((headerGroup, index) => (
               <TableRow key={index} {...headerGroup.getHeaderGroupProps()}>
@@ -153,54 +153,60 @@ const EnhancedTable = ({
             ))}
           </TableHead>
           <TableBody>
-            {page.map((row, i) => {
-              prepareRow(row);
-              return (
-                <TableRow key={i} {...row.getRowProps()} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
-                  {row.cells.map((cell, index) => {
-                    if (index === row.cells.length - 1) {
-                      // Render actions in the last cell
-                      return (
-                        <TableCell key={index}>
-                          <PopupState variant="popover" popupId="demo-popup-menu">
-                            {(popupState) => (
-                              <>
-                                <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
-                                <Menu {...bindMenu(popupState)}>
-                                  <MenuItem
-                                    onClick={() => {
-                                      handleEdit(row);
-                                      popupState.close();
-                                    }}
-                                  >
-                                    <EditIcon sx={{ marginRight: 1 }} /> Edit
-                                  </MenuItem>
-                                  <MenuItem
-                                    onClick={() => {
-                                      handleDelete(row);
-                                      popupState.close();
-                                    }}
-                                  >
-                                    <DeleteIcon sx={{ marginRight: 1 }} /> Delete
-                                  </MenuItem>
-                                </Menu>
-                              </>
-                            )}
-                          </PopupState>
-                        </TableCell>
-                      );
-                    } else {
-                      // Render regular cell
-                      return (
-                        <TableCell key={index} {...cell.getCellProps()}>
-                          {cell.render("Cell")}
-                        </TableCell>
-                      );
-                    }
-                  })}
-                </TableRow>
-              );
-            })}
+            {page.length !== 0 ? (
+              page &&
+              page.map((row, i) => {
+                prepareRow(row);
+                return (
+                  <TableRow key={i} {...row.getRowProps()} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
+                    {row.cells.map((cell, index) => {
+                      if (index === row.cells.length - 1) {
+                        // Render actions in the last cell
+
+                        return (
+                          <TableCell key={index}>
+                            <PopupState variant="popover" popupId={cell.row.id}>
+                              {(popupState) => (
+                                <>
+                                  <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
+                                  <Menu {...bindMenu(popupState)}>
+                                    <MenuItem
+                                      onClick={() => {
+                                        handleEdit(row);
+                                        popupState.close();
+                                      }}
+                                    >
+                                      <EditIcon sx={{ marginRight: 1 }} /> Edit
+                                    </MenuItem>
+                                    <MenuItem
+                                      onClick={() => {
+                                        handleDelete(row);
+                                        popupState.close();
+                                      }}
+                                    >
+                                      <DeleteIcon sx={{ marginRight: 1 }} /> Delete
+                                    </MenuItem>
+                                  </Menu>
+                                </>
+                              )}
+                            </PopupState>
+                          </TableCell>
+                        );
+                      } else {
+                        // Render regular cell
+                        return (
+                          <TableCell key={index} {...cell.getCellProps()}>
+                            {cell.render("Cell")}
+                          </TableCell>
+                        );
+                      }
+                    })}
+                  </TableRow>
+                );
+              })
+            ) : (
+              <h2>No Data</h2>
+            )}
           </TableBody>
 
           <TableFooter>
@@ -221,7 +227,7 @@ const EnhancedTable = ({
               />
             </TableRow>
           </TableFooter>
-        </MaUTable>
+        </MuiTable>
       </TableContainer>
     </>
   );

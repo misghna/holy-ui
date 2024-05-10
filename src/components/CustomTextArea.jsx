@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 const StyledTypography = styled(Typography)({
   marginBottom: "8px",
   whiteSpace: "nowrap",
-  minWidth: "100px"
+  minWidth: "100px",
+  textTransform: "capitalize"
 });
 
 const StyledTextareaAutosize = styled(TextareaAutosize)({

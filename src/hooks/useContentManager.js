@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 
+import _ from "lodash";
 import * as Yup from "yup";
 
 import { axiosPrivate } from "~/_api";
@@ -123,10 +124,6 @@ const useContentManager = () => {
     setPageConfig(pageConfigInitial);
   }, [setModalOpenAdd, setPageConfig]);
 
-  const pageConfigFormProps = useMemo(() => {
-    return { pageConfig: { ...pageConfig }, handleChange, errors };
-  }, [errors, handleChange, pageConfig]);
-
   const updatePageConfig = useCallback(() => {
     validateObject(pageConfig);
     axiosPrivate
@@ -179,11 +176,13 @@ const useContentManager = () => {
         console.error("error :>> ", err);
       });
   }, []);
-
+  const pageConfigFormProps = useMemo(() => {
+    return { pageConfig: _.cloneDeep(pageConfig), handleChange, errors: _.cloneDeep(errors) };
+  }, [errors, handleChange, pageConfig]);
   const dialogFormProps = useMemo(() => {
     return {
       0: {
-        dialogProps: { ...pageConfigFormProps, pageConfig: { ...pageConfig } },
+        dialogProps: { ...pageConfigFormProps, pageConfig: _.cloneDeep(pageConfig) },
         actionHandler: pageConfig.id ? updatePageConfig : savePageConfig,
         dialogHeader: pageDialogTitle,
         actionLabel: pageDialogTitle.startsWith("Add") ? "Add" : "Save"

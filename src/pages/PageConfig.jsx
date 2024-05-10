@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { Box, CircularProgress } from "@mui/material";
 import PropTypes from "prop-types";
 
 import { axiosPrivate } from "~/_api";
+import Loading from "~/components/Loading";
 import EnhancedTable from "~/components/table/EnhancedTable";
 import config from "~/constants/endpoints.json";
 
@@ -109,21 +109,7 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
   };
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          height: "calc(100dvh - 7.25rem)",
-          width: "100%",
-          flexGrow: 1,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
 
   return (

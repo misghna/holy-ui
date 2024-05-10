@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { Box, CircularProgress, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useParams } from "react-router-dom";
 
 import { axiosPrivate } from "~/_api";
 import CardView from "~/components/Card";
+import Loading from "~/components/Loading";
 import config from "~/constants/endpoints.json";
 
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
@@ -48,21 +49,7 @@ export default function GridView() {
   useEffect(fetchData, [fetchData]);
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          height: "calc(100dvh - 7.25rem)",
-          width: "100%",
-          flexGrow: 1,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center"
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <Loading />;
   }
   if (!loading && cardData.length === 0) {
     return (
