@@ -59,7 +59,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
 
 GlobalFilter.propTypes = {
   preGlobalFilteredRows: PropTypes.array,
-  globalFilter: PropTypes.string.isRequired,
+  globalFilter: PropTypes.string,
   setGlobalFilter: PropTypes.func.isRequired
 };
 

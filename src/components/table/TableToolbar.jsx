@@ -23,8 +23,8 @@ const TableToolbar = (props) => {
 };
 
 TableToolbar.propTypes = {
-  preGlobalFilteredRows: PropTypes.array.isRequired,
-  globalFilter: PropTypes.string.isRequired,
+  preGlobalFilteredRows: PropTypes.array,
+  globalFilter: PropTypes.string,
   setGlobalFilter: PropTypes.func.isRequired
 };
 

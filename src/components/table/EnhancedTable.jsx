@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -23,7 +23,6 @@ import NoData from "~/components/NoData";
 import TablePaginationActions from "~/components/table/TablePaginationActions";
 import TableToolbar from "~/components/table/TableToolbar";
 
-
 const EditableCell = ({
   value: initialValue,
 
@@ -41,7 +40,7 @@ EditableCell.propTypes = {
   }),
 
   column: PropTypes.shape({
-    id: PropTypes.number.isRequired
+    id: PropTypes.string.isRequired
   })
 };
 
@@ -75,6 +74,7 @@ const EnhancedTable = ({
     {
       columns,
       data,
+      initialState: { pageIndex: 0, pageSize: 100 },
       defaultColumn,
       autoResetPage: !skipPageReset,
       // updateMyData isn't part of the API, but
@@ -89,6 +89,7 @@ const EnhancedTable = ({
     usePagination,
     useRowSelect
   );
+  const dontCallAtFirst = useRef(true);
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -117,6 +118,10 @@ const EnhancedTable = ({
     [deleteAction]
   );
   useEffect(() => {
+    if (dontCallAtFirst.current) {
+      dontCallAtFirst.current = false;
+      return;
+    }
     fetchData(pageIndex, pageSize);
   }, [fetchData, pageIndex, pageSize]);
 
@@ -133,10 +138,10 @@ const EnhancedTable = ({
         <MuiTable {...getTableProps()}>
           <TableHead>
             {headerGroups.map((headerGroup, index) => (
-              <TableRow key={index} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => (
+              <TableRow key={index}>
+                {headerGroup.headers.map((column) => (
                   <TableCell
-                    key={index}
+                    key={column.id}
                     {...(column.id === "selection"
                       ? column.getHeaderProps()
                       : column.getHeaderProps(column.getSortByToggleProps()))}
@@ -169,11 +174,7 @@ const EnhancedTable = ({
                 page.map((row, i) => {
                   prepareRow(row);
                   return (
-                    <TableRow
-                      key={i}
-                      {...row.getRowProps()}
-                      sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}
-                    >
+                    <TableRow key={i} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
                       {row.cells.map((cell, index) => {
                         if (index === row.cells.length - 1) {
                           // Render actions in the last cell
@@ -226,7 +227,7 @@ const EnhancedTable = ({
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[10, 100, { label: "All", value: data.length }]}
-                colSpan={3}
+                colSpan={columns.length / 2}
                 count={data.length}
                 rowsPerPage={pageSize}
                 page={pageIndex}
