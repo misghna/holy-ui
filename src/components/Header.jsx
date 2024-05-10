@@ -69,7 +69,7 @@ export default function NavigationHeader({ drawerAlwaysOpen = false }) {
             </IconButton>
           )}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Church
+            Holy
           </Typography>
           <IconButton size="large" edge="end" color="inherit" aria-label="settings" onClick={handleSettingsOpen}>
             <SettingsIcon />

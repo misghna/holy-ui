@@ -21,7 +21,9 @@ const initialState = {
     theme_colors: [],
     tenants: []
   },
-  personalSetting: {}
+  personalSetting: {
+    language: "english"
+  }
 };
 export const actionTypes = {
   FETCH_SETTING: "FETCH_SETTING",

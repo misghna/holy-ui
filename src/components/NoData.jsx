@@ -1,4 +1,5 @@
-import { CircularProgress, styled } from "@mui/material";
+import { Typography, styled } from "@mui/material";
+
 const Wrapper = styled("div")(() => ({
   display: "flex",
   height: "calc(100dvh - 7.25rem)",
@@ -9,11 +10,19 @@ const Wrapper = styled("div")(() => ({
   justifyContent: "center",
   alignItems: "center"
 }));
-const Loading = () => {
+const NoData = () => {
   return (
     <Wrapper>
-      <CircularProgress />
+      <Typography
+        sx={{
+          fontSize: "2rem",
+          fontWeight: 500,
+          color: "text.secondary"
+        }}
+      >
+        No Data Available
+      </Typography>
     </Wrapper>
   );
 };
-export default Loading;
+export default NoData;

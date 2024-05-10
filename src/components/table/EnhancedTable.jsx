@@ -21,6 +21,8 @@ import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } fro
 import TablePaginationActions from "~/components/table/TablePaginationActions";
 import TableToolbar from "~/components/table/TableToolbar";
 
+import NoData from "../NoData";
+
 const EditableCell = ({
   value: initialValue,
 
@@ -205,7 +207,7 @@ const EnhancedTable = ({
                 );
               })
             ) : (
-              <h2>No Data</h2>
+              <NoData />
             )}
           </TableBody>
 
