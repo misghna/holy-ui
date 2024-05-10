@@ -19,10 +19,10 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import PropTypes from "prop-types";
 import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
+import NoData from "~/components/NoData";
 import TablePaginationActions from "~/components/table/TablePaginationActions";
 import TableToolbar from "~/components/table/TableToolbar";
 
-import NoData from "../NoData";
 
 const EditableCell = ({
   value: initialValue,
