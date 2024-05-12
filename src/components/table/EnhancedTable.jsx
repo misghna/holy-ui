@@ -1,8 +1,9 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Box } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MuiTable from "@mui/material/Table";
@@ -18,10 +19,9 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import PropTypes from "prop-types";
 import { useGlobalFilter, usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
+import NoData from "~/components/NoData";
 import TablePaginationActions from "~/components/table/TablePaginationActions";
 import TableToolbar from "~/components/table/TableToolbar";
-
-import NoData from "../NoData";
 
 const EditableCell = ({
   value: initialValue,
@@ -40,7 +40,7 @@ EditableCell.propTypes = {
   }),
 
   column: PropTypes.shape({
-    id: PropTypes.number.isRequired
+    id: PropTypes.string.isRequired
   })
 };
 
@@ -74,6 +74,7 @@ const EnhancedTable = ({
     {
       columns,
       data,
+      initialState: { pageIndex: 0, pageSize: 100 },
       defaultColumn,
       autoResetPage: !skipPageReset,
       // updateMyData isn't part of the API, but
@@ -88,6 +89,7 @@ const EnhancedTable = ({
     usePagination,
     useRowSelect
   );
+  const dontCallAtFirst = useRef(true);
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -116,6 +118,10 @@ const EnhancedTable = ({
     [deleteAction]
   );
   useEffect(() => {
+    if (dontCallAtFirst.current) {
+      dontCallAtFirst.current = false;
+      return;
+    }
     fetchData(pageIndex, pageSize);
   }, [fetchData, pageIndex, pageSize]);
 
@@ -132,10 +138,10 @@ const EnhancedTable = ({
         <MuiTable {...getTableProps()}>
           <TableHead>
             {headerGroups.map((headerGroup, index) => (
-              <TableRow key={index} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => (
+              <TableRow key={index}>
+                {headerGroup.headers.map((column) => (
                   <TableCell
-                    key={index}
+                    key={column.id}
                     {...(column.id === "selection"
                       ? column.getHeaderProps()
                       : column.getHeaderProps(column.getSortByToggleProps()))}
@@ -154,68 +160,74 @@ const EnhancedTable = ({
               </TableRow>
             ))}
           </TableHead>
-          <TableBody>
-            {page.length !== 0 ? (
-              page &&
-              page.map((row, i) => {
-                prepareRow(row);
-                return (
-                  <TableRow key={i} {...row.getRowProps()} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
-                    {row.cells.map((cell, index) => {
-                      if (index === row.cells.length - 1) {
-                        // Render actions in the last cell
+          {page.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length / 2} align="center">
+                <Box display="flex" alignItems="flex-start" justifyContent="flex-start" flexGrow={1}>
+                  <NoData />
+                </Box>
+              </TableCell>
+            </TableRow>
+          ) : (
+            <TableBody>
+              {page &&
+                page.map((row, i) => {
+                  prepareRow(row);
+                  return (
+                    <TableRow key={i} sx={{ backgroundColor: i % 2 === 0 ? "#f4f4f4" : "white" }}>
+                      {row.cells.map((cell, index) => {
+                        if (index === row.cells.length - 1) {
+                          // Render actions in the last cell
 
-                        return (
-                          <TableCell key={index}>
-                            <PopupState variant="popover" popupId={cell.row.id}>
-                              {(popupState) => (
-                                <>
-                                  <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
-                                  <Menu {...bindMenu(popupState)}>
-                                    <MenuItem
-                                      onClick={() => {
-                                        handleEdit(row);
-                                        popupState.close();
-                                      }}
-                                    >
-                                      <EditIcon sx={{ marginRight: 1 }} /> Edit
-                                    </MenuItem>
-                                    <MenuItem
-                                      onClick={() => {
-                                        handleDelete(row);
-                                        popupState.close();
-                                      }}
-                                    >
-                                      <DeleteIcon sx={{ marginRight: 1 }} /> Delete
-                                    </MenuItem>
-                                  </Menu>
-                                </>
-                              )}
-                            </PopupState>
-                          </TableCell>
-                        );
-                      } else {
-                        // Render regular cell
-                        return (
-                          <TableCell key={index} {...cell.getCellProps()}>
-                            {cell.render("Cell")}
-                          </TableCell>
-                        );
-                      }
-                    })}
-                  </TableRow>
-                );
-              })
-            ) : (
-              <NoData />
-            )}
-          </TableBody>
+                          return (
+                            <TableCell key={index}>
+                              <PopupState variant="popover" popupId={cell.row.id}>
+                                {(popupState) => (
+                                  <>
+                                    <MoreVertIcon variant="contained" {...bindTrigger(popupState)} />
+                                    <Menu {...bindMenu(popupState)}>
+                                      <MenuItem
+                                        onClick={() => {
+                                          handleEdit(row);
+                                          popupState.close();
+                                        }}
+                                      >
+                                        <EditIcon sx={{ marginRight: 1 }} /> Edit
+                                      </MenuItem>
+                                      <MenuItem
+                                        onClick={() => {
+                                          handleDelete(row);
+                                          popupState.close();
+                                        }}
+                                      >
+                                        <DeleteIcon sx={{ marginRight: 1 }} /> Delete
+                                      </MenuItem>
+                                    </Menu>
+                                  </>
+                                )}
+                              </PopupState>
+                            </TableCell>
+                          );
+                        } else {
+                          // Render regular cell
+                          return (
+                            <TableCell key={index} {...cell.getCellProps()}>
+                              {cell.render("Cell")}
+                            </TableCell>
+                          );
+                        }
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          )}
 
           <TableFooter>
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[10, 100, { label: "All", value: data.length }]}
-                colSpan={3}
+                colSpan={columns.length / 2}
                 count={data.length}
                 rowsPerPage={pageSize}
                 page={pageIndex}
