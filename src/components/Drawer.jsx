@@ -1,178 +1,233 @@
-import { useState } from "react";
-
-import { Favorite } from "@mui/icons-material";
-import CommentIcon from "@mui/icons-material/Comment";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
-import { Typography, Box } from "@mui/material";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import IconButton from "@mui/material/IconButton";
-import { makeStyles } from "@mui/styles";
-import { shape, string } from "prop-types";
+import React, { Fragment, useMemo, useState, useRef, useEffect } from "react";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+  SwipeableDrawer,
+  Typography
+} from "@mui/material";
+import Collapse from "@mui/material/Collapse";
+import { styled, useTheme } from "@mui/material/styles";
+import { bool, func } from "prop-types";
 import { useNavigate } from "react-router-dom";
+import { DRAWER_WIDTH } from "~/constants/theme";
+import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import { useLayout } from "~/contexts/LayoutProvider";
 
-import DefaultBgImage from "~/assets/home1bg.jpg";
-import DynamicModal from "~/components/Modal";
+export const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  position: "sticky",
+  top: 0,
+  left: 0,
+  zIndex: 10,
+  width: "100%",
+  padding: theme.spacing(1),
+  ...theme.mixins.toolbar,
+  justifyContent: "flex-end",
+  borderBottom: `1px solid ${theme.palette.primary.main}`,
+  backgroundColor: "white"
+}));
 
-import ContentViewer from "./Viewers";
-
-const useStyles = makeStyles((theme) => {
-  return {
-    root: {
-      flexGrow: 1
-    },
-    card: {
-      margin: theme.spacing(2),
-      height: "95%",
-      display: "flex",
-      justifyContent: "space-between",
-      flexDirection: "column"
-    },
-    cardTitle: {
-      paddingBottom: 0,
-      color: "#696969",
-      textTransform: "uppercase"
-    },
-    cardBody: {
-      color: "#999999",
-      paddingTop: 0
-    },
-    headerContent: {
-      display: "flex",
-      justifyContent: "space-between"
-    }
-  };
+const StyledCustomButtons = styled(Button)({
+  width: "100%",
+  height: 30,
+  margin: "0 auto",
+  zIndex: 15,
+  background: "white",
+  color: "black",
+  border: "1px solid black"
 });
 
-function CardView({ data }) {
-  const classes = useStyles();
+const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
+  const { state: drawerState } = useLayout();
+  const { open } = drawerState;
+  const theme = useTheme();
+  const { setting } = useGlobalSetting();
   const navigate = useNavigate();
-  const [modalData, setModalData] = useState({ open: false });
-  const [liked, setLiked] = useState(false);
+  const menu = useMemo(() => setting?.menu || [], [setting?.menu]);
+  const isAuthenticated = setting.authenticated;
 
-  const handleModalClose = () => {
-    setModalData({});
-  };
-  function handleCardAction() {
-    if (data.media_link?.length > 0 || data.content_text) {
-      setModalData({ open: true, data });
+  const groupedMenu = useMemo(
+    () =>
+      menu.reduce((acc, item) => {
+        acc[item.type] = acc[item.type] || [];
+        acc[item.type].push(item);
+        return acc;
+      }, {}),
+    [menu]
+  );
+
+  const submenus = useMemo(() => {
+    const rows = Object.keys(groupedMenu).length;
+    const columns = Object.values(groupedMenu).reduce((max, group) => Math.max(max, group.length), 0);
+    const nestedArray = Array.from({ length: rows }, () => Array.from({ length: columns }, () => false));
+    return nestedArray;
+  }, [groupedMenu]);
+
+  const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
+  const drawerRef = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+      handleDrawerClose();
     }
-  }
-
-  const handleLike = () => {
-    setLiked(!liked);
   };
 
-  // Conditional rendering of CardMedia based on the data type
-  const renderCardMedia = () => {
-    switch (data.type) {
-      case "video":
-      case "youtube":
-      case "audio":
-        // For video, youtube, and audio, use a placeholder image or a specific thumbnail
-        // and overlay a play icon to indicate action.
-        return (
-          <Box position="relative" display="flex" alignItems="center" justifyContent="center" height={200}>
-            <CardMedia
-              component="img"
-              alt={data.title}
-              image={data.background_image || DefaultBgImage}
-              title={data.title}
-              style={{ height: "100%", width: "100%", position: "absolute" }}
-            />
-            <IconButton onClick={handleCardAction} sx={{ color: "white", zIndex: 1 }}>
-              <PlayCircleOutlineIcon fontSize="large" />
-            </IconButton>
-          </Box>
-        );
-      case "image":
-      case "pdf":
-      case "html":
-        // For PDFs, might directly use an image if provided or a default one
-        return (
-          <CardMedia
-            height={data.type === "html" ? 80 : 200}
-            component="img"
-            alt={data.title}
-            image={data.background_image || DefaultBgImage}
-            title={data.title}
-          />
-        );
-      default:
-        // Fallback for other types or undefined type
-        return <CardMedia height={200} component="img" alt={data.title} image={DefaultBgImage} title={data.title} />;
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
     }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
+  const renderSubMenu = (submenu, typeIndex, menuIndex) => {
+    if (submenu?.length === 0 || isSubMenOpen.length === 0) return null;
+
+    return (
+      <Collapse in={isSubMenOpen[typeIndex][menuIndex]} timeout="auto" unmountOnExit>
+        <List disablePadding>
+          {submenu.map((item) => (
+            <ListItemButton key={item.name} onClick={() => navigate(item.url, { replace: true })}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.name} />
+            </ListItemButton>
+          ))}
+        </List>
+        <Divider />
+      </Collapse>
+    );
+  };
+
+  const showMoreOrLessIcon = (submenu, typeIndex, menuIndex) => {
+    if (submenu.length === 0) return null;
+
+    return isSubMenOpen.length > 0 && isSubMenOpen[typeIndex][menuIndex] ? (
+      <ExpandLessIcon onClick={() => handleSubMenCloseClick(typeIndex, menuIndex)} />
+    ) : (
+      <ExpandMoreIcon onClick={() => handleSubMenOpenClick(typeIndex, menuIndex)} />
+    );
+  };
+
+  const handleSubMenOpenClick = (typeIndex, menuIndex) => {
+    const arr = [...submenus];
+    arr[typeIndex] = arr[typeIndex].map(() => false);
+    arr[typeIndex][menuIndex] = true;
+    setIsSubMenOpen(arr);
+  };
+
+  const handleSubMenCloseClick = (typeIndex, menuIndex) => {
+    const arr = [...submenus];
+    arr[typeIndex][menuIndex] = false;
+    setIsSubMenOpen(arr);
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
   return (
-    <>
-      <Card className={classes.card} onDoubleClick={handleCardAction}>
-        <Box>
-          <CardActionArea>{renderCardMedia()}</CardActionArea>
-          <CardHeader
-            title={data.title}
-            titleTypographyProps={{
-              variant: "h6",
-              fontWeight: 300,
-              lineHeight: "1.5rem"
-            }}
-            subheader={new Date(data.release_date_time).toDateString()}
-            subheaderTypographyProps={{
-              variant: "h6",
-              fontWeight: 300,
-              lineHeight: "1.rem",
-              textAlign: "end",
-              fontSize: "body2.fontSize",
-              color: "#999999",
-              paddingTop: 0
-            }}
-            classes={{
-              root: classes.cardTitle,
-              content: classes.headerContent
-            }}
-          />
-          <CardContent classes={{ root: classes.cardBody }}>
-            <Typography p={0} lineHeight="1.5rem" className={classes.cardBody} fontSize="body2.fontSize">
-              {data?.description}
-            </Typography>
-            {/* <ContentViewer item={data} displayContent={false} /> */}
-          </CardContent>
+    <SwipeableDrawer
+      ref={drawerRef}
+      onOpen={() => {}}
+      onClose={() => {}}
+      sx={{
+        width: DRAWER_WIDTH,
+        flexShrink: 0,
+        position: "relative",
+        "& .MuiDrawer-paper": {
+          width: DRAWER_WIDTH,
+          boxSizing: "border-box",
+          maxHeight: "100dvh",
+          overflow: "auto"
+        }
+      }}
+      variant="persistent"
+      anchor="left"
+      open={open}
+    >
+      <DrawerHeader>
+        <Box
+          sx={{ width: "100%", backgroundColor: "white", display: "flex", justifyContent: "center" }}
+          display="flex"
+          alignItems="center"
+        >
+          <Typography variant="h6" textAlign="center" noWrap flexGrow={1}>
+            Holy-UI
+          </Typography>
+          {!drawerAlwaysOpen && (
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          )}
         </Box>
+      </DrawerHeader>
 
-        <Box>
-          <CardActions sx={{ mt: 2, display: "flex", justifyContent: "space-between" }}>
-            <IconButton onClick={handleLike} aria-label="like">
-              {liked ? <Favorite sx={{ color: "red" }} /> : <FavoriteBorderIcon />}{" "}
-            </IconButton>
-            <IconButton aria-label="comment">
-              <CommentIcon />
-            </IconButton>
-            <Button
-              onClick={() => (data.type === "group" ? navigate(`/${data.type?.toLowerCase()}`) : handleCardAction())}
-            >
-              More
-            </Button>
-          </CardActions>
-        </Box>
-      </Card>
-      <DynamicModal open={modalData.open} handleClose={handleModalClose} header={data.title} hideFooter={true}>
-        <ContentViewer item={data} displayContent={true} />
-        {/* {data.content} */}
-      </DynamicModal>
-    </>
+      {/* Added container with fixed height and overflow */}
+      <Box style={{ overflow: "auto", maxHeight: "calc(100vh - 64px)" }}>
+        <List style={{ padding: "2px 0" }}>
+          {groupedMenu &&
+            Object.entries(groupedMenu).map(([type, items], typeIndex) => (
+              <Fragment key={type}>
+                <ListSubheader sx={{ fontWeight: "bold" }}>{type === "public" ? "Public" : "Secure"}</ListSubheader>
+                <Divider sx={{ marginBottom: 1 }} />
+                {items.map((item, menuIndex) => (
+                  <Fragment key={item.name}>
+                    <ListItem
+                      button
+                      dense
+                      onClick={() => {
+                        if (item.sub_menu.length > 0 && !isSubMenOpen[typeIndex][menuIndex]) {
+                          handleSubMenOpenClick(typeIndex, menuIndex);
+                        }
+                        if (item.sub_menu.length === 0) {
+                          navigate(item.url);
+                        }
+                      }}
+                      sx={{ py: 1 }} // Adjusted vertical padding
+                    >
+                      <ListItemIcon>{item.icon}</ListItemIcon>
+                      <ListItemText primary={item.name} />
+                      {item.sub_menu && showMoreOrLessIcon(item.sub_menu, typeIndex, menuIndex)}
+                    </ListItem>
+                    {item.sub_menu && renderSubMenu(item.sub_menu, typeIndex, menuIndex)}
+                  </Fragment>
+                ))}
+              </Fragment>
+            ))}
+          {!isAuthenticated ? (
+            <StyledCustomButtons onClick={() => handleNavigation("/login")} color="primary">
+              Login
+            </StyledCustomButtons>
+          ) : (
+            <StyledCustomButtons onClick={() => handleNavigation("/logout")} color="primary">
+              Logout
+            </StyledCustomButtons>
+          )}
+        </List>
+      </Box>
+    </SwipeableDrawer>
   );
-}
-CardView.propTypes = {
-  data: shape({
-    background_image: string,
-    title: string.isRequired,
-    content: string
-  })
+});
+
+SideMenuDrawer.propTypes = {
+  handleDrawerClose: func.isRequired,
+  drawerAlwaysOpen: bool
 };
-export default CardView;
+
+export default SideMenuDrawer;
