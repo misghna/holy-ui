@@ -2,11 +2,13 @@
   "test": {
     "globalSetting": "global_setting",
     "contentData": "contents",
+    "pageConfig": "page_configs",
     "login": "login"
   },
   "prod": {
     "globalSetting": "global_setting",
     "contentData": "contents",
+    "pageConfig": "page_configs",
     "login": "login"
   }
 }

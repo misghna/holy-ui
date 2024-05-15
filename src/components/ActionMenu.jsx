@@ -14,7 +14,7 @@ function ActionMenu({ children, handleClick, handleClose, anchorEl }) {
   );
 }
 ActionMenu.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
   handleClick: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
   anchorEl: PropTypes.object

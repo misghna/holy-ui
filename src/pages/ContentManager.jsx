@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
 
+import AddIcon from "@mui/icons-material/Add";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import SaveIcon from "@mui/icons-material/Save";
-import SearchIcon from "@mui/icons-material/Search";
 import { Box, Container, MenuItem } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { makeStyles } from "@mui/styles";
@@ -10,7 +11,11 @@ import ActionMenu from "~/components/ActionMenu";
 import DynamicModal from "~/components/Modal";
 import Tab from "~/components/tabs/Tab";
 import Tabs from "~/components/tabs/Tabs";
-import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import useContentManager from "~/hooks/useContentManager";
+import ContentForm from "~/pages/ContentForm";
+import DocumentForm from "~/pages/DocumentForm";
+import PageConfig from "~/pages/PageConfig";
+import PageConfigForm from "~/pages/PageConfigForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,26 +32,40 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const MAPPING = { 0: "page_config", 1: "content_manager", 2: "document" };
-
 function ContentManager() {
-  const [activeTab, setActiveTab] = React.useState(1);
-  const { setting } = useGlobalSetting();
-  const { labels } = setting;
+  const {
+    activeTab,
+    handleTabChange,
+    labels,
+    currentDialogFormProps,
+    modalOpenAdd,
+    handleAddModalClose,
+    handleAddModalOpen,
+    populatePageConfigForm,
+    deletePageConfig
+  } = useContentManager();
+
   const [modelOpen, setModelOpen] = useState(false);
+
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleTabChange = useCallback(
-    (event, newValue) => {
-      setActiveTab(newValue);
-    },
-    [setActiveTab]
-  );
+  const TAB_MAPPING = useMemo(() => {
+    return {
+      0: (
+        <PageConfig
+          populatePageConfigForm={populatePageConfigForm}
+          deletePageConfig={deletePageConfig}
+          handleAddModalOpen={handleAddModalOpen}
+        />
+      ),
+      1: "content_manager",
+      2: "document"
+    };
+  }, [deletePageConfig, handleAddModalOpen, populatePageConfigForm]);
 
   const renderTabContent = useMemo(() => {
-    return <div>{`Content for ${labels[MAPPING[activeTab]]}`}</div>;
-  }, [activeTab, labels]);
+    return TAB_MAPPING[activeTab];
+  }, [TAB_MAPPING, activeTab]);
 
   const handleSearchIcon = useCallback(() => {
     setModelOpen(true);
@@ -54,6 +73,7 @@ function ContentManager() {
   const handleModelClose = useCallback(() => {
     setModelOpen(false);
   }, [setModelOpen]);
+
   const handleClick = useCallback(
     (event) => {
       setAnchorEl(event.currentTarget);
@@ -64,10 +84,64 @@ function ContentManager() {
   const handleClose = useCallback(() => {
     setAnchorEl(null);
   }, [setAnchorEl]);
-  const handleMenuItemClick = (action) => {
-    handleClose();
-    console.log("action ", action);
-  };
+  const handleMenuItemClick = useCallback(
+    (action) => {
+      let title = "";
+      if (activeTab === 0) {
+        title = "Add Page Config";
+      } else if (activeTab === 1) {
+        title = "Add Content";
+      } else {
+        title = "Add Document";
+      }
+      action(title);
+      handleClose();
+    },
+    [activeTab, handleClose]
+  );
+
+  const actionMenuItems = useMemo(
+    () => [
+      {
+        label: "Add New",
+        actionHandler: handleAddModalOpen,
+        icon: <AddIcon />
+      },
+      {
+        label: labels.action_menu_save,
+        actionHandler: () => {},
+        icon: <SaveIcon />
+      }
+    ],
+    [handleAddModalOpen, labels.action_menu_save]
+  );
+  const renderActionMenu = useMemo(
+    () =>
+      actionMenuItems &&
+      actionMenuItems.map((actionMenu, index) => {
+        return (
+          <MenuItem key={index} onClick={() => handleMenuItemClick(actionMenu.actionHandler)}>
+            <ListItemIcon>{actionMenu.icon}</ListItemIcon>
+            {actionMenu.label}
+          </MenuItem>
+        );
+      }),
+    [actionMenuItems, handleMenuItemClick]
+  );
+
+  const dialogForms = useCallback(() => {
+    const { pageConfig, handleChange, errors } = currentDialogFormProps.dialogProps;
+    switch (activeTab) {
+      case 0:
+        return <PageConfigForm pageConfig={{ ...pageConfig }} handleChange={handleChange} errors={errors} />;
+      case 1:
+        return <ContentForm {...currentDialogFormProps.dialogProps} />;
+      default:
+        return <DocumentForm {...currentDialogFormProps.dialogProps} />;
+    }
+  }, [activeTab, currentDialogFormProps.dialogProps]);
+  const currentForm = useMemo(() => dialogForms(), [dialogForms]);
+
   return (
     <Container>
       <Box className={classes.root}>
@@ -75,25 +149,35 @@ function ContentManager() {
           <h2>Content Manager</h2>
         </div>
         <Box className={classes.searchContainer}>
-          <SearchIcon fontSize="large" onClick={handleSearchIcon} />
-          <ActionMenu handleClick={handleClick} handleClose={handleClose} anchorEl={anchorEl}>
-            <MenuItem onClick={() => handleMenuItemClick("Action 1")}>
-              <ListItemIcon>
-                <SaveIcon />
-              </ListItemIcon>
-              {labels.action_menu_save}
-            </MenuItem>
+          <FilterListIcon onClick={handleSearchIcon} />
+          <ActionMenu handleClick={handleClick} handleClose={handleClose} actio anchorEl={anchorEl}>
+            {renderActionMenu}
           </ActionMenu>
         </Box>
       </Box>
       <Tabs activeTab={activeTab} handleTabChange={handleTabChange}>
-        <Tab label={labels?.page_config} />
-        <Tab label={labels?.content_manager} />
-        <Tab label={labels?.document} />
+        <Tab label={labels && labels?.page_config} />
+        <Tab label={labels && labels?.content_manager} />
+        <Tab label={labels && labels?.document} />
       </Tabs>
 
       {renderTabContent}
-      <DynamicModal header={labels.search_title} open={modelOpen} handleClose={handleModelClose}></DynamicModal>
+      <DynamicModal
+        header={labels && labels.search_title}
+        open={modelOpen}
+        handleClose={handleModelClose}
+        actionLabel="Search"
+      ></DynamicModal>
+      <DynamicModal
+        header={currentDialogFormProps.dialogHeader}
+        open={modalOpenAdd}
+        handleClose={handleAddModalClose}
+        actionLabel={currentDialogFormProps.actionLabel}
+        maxWidth={"md"}
+        actionHandler={currentDialogFormProps.actionHandler}
+      >
+        {currentForm}
+      </DynamicModal>
     </Container>
   );
 }

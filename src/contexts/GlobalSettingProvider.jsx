@@ -21,7 +21,9 @@ const initialState = {
     theme_colors: [],
     tenants: []
   },
-  personalSetting: {}
+  personalSetting: {
+    language: "english"
+  }
 };
 export const actionTypes = {
   FETCH_SETTING: "FETCH_SETTING",
@@ -69,7 +71,7 @@ export const GlobalSettingProvider = ({ children }) => {
     fetchSetting();
   }, [fetchSetting]);
 
-  if (setting.menu.length === 0) return null;
+  if (setting.menu?.length === 0) return null;
 
   return (
     <GlobalSettingContext.Provider value={{ setting, personalSetting, dispatch }}>
