@@ -41,7 +41,7 @@ const Layout = () => {
   const classes = useStyles();
   const params = useParams();
   useEffect(() => {
-    document.title = params.category;
+    document.title = params.category || "Holy";
   }, [params?.category]);
   return (
     <div className={classes.root}>
