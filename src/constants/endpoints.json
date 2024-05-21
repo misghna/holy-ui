@@ -3,7 +3,8 @@
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfig": "page_configs",
-    "login": "login"
+    "login": "login",
+    "userProfileAccessConfig": "user_profile"
   },
   "prod": {
     "globalSetting": "global_setting",
