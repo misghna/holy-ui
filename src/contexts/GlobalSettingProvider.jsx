@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useReducer } from "r
 import PropTypes from "prop-types";
 
 import { axiosPrivate } from "~/_api";
+import Loading from "~/components/Loading";
 import config from "~/constants/endpoints.json";
 import { getSetting, setSetting } from "~/utils/settingsService";
 
@@ -59,19 +60,19 @@ export const GlobalSettingProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { setting, personalSetting } = state;
 
-  const fetchSetting = useCallback(async () => {
-    try {
-      const response = await axiosPrivate.get(`/api/${currentConfig.globalSetting}`);
-      dispatch({ type: actionTypes.FETCH_SETTING, payload: response.data });
-    } catch (error) {
-      console.error("Error fetching menu data", error);
-    }
+  const fetchSetting = useCallback(() => {
+    axiosPrivate
+      .get(`/api/${currentConfig.globalSetting}`)
+      .then(({ data }) => {
+        dispatch({ type: actionTypes.FETCH_SETTING, payload: data });
+      })
+      .catch((error) => {
+        console.error("Error fetching menu data", error);
+      });
   }, [dispatch]);
-  useEffect(() => {
-    fetchSetting();
-  }, [fetchSetting]);
+  useEffect(fetchSetting, [fetchSetting]);
 
-  if (setting.menu?.length === 0) return null;
+  if (setting.menu?.length === 0) return <Loading />;
 
   return (
     <GlobalSettingContext.Provider value={{ setting, personalSetting, dispatch }}>
