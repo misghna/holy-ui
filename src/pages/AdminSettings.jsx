@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-
+import AddIcon from "@mui/icons-material/Add";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import SaveIcon from "@mui/icons-material/Save";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, Container, MenuItem } from "@mui/material";
@@ -11,6 +12,9 @@ import DynamicModal from "~/components/Modal";
 import Tab from "~/components/tabs/Tab";
 import Tabs from "~/components/tabs/Tabs";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import Language from "./Language";
+import useLanguage from "~/hooks/useLangauge";
+import LanguageForm from "./LanguageForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,8 +31,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const MAPPING = { 0: "languages", 1: "admin_settings", 2: "translations", 3: "other_settings" };
-
 function AdminSettings() {
   const [activeTab, setActiveTab] = React.useState(1);
   const { setting } = useGlobalSetting();
@@ -36,6 +38,14 @@ function AdminSettings() {
   const [modelOpen, setModelOpen] = useState(false);
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {
+    populateLanguageForm,
+    deleteLangConfig,
+    dialogFormProps,
+    handleAddModalClose,
+    handleAddModalOpen,
+    modalOpenAdd
+  } = useLanguage();
 
   const handleTabChange = useCallback(
     (event, newValue) => {
@@ -44,8 +54,15 @@ function AdminSettings() {
     [setActiveTab]
   );
 
+  const MAPPING = {
+    0: <Language populateLanguageForm={populateLanguageForm} deleteLanguage={deleteLangConfig} />,
+    1: "admin_settings",
+    2: "translations",
+    3: "other_settings"
+  };
+
   const renderTabContent = useMemo(() => {
-    return <div>{`Content for ${labels[MAPPING[activeTab]]}`}</div>;
+    return MAPPING[activeTab];
   }, [activeTab, labels]);
 
   const handleSearchIcon = useCallback(() => {
@@ -64,10 +81,64 @@ function AdminSettings() {
   const handleClose = useCallback(() => {
     setAnchorEl(null);
   }, [setAnchorEl]);
-  const handleMenuItemClick = (action) => {
-    handleClose();
-    console.log("action ", action);
-  };
+
+  const handleMenuItemClick = useCallback(
+    (action) => {
+      let title = "";
+      if (activeTab === 0) {
+        title = "Add Page Config";
+      } else if (activeTab === 1) {
+        title = "Add Content";
+      } else {
+        title = "Add Document";
+      }
+      action(title);
+      handleClose();
+    },
+    [activeTab, handleClose]
+  );
+
+  const actionMenuItems = useMemo(
+    () => [
+      {
+        label: "Add New",
+        actionHandler: handleAddModalOpen,
+        icon: <AddIcon />
+      },
+      {
+        label: labels.action_menu_save,
+        actionHandler: () => {},
+        icon: <SaveIcon />
+      }
+    ],
+    [handleAddModalOpen, labels.action_menu_save]
+  );
+  const renderActionMenu = useMemo(
+    () =>
+      actionMenuItems &&
+      actionMenuItems.map((actionMenu, index) => {
+        return (
+          <MenuItem key={index} onClick={() => handleMenuItemClick(actionMenu.actionHandler)}>
+            <ListItemIcon>{actionMenu.icon}</ListItemIcon>
+            {actionMenu.label}
+          </MenuItem>
+        );
+      }),
+    [actionMenuItems, handleMenuItemClick]
+  );
+
+  const dialogForms = useCallback(() => {
+    const { langConfig, handleChange, errors } = dialogFormProps.dialogProps;
+    switch (activeTab) {
+      case 0:
+        return <LanguageForm languageConfig={{ ...langConfig }} handleChange={handleChange} errors={errors} />;
+      case 1:
+        return null;
+      default:
+        return null;
+    }
+  }, [activeTab, dialogFormProps.dialogProps]);
+  const currentForm = useMemo(() => dialogForms(), [dialogForms]);
   return (
     <Container>
       <Box className={classes.root}>
@@ -75,14 +146,9 @@ function AdminSettings() {
           <h2>Admin Settings</h2>
         </div>
         <Box className={classes.searchContainer}>
-          <SearchIcon fontSize="large" onClick={handleSearchIcon} />
-          <ActionMenu handleClick={handleClick} handleClose={handleClose} anchorEl={anchorEl}>
-            <MenuItem onClick={() => handleMenuItemClick("Action 1")}>
-              <ListItemIcon>
-                <SaveIcon />
-              </ListItemIcon>
-              {labels.action_menu_save}
-            </MenuItem>
+          <FilterListIcon onClick={handleSearchIcon} />
+          <ActionMenu handleClick={handleClick} handleClose={handleClose} actio anchorEl={anchorEl}>
+            {renderActionMenu}
           </ActionMenu>
         </Box>
       </Box>
@@ -95,6 +161,16 @@ function AdminSettings() {
 
       {renderTabContent}
       <DynamicModal header={labels.search_title} open={modelOpen} handleClose={handleModelClose}></DynamicModal>
+      <DynamicModal
+        header={"add lang"}
+        open={modalOpenAdd}
+        handleClose={handleAddModalClose}
+        actionLabel={dialogFormProps.actionLabel}
+        maxWidth={"md"}
+        actionHandler={dialogFormProps.actionHandler}
+      >
+        {currentForm}
+      </DynamicModal>
     </Container>
   );
 }

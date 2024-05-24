@@ -16,9 +16,11 @@ export default function DynamicModal({
   open,
   handleClose,
   maxWidth = "sm",
-  handleSubmit,
+  actionHandler,
   hideFooter,
-  hideTitle
+  hideTitle,
+  actionLabel,
+  contentText
 }) {
   return (
     <Dialog open={open} fullWidth maxWidth={maxWidth} onClose={handleClose}>
@@ -41,9 +43,8 @@ export default function DynamicModal({
       )}
 
       <DialogContent dividers={true}>
-        <DialogContentText tabIndex={-1}>
-          <>{children}</>
-        </DialogContentText>
+        <DialogContentText tabIndex={-1}>{contentText}</DialogContentText>
+        {children}
       </DialogContent>
 
       {!hideFooter && (
@@ -51,8 +52,8 @@ export default function DynamicModal({
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
+          <Button variant="contained" onClick={actionHandler}>
+            {actionLabel}
           </Button>
         </DialogActions>
       )}
@@ -65,7 +66,9 @@ DynamicModal.propTypes = {
   maxWidth: string,
   open: bool,
   handleClose: func,
-  handleSubmit: func,
+  actionHandler: func,
   hideFooter: bool,
-  hideTitle: bool
+  hideTitle: bool,
+  actionLabel: string,
+  contentText: string
 };
