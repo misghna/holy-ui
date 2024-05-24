@@ -3,12 +3,14 @@
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfig": "page_configs",
-    "login": "login"
+    "login": "login",
+    "lang": "lang"
   },
   "prod": {
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfig": "page_configs",
-    "login": "login"
+    "login": "login",
+    "lang": "lang"
   }
 }
