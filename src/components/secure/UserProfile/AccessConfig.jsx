@@ -5,9 +5,9 @@ import PropTypes from "prop-types";
 import { axiosPrivate } from "~/_api";
 import Loading from "~/components/Loading";
 import EnhancedTable from "~/components/table/EnhancedTable";
-// import config from "~/constants/endpoints.json";
+import config from "~/constants/endpoints.json";
 
-// const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
+const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 
 const AccessConfig = ({ populateAccessConfigForm, deleteAccessConfig }) => {
   const [tableData, setTableData] = useState([]);
@@ -16,8 +16,8 @@ const AccessConfig = ({ populateAccessConfigForm, deleteAccessConfig }) => {
 
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      // .get(`/api/protected/${currentConfig.userProfileAccessConfig}`, {
-      .get(`https://api.npoint.io/0e2564f437aab98b0dd0`, {
+      .get(`/api/protected/${currentConfig.userProfileAccessConfig}`, {
+        // .get(`https://api.npoint.io/0e2564f437aab98b0dd0`, {
         params: {
           start,
           limit

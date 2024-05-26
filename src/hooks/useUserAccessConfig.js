@@ -12,9 +12,7 @@ const pageConfigInitial = {
   name: "",
   email: "",
   phone_number: "",
-  finance: "",
-  admin_settings: "",
-  content_manager: "",
+  access: [],
   orderNumber: 0
 };
 const useUserAccessConfig = () => {
@@ -30,13 +28,11 @@ const useUserAccessConfig = () => {
     name: Yup.string().required("Name is required"),
     email: Yup.string().required("Email is required "),
     phone_number: Yup.string().required("parent is required"),
-    // access: Yup.array().of(
-    //   Yup.object().shape({
-    finance: Yup.string(),
-    admin_settings: Yup.string(),
-    content_manager: Yup.string(),
-    //   })
-    // ),
+    accessListChanged: Yup.object().shape({
+      finance: Yup.string(),
+      admin_settings: Yup.string(),
+      content_manager: Yup.string()
+    }),
     id: Yup.string()
   });
 
@@ -95,7 +91,7 @@ const useUserAccessConfig = () => {
     },
     [validateField, setFormData]
   );
-  const savePageConfig = useCallback(() => {
+  const saveAccessConfig = useCallback(() => {
     validateObject(formData);
     axiosPrivate
       .post(`/api/protected/${currentConfig.userProfileAccessConfig}`, formData)
@@ -125,9 +121,21 @@ const useUserAccessConfig = () => {
 
   const updateAccessConfig = useCallback(() => {
     validateObject(formData);
-    console.log("{updateAccessConfig} :>> ", { formData });
+    const { access, accessListChanged = {}, ...formattedData } = formData;
+    const accessListPrevious = {};
+    // Formatting access array
+    access.map((prevAccessConfig) => {
+      Object.entries(prevAccessConfig).forEach(([key, value]) => {
+        accessListPrevious[key] = value;
+      });
+    });
+    // Formatting access array
+    formattedData.access = Object.entries({ ...accessListPrevious, ...accessListChanged }).map(([key, value]) => {
+      return { [key]: value };
+    });
+
     axiosPrivate
-      .put(`/api/protected/${currentConfig.userProfileAccessConfig}`, formData)
+      .put(`/api/protected/${currentConfig.userProfileAccessConfig}`, formattedData)
       .then(({ data }) => {
         console.log("saved successfully ", data);
       })
@@ -140,16 +148,20 @@ const useUserAccessConfig = () => {
   const populateAccessConfigForm = useCallback(
     (row) => {
       console.log("{row} :>> ", { row });
-
-      const pageConfigTemp = { ...row.original };
-
-      setFormData((prevPageConfig) => {
-        return {
-          ...prevPageConfig,
-          ...pageConfigTemp
-        };
-      });
-      handleAddModalOpen("Update Page Config");
+      axiosPrivate
+        .get(`/api/protected/${currentConfig.userProfileAccessConfig}/edit`, {
+          params: {
+            id: row.original.id
+          }
+        })
+        .then(({ data }) => {
+          console.log("{data} :>> ", { data });
+          setFormData(data);
+          handleAddModalOpen("Update Page Config");
+        })
+        .catch((err) => {
+          console.log("{err} :>> ", { err });
+        });
     },
     [handleAddModalOpen]
   );
@@ -174,14 +186,14 @@ const useUserAccessConfig = () => {
     return {
       0: {
         dialogProps: { ...pageConfigFormProps },
-        actionHandler: formData.id ? updateAccessConfig : savePageConfig,
+        actionHandler: formData.id ? updateAccessConfig : saveAccessConfig,
         dialogHeader: pageDialogTitle,
         actionLabel: pageDialogTitle.startsWith("Add") ? "Add" : "Save"
       },
       1: { dialogProps: {}, actionHandler: () => {}, dialogHeader: " Add Content", actionLabel: "Add" },
       2: { dialogProps: {}, actionHandler: () => {}, dialogHeader: " Add Document", actionLabel: "Save" }
     };
-  }, [pageConfigFormProps, formData, updateAccessConfig, savePageConfig, pageDialogTitle]);
+  }, [pageConfigFormProps, formData, updateAccessConfig, saveAccessConfig, pageDialogTitle]);
   return {
     activeTab,
     handleTabChange,
