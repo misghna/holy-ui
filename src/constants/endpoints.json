@@ -4,7 +4,7 @@
     "contentData": "contents",
     "pageConfig": "page_configs",
     "login": "login",
-    "lang": "lang"
+    "languages": "languages"
   },
   "prod": {
     "globalSetting": "global_setting",

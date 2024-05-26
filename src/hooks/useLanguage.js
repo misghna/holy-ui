@@ -95,7 +95,7 @@ const useLanguage = () => {
   const deleteLangConfig = useCallback((row) => {
     const { id } = row.original;
     axiosPrivate
-      .delete(`/api/protected/${currentConfig.lang}/${id}`)
+      .delete(`/api/protected/${currentConfig.languages}/${id}`)
       .then(({ data }) => {
         console.log("data deleted  ", data.id);
       })
