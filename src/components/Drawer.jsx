@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
-import { useLayout } from "~/contexts/LayoutProvider";
+import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -53,7 +53,7 @@ const StyledCustomButtons = styled(Button)({
 });
 
 const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, drawerAlwaysOpen }) {
-  const { state: drawerState } = useLayout();
+  const { state: drawerState, dispatch } = useLayout();
   const { open } = drawerState;
   const theme = useTheme();
   const { setting } = useGlobalSetting();
@@ -128,7 +128,9 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   return (
     <SwipeableDrawer
       onOpen={() => {}}
-      onClose={() => {}}
+      onClose={() => {
+        dispatch({ type: actionTypes.UNTOGGLE_DRAWER });
+      }}
       sx={{
         width: DRAWER_WIDTH,
         flexShrink: 0,
@@ -140,7 +142,6 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
           overflow: "auto"
         }
       }}
-      variant="persistent"
       anchor="left"
       open={open}
     >
