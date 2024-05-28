@@ -35,7 +35,11 @@ const CustomDropdown = ({ label, helperText, options, handleChange, ...rest }) =
           ))}
         </StyledSelect>
       </Box>
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      {helperText && (
+        <FormHelperText error={Boolean(helperText)} sx={{ alignSelf: "center" }}>
+          {helperText}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };
