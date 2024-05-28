@@ -68,17 +68,18 @@ const useContentManager = () => {
   const validateObject = useCallback(
     (formData) => {
       schema
-        .validate(formData)
+        .validate(formData, { abortEarly: false })
         .then(() => {
           setErrors({});
         })
-        .catch((error) => {
-          setErrors((prevErrors) => {
+        .catch((validationError) => {
+          const formattedErrors = validationError.inner.reduce((acc, err) => {
             return {
-              ...prevErrors,
-              ...error
+              ...acc,
+              [err.path]: err.message
             };
-          });
+          }, {});
+          setErrors(formattedErrors);
         });
     },
     [schema]
@@ -122,6 +123,7 @@ const useContentManager = () => {
   const handleAddModalClose = useCallback(() => {
     setModalOpenAdd(false);
     setPageConfig(pageConfigInitial);
+    setErrors({});
   }, [setModalOpenAdd, setPageConfig]);
 
   const updatePageConfig = useCallback(() => {
@@ -176,8 +178,21 @@ const useContentManager = () => {
         console.error("error :>> ", err);
       });
   }, []);
+  const addImageSelectionInPageConfig = (selectionButtonName, imageList) => {
+    setPageConfig((prevPageConfig) => {
+      return {
+        ...prevPageConfig,
+        [selectionButtonName]: imageList
+      };
+    });
+  };
   const pageConfigFormProps = useMemo(() => {
-    return { pageConfig: _.cloneDeep(pageConfig), handleChange, errors: _.cloneDeep(errors) };
+    return {
+      pageConfig: _.cloneDeep(pageConfig),
+      handleChange,
+      addImageSelectionInPageConfig,
+      errors: _.cloneDeep(errors)
+    };
   }, [errors, handleChange, pageConfig]);
   const dialogFormProps = useMemo(() => {
     return {

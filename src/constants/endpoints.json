@@ -3,12 +3,14 @@
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfig": "page_configs",
-    "login": "login"
+    "login": "login",
+    "file_list": "file_list"
   },
   "prod": {
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfig": "page_configs",
-    "login": "login"
+    "login": "login",
+    "file_list": "file_list"
   }
 }

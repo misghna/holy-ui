@@ -1,79 +1,58 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { Grid } from "@mui/material";
 import PropTypes from "prop-types";
 
+import { axiosPrivate } from "~/_api";
 import CustomDropdown from "~/components/CustomDropdown";
 import CustomTextarea from "~/components/CustomTextArea";
 import CustomTextField from "~/components/CustomTextField";
 import SelectImageButton from "~/components/SelectImageButton";
+import config from "~/constants/endpoints.json";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    title: "Breakfast",
-    author: "@bkristastucchio"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-    title: "Burger",
-    author: "@rollelflex_graphy726"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-    title: "Camera",
-    author: "@helloimnik"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-    title: "Coffee",
-    author: "@nolanissac"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-    title: "Hats",
-    author: "@hjrc33"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-    title: "Honey",
-    author: "@arwinneil"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-    title: "Basketball",
-    author: "@tjdragotta"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-    title: "Fern",
-    author: "@katie_wasserman"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-    title: "Mushrooms",
-    author: "@silverdalex"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-    title: "Tomato basil",
-    author: "@shelleypauls"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-    title: "Sea star",
-    author: "@peterlaster"
-  },
-  {
-    img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-    title: "Bike",
-    author: "@southside_customs"
-  }
-];
-
-const PageConfigForm = ({ pageConfig, handleChange, errors }) => {
+const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
+const PAGE_SIZE = 10;
+const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInPageConfig }) => {
   const { setting } = useGlobalSetting();
+  const [imageList, setImageList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  const [dataOffset, setDataOffset] = useState(0);
+  const fetchImageList = useCallback(
+    (infiniteFetch) => {
+      if (!infiniteFetch) {
+        setLoading(true);
+      }
+      axiosPrivate
+        .get(`/api/protected/${currentConfig.file_list}`, {
+          params: {
+            type: "image",
+            start: infiniteFetch ? dataOffset + PAGE_SIZE : dataOffset,
+            limit: PAGE_SIZE
+          }
+        })
+        .then(({ data }) => {
+          if (infiniteFetch) {
+            setDataOffset((prevState) => prevState + PAGE_SIZE);
+            if (data.length === 0) {
+              setHasMore(false);
+            }
+          }
+
+          setImageList((prevState) => {
+            return [...prevState, ...data];
+          });
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("error :>> ", error);
+          setHasMore(false);
+          setLoading(false);
+        });
+    },
+    [dataOffset]
+  );
 
   const uniquePageTypeOptions = useMemo(
     () =>
@@ -148,7 +127,15 @@ const PageConfigForm = ({ pageConfig, handleChange, errors }) => {
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <SelectImageButton label="Header Image" imageData={itemData || []} />
+        <SelectImageButton
+          label="Header Image"
+          name="headerImage"
+          loading={loading}
+          hasMore={hasMore}
+          fetchData={fetchImageList}
+          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
+          imageData={imageList || []}
+        />
       </Grid>
 
       <Grid item xs={12} sm={6}>
@@ -175,7 +162,15 @@ const PageConfigForm = ({ pageConfig, handleChange, errors }) => {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <SelectImageButton label="BG Image" imageData={itemData || []} />
+        <SelectImageButton
+          label="BG Image"
+          name="imageLink"
+          loading={loading}
+          hasMore={hasMore}
+          fetchData={fetchImageList}
+          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
+          imageData={imageList || []}
+        />
       </Grid>
 
       <Grid item xs={12} sm={6}>
@@ -204,9 +199,9 @@ const PageConfigForm = ({ pageConfig, handleChange, errors }) => {
 };
 PageConfigForm.propTypes = {
   pageConfig: PropTypes.object.isRequired,
-
   handleChange: PropTypes.func.isRequired,
-  errors: PropTypes.object
+  errors: PropTypes.object,
+  addImageSelectionInPageConfig: PropTypes.func
 };
 
 export default PageConfigForm;

@@ -130,10 +130,17 @@ function ContentManager() {
   );
 
   const dialogForms = useCallback(() => {
-    const { pageConfig, handleChange, errors } = currentDialogFormProps.dialogProps;
+    const { pageConfig, handleChange, errors, addImageSelectionInPageConfig } = currentDialogFormProps.dialogProps;
     switch (activeTab) {
       case 0:
-        return <PageConfigForm pageConfig={{ ...pageConfig }} handleChange={handleChange} errors={errors} />;
+        return (
+          <PageConfigForm
+            pageConfig={{ ...pageConfig }}
+            addImageSelectionInPageConfig={addImageSelectionInPageConfig}
+            handleChange={handleChange}
+            errors={errors}
+          />
+        );
       case 1:
         return <ContentForm {...currentDialogFormProps.dialogProps} />;
       default:
