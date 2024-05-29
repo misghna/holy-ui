@@ -136,7 +136,11 @@ const useContentManager = () => {
     (row) => {
       const { id } = row.original;
       axiosPrivate
-        .get(`/api/protected/${currentConfig.pageConfig}/${id}`, {})
+        .get(`/api/protected/${currentConfig.pageConfig}`, {
+          params: {
+            id
+          }
+        })
         .then(({ data }) => {
           const pageConfigTemp = {
             id: data.id,
@@ -168,9 +172,13 @@ const useContentManager = () => {
   const deletePageConfig = useCallback((row) => {
     const { id } = row.original;
     axiosPrivate
-      .delete(`/api/protected/${currentConfig.pageConfig}/${id}`)
+      .delete(`/api/protected/${currentConfig.pageConfig}}`, {
+        params: {
+          id
+        }
+      })
       .then(({ data }) => {
-        console.log("data deleted  ", data.id);
+        console.log("data deleted :>> ", data.id);
       })
       .catch((err) => {
         console.error("error :>> ", err);
