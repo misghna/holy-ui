@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Grid } from "@mui/material";
 import PropTypes from "prop-types";
@@ -14,45 +14,14 @@ import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
 const PAGE_SIZE = 10;
 const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInPageConfig }) => {
-  const { setting } = useGlobalSetting();
+  const [imageUrls, setImageUrls] = useState({});
+
   const [imageList, setImageList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   const [dataOffset, setDataOffset] = useState(0);
-  const fetchImageList = useCallback(
-    (infiniteFetch) => {
-      if (!infiniteFetch) {
-        setLoading(true);
-      }
-      axiosPrivate
-        .get(`/api/protected/${currentConfig.file_list}`, {
-          params: {
-            type: "image",
-            start: infiniteFetch ? dataOffset + PAGE_SIZE : dataOffset,
-            limit: PAGE_SIZE
-          }
-        })
-        .then(({ data }) => {
-          if (infiniteFetch) {
-            setDataOffset((prevState) => prevState + PAGE_SIZE);
-            if (data.length === 0) {
-              setHasMore(false);
-            }
-          }
 
-          setImageList((prevState) => {
-            return [...prevState, ...data];
-          });
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("error :>> ", error);
-          setHasMore(false);
-          setLoading(false);
-        });
-    },
-    [dataOffset]
-  );
+  const { setting } = useGlobalSetting();
 
   const uniquePageTypeOptions = useMemo(
     () =>
@@ -89,6 +58,72 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
       }),
     [setting.langs]
   );
+
+  const fetchImageList = useCallback((infiniteFetch) => {
+    if (!infiniteFetch) {
+      setLoading(true);
+    }
+    axiosPrivate
+      .get(`/api/protected/${currentConfig.file_list}`, {
+        params: {
+          type: "image",
+          start: infiniteFetch ? dataOffset + PAGE_SIZE : dataOffset,
+          limit: PAGE_SIZE
+        }
+      })
+      .then(async ({ data }) => {
+        if (infiniteFetch) {
+          setDataOffset((prevState) => prevState + PAGE_SIZE);
+
+          if (data.length === 0) {
+            setHasMore(false);
+          }
+        }
+        await fetchImages(data);
+        setImageList((prevState) => {
+          return [...prevState, ...data];
+        });
+        console.log("here", infiniteFetch);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("error :>> ", error);
+        setHasMore(false);
+        setLoading(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const fetchImages = useCallback(async (imageData) => {
+    try {
+      const requests = imageData.map((item) =>
+        axiosPrivate.get(`https://holydemo.com/api/protected/file`, {
+          params: {
+            id: item.id,
+            thumbnail: true
+          },
+          responseType: "blob"
+        })
+      );
+
+      const responses = await Promise.all(requests);
+      const urls = responses.reduce((acc, response, index) => {
+        const imageUrl = URL.createObjectURL(response.data);
+        acc[imageData[index].id] = imageUrl;
+        return acc;
+      }, {});
+
+      setImageUrls((prevUrls) => {
+        return { ...prevUrls, ...urls };
+      });
+    } catch (error) {
+      console.error("Error fetching images:", error);
+    }
+  }, []);
+
+   
+  useEffect(() => {
+    fetchImageList(false);
+  }, [fetchImageList]);
 
   return (
     <Grid container spacing={2} alignItems="baseline">
@@ -130,11 +165,12 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
         <SelectImageButton
           label="Header Image"
           name="headerImage"
+          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
           loading={loading}
           hasMore={hasMore}
-          fetchData={fetchImageList}
-          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
-          imageData={imageList || []}
+          fetchImageList={fetchImageList}
+          imageList={imageList}
+          imageUrls={imageUrls}
         />
       </Grid>
 
@@ -165,11 +201,12 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
         <SelectImageButton
           label="BG Image"
           name="imageLink"
+          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
           loading={loading}
           hasMore={hasMore}
-          fetchData={fetchImageList}
-          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
-          imageData={imageList || []}
+          fetchImageList={fetchImageList}
+          imageList={imageList}
+          imageUrls={imageUrls}
         />
       </Grid>
 

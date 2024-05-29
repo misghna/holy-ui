@@ -1,17 +1,16 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { Box, FormControl, Typography, styled, CircularProgress } from "@mui/material";
 import ImageList from "@mui/material/ImageList";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { axiosPrivate } from "~/_api";
 import CustomButton from "~/components/CustomButton";
+import ImageItem from "~/components/ImageItem";
 import Loading from "~/components/Loading";
 import DynamicModal from "~/components/Modal";
 import NoData from "~/components/NoData";
 
-import ImageItem from "./ImageItem";
 const StyledTypography = styled(Typography)({
   marginBottom: "8px",
   whiteSpace: "nowrap",
@@ -22,17 +21,17 @@ const StyledTypography = styled(Typography)({
 const SelectImageButton = ({
   label,
   name,
-  imageData,
-  fetchData,
   loading,
   hasMore,
+  fetchImageList,
+  imageList,
+  imageUrls,
   addImageSelectionInPageConfig,
   ...rest
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
   const scrollableRef = useRef(null);
-  const [imageUrls, setImageUrls] = useState({});
 
   const handleModalOpen = useCallback(() => {
     setModalOpen(true);
@@ -58,38 +57,7 @@ const SelectImageButton = ({
     addImageSelectionInPageConfig(name, selectedItem);
     handleModalClose();
   };
-  const fetchImages = useCallback(async () => {
-    try {
-      const requests = imageData.map((item) =>
-        axiosPrivate.get(`https://holydemo.com/api/protected/file`, {
-          params: {
-            id: item.id,
-            thumbnail: true
-          },
-          responseType: "blob"
-        })
-      );
 
-      const responses = await Promise.all(requests);
-      const urls = responses.reduce((acc, response, index) => {
-        const imageUrl = URL.createObjectURL(response.data);
-        acc[imageData[index].id] = imageUrl;
-        return acc;
-      }, {});
-
-      setImageUrls(urls);
-    } catch (error) {
-      console.error("Error fetching images:", error);
-    }
-  }, [imageData]);
-
-  useEffect(() => {
-    if (imageData.length > 0) {
-      fetchImages();
-    }
-  }, [imageData, fetchImages]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(fetchData, []);
   const handleKeyDown = (event) => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.stopPropagation();
@@ -100,12 +68,13 @@ const SelectImageButton = ({
     if (loading) {
       return <Loading />;
     }
-    if (!loading && imageData.length === 0) {
+    if (!loading & (imageList.length === 0)) {
       return <NoData />;
     }
     return (
       <Box
         ref={scrollableRef}
+        id="scrollableDiv"
         tabIndex="0"
         sx={{
           maxHeight: "400px",
@@ -116,8 +85,8 @@ const SelectImageButton = ({
         onKeyDown={handleKeyDown}
       >
         <InfiniteScroll
-          dataLength={imageData.length} //This is important field to render the next data
-          next={() => fetchData(true)}
+          dataLength={imageList.length} //This is important field to render the next data
+          next={() => fetchImageList(true)}
           hasMore={hasMore}
           hasChildren={false}
           loader={
@@ -126,9 +95,10 @@ const SelectImageButton = ({
             </Box>
           }
           horizontal
+          scrollableTarget="scrollableDiv"
         >
           <ImageList sx={{}}>
-            {imageData.map((item) => (
+            {imageList.map((item) => (
               <ImageItem
                 key={item.id}
                 item={item}
@@ -141,7 +111,7 @@ const SelectImageButton = ({
         </InfiniteScroll>
       </Box>
     );
-  }, [fetchData, handleItemClick, hasMore, imageData, imageUrls, loading, selectedItem]);
+  }, [fetchImageList, handleItemClick, hasMore, imageList, imageUrls, loading, selectedItem]);
 
   return (
     <>
@@ -166,12 +136,14 @@ const SelectImageButton = ({
 
 SelectImageButton.propTypes = {
   label: PropTypes.string.isRequired,
-  imageData: PropTypes.array,
+
   addImageSelectionInPageConfig: PropTypes.func,
   name: PropTypes.string,
-  fetchData: PropTypes.func,
   loading: PropTypes.bool,
-  hasMore: PropTypes.func
+  hasMore: PropTypes.bool,
+  fetchImageList: PropTypes.func,
+  imageList: PropTypes.array,
+  imageUrls: PropTypes.object
 };
 
 export default SelectImageButton;
