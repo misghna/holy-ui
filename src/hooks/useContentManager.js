@@ -20,6 +20,18 @@ const pageConfigInitial = {
   headerImage: "",
   orderNumber: 0
 };
+const schema = Yup.object().shape({
+  pageType: Yup.string().required("Page Type is required"),
+  name: Yup.string().required("name is required"),
+  headerText: Yup.string().required("Header text is required "),
+  parent: Yup.string().required("parent is required"),
+  description: Yup.string(),
+  language: Yup.string().required("language is required"),
+  headerImage: Yup.string(),
+  orderNumber: Yup.number(),
+  imageLink: Yup.string(),
+  id: Yup.string()
+});
 const useContentManager = () => {
   const [pageConfig, setPageConfig] = useState(pageConfigInitial);
   const [errors, setErrors] = useState({});
@@ -29,61 +41,42 @@ const useContentManager = () => {
   const { labels } = setting;
   const [pageDialogTitle, setPageDialogTitle] = useState("");
 
-  const schema = Yup.object().shape({
-    pageType: Yup.string().required("Page Type is required"),
-    name: Yup.string().required("name is required"),
-    headerText: Yup.string().required("Header text is required "),
-    parent: Yup.string().required("parent is required"),
-    description: Yup.string(),
-    language: Yup.string().required("language is required"),
-    headerImage: Yup.string(),
-    orderNumber: Yup.number(),
-    imageLink: Yup.string(),
-    id: Yup.string()
-  });
-
-  const validateField = useCallback(
-    (name, value) => {
-      schema
-        .validateAt(name, { [name]: value })
-        .then(() => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: ""
-            };
-          });
-        })
-        .catch((error) => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: error.message
-            };
-          });
+  const validateField = useCallback((name, value) => {
+    schema
+      .validateAt(name, { [name]: value })
+      .then(() => {
+        setErrors((prevErrors) => {
+          return {
+            ...prevErrors,
+            [name]: ""
+          };
         });
-    },
-    [schema]
-  );
-  const validateObject = useCallback(
-    (formData) => {
-      schema
-        .validate(formData, { abortEarly: false })
-        .then(() => {
-          setErrors({});
-        })
-        .catch((validationError) => {
-          const formattedErrors = validationError.inner.reduce((acc, err) => {
-            return {
-              ...acc,
-              [err.path]: err.message
-            };
-          }, {});
-          setErrors(formattedErrors);
+      })
+      .catch((error) => {
+        setErrors((prevErrors) => {
+          return {
+            ...prevErrors,
+            [name]: error.message
+          };
         });
-    },
-    [schema]
-  );
+      });
+  }, []);
+  const validateObject = useCallback((formData) => {
+    schema
+      .validate(formData, { abortEarly: false })
+      .then(() => {
+        setErrors({});
+      })
+      .catch((error) => {
+        const formattedErrors = error.inner.reduce((acc, err) => {
+          return {
+            ...acc,
+            [err.path]: err.message
+          };
+        }, {});
+        setErrors(formattedErrors);
+      });
+  }, []);
 
   const handleChange = useCallback(
     (event) => {
@@ -99,9 +92,10 @@ const useContentManager = () => {
     [validateField, setPageConfig]
   );
   const savePageConfig = useCallback(() => {
-    validateObject(pageConfig);
-    axiosPrivate
-      .post(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
+    validateObject(pageConfig)
+      .then(() => {
+        return axiosPrivate.post(`/api/protected/${currentConfig.pageConfig}`, pageConfig);
+      })
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
@@ -109,6 +103,7 @@ const useContentManager = () => {
         console.error("error :>> ", err);
       });
   }, [pageConfig, validateObject]);
+
   const handleTabChange = useCallback(
     (event, newValue) => {
       setActiveTab(newValue);
@@ -127,9 +122,8 @@ const useContentManager = () => {
   }, [setModalOpenAdd, setPageConfig]);
 
   const updatePageConfig = useCallback(() => {
-    validateObject(pageConfig);
-    axiosPrivate
-      .put(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
+    validateObject(pageConfig)
+      .then(() => axiosPrivate.put(`/api/protected/${currentConfig.pageConfig}`, pageConfig))
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
