@@ -134,29 +134,33 @@ const useContentManager = () => {
   }, [validateObject, pageConfig]);
   const populatePageConfigForm = useCallback(
     (row) => {
-      const { id, name, page_type, parent, language, header_text, img_link, header_image, order_number, description } =
-        row.original;
-
-      const pageConfigTemp = {
-        id: id,
-        pageType: page_type,
-        parent: parent,
-        headerText: header_text,
-        language: language,
-        imageLink: img_link,
-        headerImage: header_image,
-        orderNumber: order_number,
-        description,
-        name
-      };
-
-      setPageConfig((prevPageConfig) => {
-        return {
-          ...prevPageConfig,
-          ...pageConfigTemp
-        };
-      });
-      handleAddModalOpen("Update Page Config");
+      const { id } = row.original;
+      axiosPrivate
+        .get(`/api/protected/${currentConfig.pageConfig}/${id}`, {})
+        .then(({ data }) => {
+          const pageConfigTemp = {
+            id: data.id,
+            pageType: data.page_type,
+            parent: data.parent,
+            headerText: data.header_text,
+            language: data.language,
+            imageLink: data.img_link,
+            headerImage: data.header_image,
+            orderNumber: data.order_number,
+            description: data.description,
+            name: data.name
+          };
+          setPageConfig((prevPageConfig) => {
+            return {
+              ...prevPageConfig,
+              ...pageConfigTemp
+            };
+          });
+          handleAddModalOpen("Update Page Config");
+        })
+        .catch((error) => {
+          console.log("Error : >> ", error);
+        });
     },
     [handleAddModalOpen]
   );

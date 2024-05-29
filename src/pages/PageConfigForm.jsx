@@ -120,7 +120,6 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
     }
   }, []);
 
-   
   useEffect(() => {
     fetchImageList(false);
   }, [fetchImageList]);
@@ -218,7 +217,7 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
           name="orderNumber"
           value={pageConfig.orderNumber}
           handleChange={handleChange}
-          helperText={(errors && errors?.headerText) || ""}
+          helperText={(errors && errors?.orderNumber) || ""}
         />
       </Grid>
 
