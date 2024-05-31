@@ -13,7 +13,7 @@ const pageConfigInitial = {
   pageType: "",
   name: "",
   headerText: "",
-  imageLink: "",
+  pageUrl: "",
   parent: "",
   description: "",
   language: "",
@@ -27,9 +27,9 @@ const schema = Yup.object().shape({
   parent: Yup.string().required("parent is required"),
   description: Yup.string(),
   language: Yup.string().required("language is required"),
-  headerImage: Yup.string(),
+  headerImage: Yup.array(),
   orderNumber: Yup.number(),
-  imageLink: Yup.string(),
+  pageUrl: Yup.string(),
   id: Yup.string()
 });
 const useContentManager = () => {
@@ -62,20 +62,26 @@ const useContentManager = () => {
       });
   }, []);
   const validateObject = useCallback((formData) => {
-    schema
-      .validate(formData, { abortEarly: false })
-      .then(() => {
-        setErrors({});
-      })
-      .catch((error) => {
-        const formattedErrors = error.inner.reduce((acc, err) => {
-          return {
-            ...acc,
-            [err.path]: err.message
-          };
-        }, {});
-        setErrors(formattedErrors);
-      });
+    return new Promise((resolve, reject) => {
+      schema
+        .validate(formData, { abortEarly: false })
+        .then(() => {
+          console.log("infor >> :Validation succeeded.");
+          setErrors({});
+          resolve();
+        })
+        .catch((error) => {
+          console.log("Error >> :Validation failed.");
+          const formattedErrors = error.inner.reduce((acc, err) => {
+            return {
+              ...acc,
+              [err.path]: err.message
+            };
+          }, {});
+          setErrors(formattedErrors);
+          reject(formattedErrors);
+        });
+    });
   }, []);
 
   const handleChange = useCallback(
@@ -92,9 +98,21 @@ const useContentManager = () => {
     [validateField, setPageConfig]
   );
   const savePageConfig = useCallback(() => {
+    const data = {
+      page_type: pageConfig.pageType,
+      name: pageConfig.name,
+      description: pageConfig.description,
+      parent: pageConfig.parent,
+      header_img: pageConfig.headerImage,
+      language: pageConfig.language,
+      header_text: pageConfig.headerText,
+      page_url: pageConfig.pageUrl,
+      seq_no: pageConfig.orderNumber
+    };
+    console.log("promise ", validateObject(pageConfig));
     validateObject(pageConfig)
       .then(() => {
-        return axiosPrivate.post(`/api/protected/${currentConfig.pageConfig}`, pageConfig);
+        return axiosPrivate.post(`/api/protected/${currentConfig.pageConfig}`, data);
       })
       .then(({ data }) => {
         console.log("saved succefylly ", data);
@@ -123,7 +141,21 @@ const useContentManager = () => {
 
   const updatePageConfig = useCallback(() => {
     validateObject(pageConfig)
-      .then(() => axiosPrivate.put(`/api/protected/${currentConfig.pageConfig}`, pageConfig))
+      .then(() => {
+        const data = {
+          id: pageConfig?.id,
+          page_type: pageConfig.pageType,
+          name: pageConfig.name,
+          description: pageConfig.description,
+          parent: pageConfig.parent,
+          header_img: pageConfig.headerImage,
+          language: pageConfig.language,
+          header_text: pageConfig.headerText,
+          page_url: pageConfig.pageUrl,
+          seq_no: pageConfig.orderNumber
+        };
+        return axiosPrivate.put(`/api/protected/${currentConfig.pageConfig}`, data);
+      })
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })

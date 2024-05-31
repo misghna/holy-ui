@@ -75,15 +75,20 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
         if (infiniteFetch) {
           setDataOffset((prevState) => prevState + PAGE_SIZE);
 
-          if (data.length === 0) {
+          if (data.length < PAGE_SIZE) {
             setHasMore(false);
           }
         }
-        await fetchImages(data);
+
         setImageList((prevState) => {
-          return [...prevState, ...data];
+          const combined = [...prevState, ...data];
+          const uniqueData = Array.from(new Set(combined.map((item) => item.id))).map((id) =>
+            combined.find((item) => item.id === id)
+          );
+          fetchImages(uniqueData).then(() => {});
+          return uniqueData;
         });
-        console.log("here", infiniteFetch);
+
         setLoading(false);
       })
       .catch((error) => {
@@ -105,16 +110,15 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
         })
       );
 
-      const responses = await Promise.all(requests);
+      let responses = await Promise.allSettled(requests);
+      responses = responses.filter((response) => response.status == "fulfilled");
       const urls = responses.reduce((acc, response, index) => {
-        const imageUrl = URL.createObjectURL(response.data);
+        const imageUrl = URL.createObjectURL(response.value.data);
         acc[imageData[index].id] = imageUrl;
         return acc;
       }, {});
 
-      setImageUrls((prevUrls) => {
-        return { ...prevUrls, ...urls };
-      });
+      setImageUrls(urls);
     } catch (error) {
       console.error("Error fetching images:", error);
     }
@@ -197,15 +201,13 @@ const PageConfigForm = ({ pageConfig, handleChange, errors, addImageSelectionInP
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <SelectImageButton
-          label="BG Image"
-          name="imageLink"
-          addImageSelectionInPageConfig={addImageSelectionInPageConfig}
-          loading={loading}
-          hasMore={hasMore}
-          fetchImageList={fetchImageList}
-          imageList={imageList}
-          imageUrls={imageUrls}
+        <CustomTextField
+          label="Page URL"
+          fullWidth
+          name="pageUrl"
+          value={pageConfig.pageUrl}
+          handleChange={handleChange}
+          helperText={(errors && errors?.pageUrl) || ""}
         />
       </Grid>
 
