@@ -124,6 +124,7 @@ const SelectImageButton = ({
       <DynamicModal
         header={"Select Images"}
         open={modalOpen}
+        maxWidth={"md"}
         handleClose={handleModalClose}
         actionHandler={imageListActionHandler}
         actionLabel="Save"
