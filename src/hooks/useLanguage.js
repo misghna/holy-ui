@@ -13,7 +13,6 @@ const langConfigInitial = {
   tenant_id: ""
 };
 const schema = Yup.object().shape({
-  lang_id: Yup.string().required("lang Id is required"),
   lang_name: Yup.string().required("Lang Name is required"),
   tenant_id: Yup.string().required("tenant Id text is required ")
 });
@@ -47,24 +46,29 @@ const useLanguage = () => {
     },
     [schema]
   );
-  const validateObject = useCallback(
-    (formData) => {
+
+  const validateObject = useCallback((formData) => {
+    return new Promise((resolve, reject) => {
       schema
-        .validate(formData)
+        .validate(formData, { abortEarly: false })
         .then(() => {
+          console.log("Info: Validation succeeded.");
           setErrors({});
+          resolve();
         })
         .catch((error) => {
-          setErrors((prevErrors) => {
+          console.log("Error: Validation failed.");
+          const formattedErrors = error.inner.reduce((acc, err) => {
             return {
-              ...prevErrors,
-              ...error
+              ...acc,
+              [err.path]: err.message
             };
-          });
+          }, {});
+          setErrors(formattedErrors);
+          reject(formattedErrors);
         });
-    },
-    [schema]
-  );
+    });
+  }, []);
 
   const handleChange = useCallback(
     (event) => {
@@ -116,19 +120,19 @@ const useLanguage = () => {
   const saveLangeConfig = useCallback(() => {
     validateObject(langConfig);
     axiosPrivate
-      .post(`/api/protected/${currentConfig.pageConfig}`, langConfig)
+      .post(`/api/protected/${currentConfig.languages}`, langConfig)
       .then(({ data }) => {
-        console.log("saved succefylly ", data);
+        console.log("saved successfully ", data);
       })
       .catch((err) => {
         console.error("error :>> ", err);
       });
-  }, [langConfig, validateObject]);
+  });
 
   const updateLangConfig = useCallback(() => {
     validateObject(langConfig);
     axiosPrivate
-      .put(`/api/protected/${currentConfig.pageConfig}`, langConfig)
+      .put(`/api/protected/${currentConfig.languages}`, langConfig)
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
