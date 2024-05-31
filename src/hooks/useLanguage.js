@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
-
+import axiosPrivate from "path/to/axiosPrivate"; // Make sure the path is correct
 import _ from "lodash";
-
 import * as Yup from "yup";
 import config from "~/constants/endpoints.json";
 
@@ -12,9 +11,10 @@ const langConfigInitial = {
   lang_name: "",
   tenant_id: ""
 };
+
 const schema = Yup.object().shape({
   lang_name: Yup.string().required("Lang Name is required"),
-  tenant_id: Yup.string().required("tenant Id text is required ")
+  tenant_id: Yup.string().required("Tenant ID is required")
 });
 
 const useLanguage = () => {
@@ -28,23 +28,19 @@ const useLanguage = () => {
       schema
         .validateAt(name, { [name]: value })
         .then(() => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: ""
-            };
-          });
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: ""
+          }));
         })
         .catch((error) => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: error.message
-            };
-          });
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: error.message
+          }));
         });
     },
-    [schema]
+    []
   );
 
   const validateObject = useCallback((formData) => {
@@ -58,12 +54,10 @@ const useLanguage = () => {
         })
         .catch((error) => {
           console.log("Error: Validation failed.");
-          const formattedErrors = error.inner.reduce((acc, err) => {
-            return {
-              ...acc,
-              [err.path]: err.message
-            };
-          }, {});
+          const formattedErrors = error.inner.reduce((acc, err) => ({
+            ...acc,
+            [err.path]: err.message
+          }), {});
           setErrors(formattedErrors);
           reject(formattedErrors);
         });
@@ -73,89 +67,103 @@ const useLanguage = () => {
   const handleChange = useCallback(
     (event) => {
       const { name, value } = event.target;
-      setLangConfig((prevState) => {
-        return {
-          ...prevState,
-          [name]: value
-        };
-      });
+      setLangConfig((prevState) => ({
+        ...prevState,
+        [name]: value
+      }));
       validateField(name, value);
     },
-    [validateField, setLangConfig]
+    [validateField]
   );
 
-  const populateLanguageForm = (row) => {
-    const { lang_id, lang_name, tenant_id } = row.original;
-    setLangConfig((prevState) => {
-      return {
-        ...prevState,
-        lang_id,
-        lang_name,
-        tenant_id
-      };
-    });
-  };
+  const populatePageConfigForm = useCallback(
+    (row) => {
+      const { id } = row.original;
+
+      axiosPrivate
+        .get(`/api/protected/${currentConfig.languages}`, { params: { id } })
+        .then(({ data }) => {
+          const { lang_id, lang_name, tenant_id } = data;
+          setLangConfig((prevPageConfig) => ({
+            ...prevPageConfig,
+            lang_id,
+            lang_name,
+            tenant_id
+          }));
+
+          handleAddModalOpen("Update Page Config");
+        })
+        .catch((error) => {
+          console.log("Error: >> ", error);
+        });
+    },
+    [handleAddModalOpen]
+  );
 
   const deleteLangConfig = useCallback((row) => {
     const { id } = row.original;
     axiosPrivate
       .delete(`/api/protected/${currentConfig.languages}/${id}`)
       .then(({ data }) => {
-        console.log("data deleted  ", data.id);
+        console.log("Data deleted: ", data.id);
       })
       .catch((err) => {
-        console.error("error :>> ", err);
+        console.error("Error: >> ", err);
       });
   }, []);
 
   const handleAddModalOpen = useCallback((title) => {
     setPageDialogTitle(title);
-    setModalOpenAdd(() => true);
+    setModalOpenAdd(true);
   }, []);
+
   const handleAddModalClose = useCallback(() => {
     setModalOpenAdd(false);
     setLangConfig(langConfigInitial);
-  }, [setModalOpenAdd, setLangConfig]);
+  }, []);
 
-  const saveLangeConfig = useCallback(() => {
-    validateObject(langConfig);
-    axiosPrivate
-      .post(`/api/protected/${currentConfig.languages}`, langConfig)
+  const saveLangConfig = useCallback(() => {
+    validateObject(langConfig)
+      .then(() => {
+        return axiosPrivate.post(`/api/protected/${currentConfig.languages}`, langConfig);
+      })
       .then(({ data }) => {
-        console.log("saved successfully ", data);
+        console.log("Saved successfully: ", data);
       })
       .catch((err) => {
-        console.error("error :>> ", err);
+        console.error("Error: >> ", err);
       });
-  });
+  }, [validateObject, langConfig]);
 
   const updateLangConfig = useCallback(() => {
-    validateObject(langConfig);
-    axiosPrivate
-      .put(`/api/protected/${currentConfig.languages}`, langConfig)
+    validateObject(langConfig)
+      .then(() => {
+        return axiosPrivate.put(`/api/protected/${currentConfig.languages}`, langConfig);
+      })
       .then(({ data }) => {
-        console.log("saved succefylly ", data);
+        console.log("Saved successfully: ", data);
       })
       .catch((err) => {
-        console.error("error :>> ", err);
+        console.error("Error: >> ", err);
       });
     setLangConfig(langConfigInitial);
   }, [validateObject, langConfig]);
 
-  const langConfigFormProps = useMemo(() => {
-    return { langConfig: _.cloneDeep(langConfig), handleChange, errors: _.cloneDeep(errors) };
-  }, [errors, handleChange, langConfig]);
-  const dialogFormProps = useMemo(() => {
-    return {
-      dialogProps: { ...langConfigFormProps, pageConfig: _.cloneDeep(langConfig) },
-      actionHandler: langConfig.id ? updateLangConfig : saveLangeConfig,
-      dialogHeader: pageDialogTitle,
-      actionLabel: pageDialogTitle.startsWith("Add") ? "Add" : "Save"
-    };
-  }, [langConfigFormProps, langConfig, updateLangConfig, saveLangeConfig, pageDialogTitle]);
+  const langConfigFormProps = useMemo(() => ({
+    langConfig: _.cloneDeep(langConfig),
+    handleChange,
+    errors: _.cloneDeep(errors)
+  }), [errors, handleChange, langConfig]);
+
+  const dialogFormProps = useMemo(() => ({
+    dialogProps: { ...langConfigFormProps, pageConfig: _.cloneDeep(langConfig) },
+    actionHandler: langConfig.id ? updateLangConfig : saveLangConfig,
+    dialogHeader: pageDialogTitle,
+    actionLabel: pageDialogTitle.startsWith("Add") ? "Add" : "Save"
+  }), [langConfigFormProps, langConfig, updateLangConfig, saveLangConfig, pageDialogTitle]);
 
   return {
-    populateLanguageForm,
+    populatePageConfigForm,
     deleteLangConfig,
     modalOpenAdd,
     dialogFormProps,
@@ -163,4 +171,5 @@ const useLanguage = () => {
     handleAddModalOpen
   };
 };
+
 export default useLanguage;
