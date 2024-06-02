@@ -2,7 +2,8 @@
   "test": {
     "globalSetting": "global_setting",
     "contentData": "contents",
-    "pageConfig": "page_configs",
+    "pageConfig": "page_config",
+    "pageConfigs": "page_configs",
     "login": "login",
     "file_list": "file_list"
   },
@@ -10,6 +11,7 @@
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfig": "page_configs",
+    "pageConfigs": "page_configs",
     "login": "login",
     "file_list": "file_list"
   }

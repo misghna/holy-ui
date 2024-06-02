@@ -25,7 +25,11 @@ const CustomTextarea = ({ label, helperText, handleChange, ...rest }) => {
     <FormControl fullWidth>
       <StyledTypography>{label}</StyledTypography>
       <StyledTextareaAutosize onChange={handleChange} {...rest} minRows={4} />
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      {helperText && (
+        <FormHelperText error={Boolean(helperText)} sx={{ alignSelf: "center" }}>
+          {helperText}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };

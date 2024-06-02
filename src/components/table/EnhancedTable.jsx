@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -55,11 +55,15 @@ const EnhancedTable = ({
 
   fetchData,
   updateMyData,
-  skipPageReset,
+
   deleteAction,
   shouldVisibleToolbar = true,
-  populateForm
+  populateForm,
+  totalRows,
+  tableInitialState
 }) => {
+  const [pageCount, setPageCount] = useState(0);
+  const notCallFirstime = useRef(true);
   const {
     getTableProps,
     headerGroups,
@@ -74,9 +78,19 @@ const EnhancedTable = ({
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 100 },
+      initialState: tableInitialState,
       defaultColumn,
-      autoResetPage: !skipPageReset,
+      manualPagination: true,
+      pageCount,
+
+      autoResetPage: false,
+      autoResetExpanded: false,
+      autoResetGroupBy: false,
+      autoResetSelectedRows: false,
+      autoResetSortBy: false,
+      autoResetFilters: false,
+      autoResetRowState: false,
+
       // updateMyData isn't part of the API, but
       // anything we put into these options will
       // automatically be available on the instance.
@@ -89,7 +103,10 @@ const EnhancedTable = ({
     usePagination,
     useRowSelect
   );
-  const dontCallAtFirst = useRef(true);
+
+  useEffect(() => {
+    setPageCount(Math.ceil(totalRows / pageSize));
+  }, [totalRows, pageSize]);
 
   const handleChangePage = useCallback(
     (event, newPage) => {
@@ -117,9 +134,10 @@ const EnhancedTable = ({
     },
     [deleteAction]
   );
+
   useEffect(() => {
-    if (dontCallAtFirst.current) {
-      dontCallAtFirst.current = false;
+    if (notCallFirstime.current) {
+      notCallFirstime.current = false;
       return;
     }
     fetchData(pageIndex, pageSize);
@@ -226,9 +244,9 @@ const EnhancedTable = ({
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[10, 100, { label: "All", value: data.length }]}
+                rowsPerPageOptions={[10, 100, { label: "All", value: totalRows }]}
                 colSpan={columns.length / 2}
-                count={data.length}
+                count={totalRows}
                 rowsPerPage={pageSize}
                 page={pageIndex}
                 slotProps={{
@@ -252,7 +270,7 @@ EnhancedTable.propTypes = {
   data: PropTypes.array.isRequired,
   updateMyData: PropTypes.func.isRequired,
   setData: PropTypes.func.isRequired,
-  skipPageReset: PropTypes.bool.isRequired,
+
   fetchData: PropTypes.func.isRequired,
 
   deleteAction: PropTypes.func,
@@ -260,7 +278,9 @@ EnhancedTable.propTypes = {
   pageConfig: PropTypes.object,
   handleChange: PropTypes.func,
   populateForm: PropTypes.func,
-  formDialog: PropTypes.node
+  formDialog: PropTypes.node,
+  totalRows: PropTypes.number,
+  tableInitialState: PropTypes.instanceOf(Object)
 };
 
 export default EnhancedTable;

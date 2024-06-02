@@ -25,7 +25,7 @@ const schema = Yup.object().shape({
   name: Yup.string().required("name is required"),
   headerText: Yup.string().required("Header text is required "),
   parent: Yup.string().required("parent is required"),
-  description: Yup.string(),
+  description: Yup.string().required("description is required"),
   language: Yup.string().required("language is required"),
   headerImage: Yup.array(),
   orderNumber: Yup.number(),
@@ -107,9 +107,9 @@ const useContentManager = () => {
       language: pageConfig.language,
       header_text: pageConfig.headerText,
       page_url: pageConfig.pageUrl,
-      seq_no: pageConfig.orderNumber
+      seq_no: Number(pageConfig.orderNumber)
     };
-    console.log("promise ", validateObject(pageConfig));
+
     validateObject(pageConfig)
       .then(() => {
         return axiosPrivate.post(`/api/protected/${currentConfig.pageConfig}`, data);
