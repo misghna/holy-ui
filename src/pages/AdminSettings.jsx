@@ -1,8 +1,8 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+
 import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SaveIcon from "@mui/icons-material/Save";
-import SearchIcon from "@mui/icons-material/Search";
 import { Box, Container, MenuItem } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { makeStyles } from "@mui/styles";
@@ -12,8 +12,9 @@ import DynamicModal from "~/components/Modal";
 import Tab from "~/components/tabs/Tab";
 import Tabs from "~/components/tabs/Tabs";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
+import useLanguage from "~/hooks/useLanguage";
+
 import Language from "./Language";
-import useLanguage from "~/hooks/useLangauge";
 import LanguageForm from "./LanguageForm";
 
 const useStyles = makeStyles((theme) => ({
@@ -32,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AdminSettings() {
-  const [activeTab, setActiveTab] = React.useState(1);
+  const [activeTab, setActiveTab] = useState(1);
   const { setting } = useGlobalSetting();
   const { labels } = setting;
   const [modelOpen, setModelOpen] = useState(false);
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const {
     populateLanguageForm,
     deleteLangConfig,
@@ -60,10 +61,6 @@ function AdminSettings() {
     2: "translations",
     3: "other_settings"
   };
-
-  const renderTabContent = useMemo(() => {
-    return MAPPING[activeTab];
-  }, [activeTab, labels]);
 
   const handleSearchIcon = useCallback(() => {
     setModelOpen(true);
@@ -159,7 +156,7 @@ function AdminSettings() {
         <Tab label={labels?.other_settings} />
       </Tabs>
 
-      {renderTabContent}
+      {MAPPING[activeTab]}
       <DynamicModal header={labels.search_title} open={modelOpen} handleClose={handleModelClose}></DynamicModal>
       <DynamicModal
         header={"add lang"}
