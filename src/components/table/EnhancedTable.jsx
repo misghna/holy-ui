@@ -140,7 +140,8 @@ const EnhancedTable = ({
       notCallFirstime.current = false;
       return;
     }
-    fetchData(pageIndex, pageSize);
+    const startIndex = pageIndex * pageSize;
+    fetchData(startIndex, pageSize);
   }, [fetchData, pageIndex, pageSize]);
 
   return (

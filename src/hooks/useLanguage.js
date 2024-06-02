@@ -1,7 +1,9 @@
 import { useState, useMemo, useCallback } from "react";
-import axiosPrivate from "path/to/axiosPrivate"; // Make sure the path is correct
+
 import _ from "lodash";
 import * as Yup from "yup";
+
+import { axiosPrivate } from "~/_api/index"; // Make sure the path is correct
 import config from "~/constants/endpoints.json";
 
 const currentConfig = import.meta.env.MODE === "development" ? config.test : config.prod;
@@ -23,25 +25,22 @@ const useLanguage = () => {
   const [pageDialogTitle, setPageDialogTitle] = useState("");
   const [modalOpenAdd, setModalOpenAdd] = useState(false);
 
-  const validateField = useCallback(
-    (name, value) => {
-      schema
-        .validateAt(name, { [name]: value })
-        .then(() => {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            [name]: ""
-          }));
-        })
-        .catch((error) => {
-          setErrors((prevErrors) => ({
-            ...prevErrors,
-            [name]: error.message
-          }));
-        });
-    },
-    []
-  );
+  const validateField = useCallback((name, value) => {
+    schema
+      .validateAt(name, { [name]: value })
+      .then(() => {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: ""
+        }));
+      })
+      .catch((error) => {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: error.message
+        }));
+      });
+  }, []);
 
   const validateObject = useCallback((formData) => {
     return new Promise((resolve, reject) => {
@@ -54,10 +53,13 @@ const useLanguage = () => {
         })
         .catch((error) => {
           console.log("Error: Validation failed.");
-          const formattedErrors = error.inner.reduce((acc, err) => ({
-            ...acc,
-            [err.path]: err.message
-          }), {});
+          const formattedErrors = error.inner.reduce(
+            (acc, err) => ({
+              ...acc,
+              [err.path]: err.message
+            }),
+            {}
+          );
           setErrors(formattedErrors);
           reject(formattedErrors);
         });
@@ -75,6 +77,16 @@ const useLanguage = () => {
     },
     [validateField]
   );
+
+  const handleAddModalOpen = useCallback((title) => {
+    setPageDialogTitle(title);
+    setModalOpenAdd(true);
+  }, []);
+
+  const handleAddModalClose = useCallback(() => {
+    setModalOpenAdd(false);
+    setLangConfig(langConfigInitial);
+  }, []);
 
   const populatePageConfigForm = useCallback(
     (row) => {
@@ -112,16 +124,6 @@ const useLanguage = () => {
       });
   }, []);
 
-  const handleAddModalOpen = useCallback((title) => {
-    setPageDialogTitle(title);
-    setModalOpenAdd(true);
-  }, []);
-
-  const handleAddModalClose = useCallback(() => {
-    setModalOpenAdd(false);
-    setLangConfig(langConfigInitial);
-  }, []);
-
   const saveLangConfig = useCallback(() => {
     validateObject(langConfig)
       .then(() => {
@@ -149,18 +151,24 @@ const useLanguage = () => {
     setLangConfig(langConfigInitial);
   }, [validateObject, langConfig]);
 
-  const langConfigFormProps = useMemo(() => ({
-    langConfig: _.cloneDeep(langConfig),
-    handleChange,
-    errors: _.cloneDeep(errors)
-  }), [errors, handleChange, langConfig]);
+  const langConfigFormProps = useMemo(
+    () => ({
+      langConfig: _.cloneDeep(langConfig),
+      handleChange,
+      errors: _.cloneDeep(errors)
+    }),
+    [errors, handleChange, langConfig]
+  );
 
-  const dialogFormProps = useMemo(() => ({
-    dialogProps: { ...langConfigFormProps, pageConfig: _.cloneDeep(langConfig) },
-    actionHandler: langConfig.id ? updateLangConfig : saveLangConfig,
-    dialogHeader: pageDialogTitle,
-    actionLabel: pageDialogTitle.startsWith("Add") ? "Add" : "Save"
-  }), [langConfigFormProps, langConfig, updateLangConfig, saveLangConfig, pageDialogTitle]);
+  const dialogFormProps = useMemo(
+    () => ({
+      dialogProps: { ...langConfigFormProps, pageConfig: _.cloneDeep(langConfig) },
+      actionHandler: langConfig.id ? updateLangConfig : saveLangConfig,
+      dialogHeader: pageDialogTitle,
+      actionLabel: pageDialogTitle.startsWith("Add") ? "Add" : "Save"
+    }),
+    [langConfigFormProps, langConfig, updateLangConfig, saveLangConfig, pageDialogTitle]
+  );
 
   return {
     populatePageConfigForm,

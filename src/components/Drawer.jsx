@@ -1,4 +1,5 @@
-import React, { Fragment, useMemo, useState, useRef, useEffect } from "react";
+import React, { Fragment, useMemo, useState, useRef, useEffect, useCallback } from "react";
+
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -21,6 +22,7 @@ import Collapse from "@mui/material/Collapse";
 import { styled, useTheme } from "@mui/material/styles";
 import { bool, func } from "prop-types";
 import { useNavigate } from "react-router-dom";
+
 import { DRAWER_WIDTH } from "~/constants/theme";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
 import { actionTypes, useLayout } from "~/contexts/LayoutProvider";
@@ -79,11 +81,14 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
   const drawerRef = useRef(null);
 
-  const handleClickOutside = (event) => {
-    if (drawerRef.current && !drawerRef.current.contains(event.target)) {
-      handleDrawerClose();
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        handleDrawerClose();
+      }
+    },
+    [handleDrawerClose]
+  );
 
   useEffect(() => {
     if (open) {
@@ -94,7 +99,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [open]);
+  }, [handleClickOutside, open]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
     if (submenu?.length === 0 || isSubMenOpen.length === 0) return null;

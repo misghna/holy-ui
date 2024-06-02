@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
+
 import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SaveIcon from "@mui/icons-material/Save";
-import SearchIcon from "@mui/icons-material/Search";
 import { Box, Container, MenuItem } from "@mui/material";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import { makeStyles } from "@mui/styles";
@@ -12,9 +12,9 @@ import DynamicModal from "~/components/Modal";
 import Tab from "~/components/tabs/Tab";
 import Tabs from "~/components/tabs/Tabs";
 import { useGlobalSetting } from "~/contexts/GlobalSettingProvider";
-import Language from "./Language";
-import useLanguage from "~/hooks/useLangauge";
-import LanguageForm from "./LanguageForm";
+import useLanguage from "~/hooks/useLanguage";
+import Language from "~/pages/Language";
+import LanguageForm from "~/pages/LanguageForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,16 +54,18 @@ function AdminSettings() {
     [setActiveTab]
   );
 
-  const MAPPING = {
-    0: <Language populateLanguageForm={populateLanguageForm} deleteLanguage={deleteLangConfig} />,
-    1: "admin_settings",
-    2: "translations",
-    3: "other_settings"
-  };
+  const MAPPING = useMemo(() => {
+    return {
+      0: <Language populateLanguageForm={populateLanguageForm} deleteLanguage={deleteLangConfig} />,
+      1: "admin_settings",
+      2: "translations",
+      3: "other_settings"
+    };
+  }, [deleteLangConfig, populateLanguageForm]);
 
   const renderTabContent = useMemo(() => {
     return MAPPING[activeTab];
-  }, [activeTab, labels]);
+  }, [MAPPING, activeTab]);
 
   const handleSearchIcon = useCallback(() => {
     setModelOpen(true);

@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
 import PropTypes from "prop-types";
 
 import { axiosPrivate } from "~/_api";
@@ -48,7 +49,7 @@ const Language = ({ populateLanguageForm, deleteLanguage }) => {
 
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      .get(`/api/protected/${currentConfig.languageConfig}`, {
+      .get(`/api/protected/${currentConfig.languages}`, {
         params: {
           start,
           limit
@@ -99,6 +100,7 @@ const Language = ({ populateLanguageForm, deleteLanguage }) => {
         deleteAction={deleteLanguage}
         shouldVisibleToolbar={true}
         populateForm={populateLanguageForm}
+        totalRows={data.length}
       />
     </div>
   );
