@@ -11,7 +11,7 @@ const StyledTypography = styled(Typography)({
 const StyledSelect = styled(Select)({
   flex: "1",
   padding: "10px",
-  fontWeight: "bold",
+
   border: "1px solid #ced4da",
   borderRadius: "4px",
   color: "#333",
@@ -35,7 +35,11 @@ const CustomDropdown = ({ label, helperText, options, handleChange, ...rest }) =
           ))}
         </StyledSelect>
       </Box>
-      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      {helperText && (
+        <FormHelperText error={Boolean(helperText)} sx={{ alignSelf: "center" }}>
+          {helperText}
+        </FormHelperText>
+      )}
     </FormControl>
   );
 };
