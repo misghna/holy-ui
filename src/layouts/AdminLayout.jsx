@@ -41,7 +41,7 @@ const AdminLayout = () => {
   const classes = useStyles();
   const params = useParams();
   useEffect(() => {
-    if (params.type) document.title = params.type;
+    if (params.type) document.title = params.type || "Holy";
   }, [params?.type]);
   return (
     <div className={classes.root}>

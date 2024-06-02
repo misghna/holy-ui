@@ -5,14 +5,18 @@
     "pageConfigs": "page_configs",
     "login": "login",
     "file_list": "file_list",
-    "languages": "languages"
+    "userProfileAccessConfig": "user_profile",
+    "languages": "languages",
+    "pageConfig": "page_config"
   },
   "prod": {
     "globalSetting": "global_setting",
     "contentData": "contents",
     "pageConfigs": "page_configs",
-    "file_list": "file_list",
     "login": "login",
-    "languages": "languages"
+    "file_list": "file_list",
+    "userProfileAccessConfig": "user_profile",
+    "languages": "languages",
+    "pageConfig": "page_config"
   }
 }

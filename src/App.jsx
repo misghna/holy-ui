@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { LayoutProvider } from "~/contexts/LayoutProvider";
 import Layout from "~/layouts";
@@ -8,6 +8,7 @@ import NotFoundPage from "~/pages/404";
 import AdminSettings from "~/pages/AdminSettings";
 import ContentManager from "~/pages/ContentManager";
 import Login from "~/pages/Login";
+import UserProfile from "~/pages/secure/UserProfile";
 import CategoryPages from "~/pages/WebsiteCategoryPages";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
             {/* Routes for secure/admin functionalities */}
             <Route path="/secure/*" element={<ProtectedLayout />}>
               <Route index element={<Navigate to="/secure/content_manager" replace />} />
+              <Route path="user_profile" element={<UserProfile />} />
               <Route path="content_manager" element={<ContentManager />} />
               <Route path="admin_settings" element={<AdminSettings />} />
             </Route>

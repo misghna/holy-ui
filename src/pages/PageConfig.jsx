@@ -98,7 +98,6 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
   useEffect(() => {
     if (!callFirstTimeOnly.current) {
       callFirstTimeOnly.current = true;
-
       fetchData(0, 10);
     }
   }, [fetchData]);
