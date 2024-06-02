@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState, useRef, useEffect, useCallback } from "react";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -79,6 +79,27 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
   }, [groupedMenu]);
 
   const [isSubMenOpen, setIsSubMenOpen] = useState([...submenus]);
+  const drawerRef = useRef(null);
+
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (drawerRef.current && !drawerRef.current.contains(event.target)) {
+        handleDrawerClose();
+      }
+    },
+    [handleDrawerClose]
+  );
+
+  useEffect(() => {
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [handleClickOutside, open]);
 
   const renderSubMenu = (submenu, typeIndex, menuIndex) => {
     if (submenu?.length === 0 || isSubMenOpen.length === 0) return null;
@@ -127,6 +148,7 @@ const SideMenuDrawer = React.memo(function SideMenuDrawer({ handleDrawerClose, d
 
   return (
     <SwipeableDrawer
+      ref={drawerRef}
       onOpen={() => {}}
       onClose={() => {}}
       sx={{

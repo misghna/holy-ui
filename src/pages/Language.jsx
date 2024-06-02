@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 
@@ -11,53 +11,29 @@ const currentConfig = import.meta.env.MODE === "development" ? config.test : con
 
 const COLUMNS = [
   {
-    Header: "Page Type",
-    accessor: "page_type"
+    Header: "Id",
+    accessor: "id"
   },
   {
-    Header: "Name",
-    accessor: "name"
+    Header: "Tenant Name",
+    accessor: "tenant_name"
   },
   {
-    Header: "Description",
-    accessor: "description"
-  },
-  {
-    Header: "Image Link",
-    accessor: "img_link"
-  },
-  {
-    Header: "Language",
-    accessor: "language"
-  },
-  {
-    Header: "Parent",
-    accessor: "parent"
-  },
-  {
-    Header: "Header Image",
-    accessor: "header_img"
-  },
-  {
-    Header: "Header Text",
-    accessor: "header_text"
+    Header: "Lang_Name",
+    accessor: "lang_name"
   },
   {
     Header: "Updated By",
     accessor: "updated_by"
   },
-
   {
     Header: "Created At",
     accessor: "created_at",
-
     type: "date"
   },
-
   {
     Header: "Updated At",
     accessor: "updated_at",
-
     type: "date"
   },
   {
@@ -65,29 +41,22 @@ const COLUMNS = [
     accessor: "action"
   }
 ];
-const tableInitialState = {
-  pageIndex: 0,
-  pageSize: 10
-};
 
-const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
-  const [data, setData] = React.useState([]);
-
+const Language = ({ populateLanguageForm, deleteLanguage }) => {
+  const [data, setData] = useState([]);
+  const [skipPageReset, setSkipPageReset] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [totalRows, setTotalRows] = useState();
-  const callFirstTimeOnly = useRef(false);
 
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      .get(`/api/protected/${currentConfig.pageConfigs}`, {
+      .get(`/api/protected/${currentConfig.languageConfig}`, {
         params: {
           start,
           limit
         }
       })
       .then(({ data }) => {
-        setData(data.data);
-        setTotalRows(data.totalRows);
+        setData(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -95,21 +64,13 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
         setLoading(false);
       });
   }, []);
-  useEffect(() => {
-    if (!callFirstTimeOnly.current) {
-      callFirstTimeOnly.current = true;
 
-      fetchData(0, 10);
-    }
+  useEffect(() => {
+    fetchData(0, 100);
   }, [fetchData]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   const updateMyData = (rowIndex, columnId, value) => {
-    // We also turn on the flag to not reset the page
-
+    setSkipPageReset(true);
     setData((old) =>
       old.map((row, index) => {
         if (index === rowIndex) {
@@ -123,6 +84,10 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
     );
   };
 
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <div>
       <EnhancedTable
@@ -131,19 +96,19 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
         fetchData={fetchData}
         setData={setData}
         updateMyData={updateMyData}
-        deleteAction={deletePageConfig}
+        skipPageReset={skipPageReset}
+        deleteAction={deleteLanguage}
         shouldVisibleToolbar={true}
-        populateForm={populatePageConfigForm}
-        totalRows={totalRows}
-        tableInitialState={tableInitialState}
+        populateForm={populateLanguageForm}
       />
     </div>
   );
 };
-PageConfig.propTypes = {
-  deletePageConfig: PropTypes.func,
-  populatePageConfigForm: PropTypes.func,
+
+Language.propTypes = {
+  deleteLanguage: PropTypes.func,
+  populateLanguageForm: PropTypes.func,
   handleAddModalOpen: PropTypes.func
 };
 
-export default PageConfig;
+export default Language;
