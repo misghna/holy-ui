@@ -78,6 +78,16 @@ const useLanguage = () => {
     [validateField]
   );
 
+  const handleAddModalOpen = useCallback((title) => {
+    setPageDialogTitle(title);
+    setModalOpenAdd(true);
+  }, []);
+
+  const handleAddModalClose = useCallback(() => {
+    setModalOpenAdd(false);
+    setLangConfig(langConfigInitial);
+  }, []);
+
   const populatePageConfigForm = useCallback(
     (row) => {
       const { id } = row.original;
@@ -112,16 +122,6 @@ const useLanguage = () => {
       .catch((err) => {
         console.error("Error: >> ", err);
       });
-  }, []);
-
-  const handleAddModalOpen = useCallback((title) => {
-    setPageDialogTitle(title);
-    setModalOpenAdd(true);
-  }, []);
-
-  const handleAddModalClose = useCallback(() => {
-    setModalOpenAdd(false);
-    setLangConfig(langConfigInitial);
   }, []);
 
   const saveLangConfig = useCallback(() => {
