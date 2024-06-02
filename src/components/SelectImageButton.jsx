@@ -1,13 +1,15 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
-import { Box, FormControl, Typography, styled, useTheme } from "@mui/material";
+import { Box, FormControl, Typography, styled, CircularProgress } from "@mui/material";
 import ImageList from "@mui/material/ImageList";
-import ImageListItem from "@mui/material/ImageListItem";
-import ImageListItemBar from "@mui/material/ImageListItemBar";
 import PropTypes from "prop-types";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import CustomButton from "~/components/CustomButton";
+import ImageItem from "~/components/ImageItem";
+import Loading from "~/components/Loading";
 import DynamicModal from "~/components/Modal";
+import NoData from "~/components/NoData";
 
 const StyledTypography = styled(Typography)({
   marginBottom: "8px",
@@ -16,44 +18,100 @@ const StyledTypography = styled(Typography)({
   textTransform: "capitalize"
 });
 
-const SelectImageButton = ({ label, imageData, ...rest }) => {
-  const theme = useTheme();
+const SelectImageButton = ({
+  label,
+  name,
+  loading,
+  hasMore,
+  fetchImageList,
+  imageList,
+  imageUrls,
+  addImageSelectionInPageConfig,
+  ...rest
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState([]);
+  const scrollableRef = useRef(null);
+
   const handleModalOpen = useCallback(() => {
     setModalOpen(true);
   }, [setModalOpen]);
   const handleModalClose = useCallback(() => {
     setModalOpen(false);
   }, [setModalOpen]);
-  const handleItemClick = (index) => {
-    setSelectedItem(index);
+  const handleItemClick = useCallback(
+    (id) => {
+      const imageExist = selectedItem.find((item) => item === id);
+      if (imageExist) {
+        const index = selectedItem.indexOf(id);
+        const selectedItemTemp = [...selectedItem];
+        selectedItemTemp.splice(index, 1);
+        setSelectedItem(selectedItemTemp);
+        return;
+      }
+      setSelectedItem((prevItem) => [...prevItem, id]);
+    },
+    [selectedItem]
+  );
+  const imageListActionHandler = () => {
+    addImageSelectionInPageConfig(name, selectedItem);
+    handleModalClose();
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+      event.stopPropagation();
+    }
+  };
+
   const renderImage = useCallback(() => {
+    if (loading) {
+      return <Loading />;
+    }
+    if (!loading & (imageList.length === 0)) {
+      return <NoData />;
+    }
     return (
-      <Box sx={{ height: "400px", overflowY: "auto", padding: "8px" }}>
-        <ImageList>
-          {imageData.map((item, index) => (
-            <ImageListItem
-              key={item.img}
-              onClick={() => {
-                handleItemClick(index);
-              }}
-              sx={{ border: selectedItem === index ? `2px solid ${theme.palette.primary.main}` : "", padding: "2px" }}
-            >
-              <img
-                srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                src={`${item.img}?w=248&fit=crop&auto=format`}
-                alt={item.title}
-                loading="lazy"
+      <Box
+        ref={scrollableRef}
+        id="scrollableDiv"
+        tabIndex="0"
+        sx={{
+          maxHeight: "400px",
+          overflowY: "auto",
+          padding: 2,
+          whiteSpace: "nowrap"
+        }}
+        onKeyDown={handleKeyDown}
+      >
+        <InfiniteScroll
+          dataLength={imageList.length} //This is important field to render the next data
+          next={() => fetchImageList(true)}
+          hasMore={hasMore}
+          hasChildren={false}
+          loader={
+            <Box display="flex" py={4} justifyContent="center" alignItems="center" sx={{ width: "100%" }}>
+              <CircularProgress />
+            </Box>
+          }
+          horizontal
+          scrollableTarget="scrollableDiv"
+        >
+          <ImageList sx={{}}>
+            {imageList.map((item) => (
+              <ImageItem
+                key={item.id}
+                item={item}
+                handleItemClick={handleItemClick}
+                selectedItem={selectedItem}
+                imageUrl={imageUrls[item.id]}
               />
-              <ImageListItemBar title={item.title} subtitle={<span>by: {item.author}</span>} position="below" />
-            </ImageListItem>
-          ))}
-        </ImageList>
+            ))}
+          </ImageList>
+        </InfiniteScroll>
       </Box>
     );
-  }, [imageData, selectedItem, theme.palette.primary.main]);
+  }, [fetchImageList, handleItemClick, hasMore, imageList, imageUrls, loading, selectedItem]);
 
   return (
     <>
@@ -63,7 +121,14 @@ const SelectImageButton = ({ label, imageData, ...rest }) => {
           <CustomButton label="Select Image" fullWidth handleClick={handleModalOpen} {...rest} />
         </Box>
       </FormControl>
-      <DynamicModal header={"Select Images"} open={modalOpen} handleClose={handleModalClose} actionLabel="Save">
+      <DynamicModal
+        header={"Select Images"}
+        open={modalOpen}
+        maxWidth={"md"}
+        handleClose={handleModalClose}
+        actionHandler={imageListActionHandler}
+        actionLabel="Save"
+      >
         {renderImage()}
       </DynamicModal>
     </>
@@ -72,7 +137,14 @@ const SelectImageButton = ({ label, imageData, ...rest }) => {
 
 SelectImageButton.propTypes = {
   label: PropTypes.string.isRequired,
-  imageData: PropTypes.array
+
+  addImageSelectionInPageConfig: PropTypes.func,
+  name: PropTypes.string,
+  loading: PropTypes.bool,
+  hasMore: PropTypes.bool,
+  fetchImageList: PropTypes.func,
+  imageList: PropTypes.array,
+  imageUrls: PropTypes.object
 };
 
 export default SelectImageButton;

@@ -13,13 +13,25 @@ const pageConfigInitial = {
   pageType: "",
   name: "",
   headerText: "",
-  imageLink: "",
+  pageUrl: "",
   parent: "",
   description: "",
   language: "",
   headerImage: "",
   orderNumber: 0
 };
+const schema = Yup.object().shape({
+  pageType: Yup.string().required("Page Type is required"),
+  name: Yup.string().required("name is required"),
+  headerText: Yup.string().required("Header text is required "),
+  parent: Yup.string().required("parent is required"),
+  description: Yup.string().required("description is required"),
+  language: Yup.string().required("language is required"),
+  headerImage: Yup.array(),
+  orderNumber: Yup.number(),
+  pageUrl: Yup.string(),
+  id: Yup.string()
+});
 const useContentManager = () => {
   const [pageConfig, setPageConfig] = useState(pageConfigInitial);
   const [errors, setErrors] = useState({});
@@ -29,60 +41,48 @@ const useContentManager = () => {
   const { labels } = setting;
   const [pageDialogTitle, setPageDialogTitle] = useState("");
 
-  const schema = Yup.object().shape({
-    pageType: Yup.string().required("Page Type is required"),
-    name: Yup.string().required("name is required"),
-    headerText: Yup.string().required("Header text is required "),
-    parent: Yup.string().required("parent is required"),
-    description: Yup.string(),
-    language: Yup.string().required("language is required"),
-    headerImage: Yup.string(),
-    orderNumber: Yup.number(),
-    imageLink: Yup.string(),
-    id: Yup.string()
-  });
-
-  const validateField = useCallback(
-    (name, value) => {
-      schema
-        .validateAt(name, { [name]: value })
-        .then(() => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: ""
-            };
-          });
-        })
-        .catch((error) => {
-          setErrors((prevErrors) => {
-            return {
-              ...prevErrors,
-              [name]: error.message
-            };
-          });
+  const validateField = useCallback((name, value) => {
+    schema
+      .validateAt(name, { [name]: value })
+      .then(() => {
+        setErrors((prevErrors) => {
+          return {
+            ...prevErrors,
+            [name]: ""
+          };
         });
-    },
-    [schema]
-  );
-  const validateObject = useCallback(
-    (formData) => {
+      })
+      .catch((error) => {
+        setErrors((prevErrors) => {
+          return {
+            ...prevErrors,
+            [name]: error.message
+          };
+        });
+      });
+  }, []);
+  const validateObject = useCallback((formData) => {
+    return new Promise((resolve, reject) => {
       schema
-        .validate(formData)
+        .validate(formData, { abortEarly: false })
         .then(() => {
+          console.log("infor >> :Validation succeeded.");
           setErrors({});
+          resolve();
         })
         .catch((error) => {
-          setErrors((prevErrors) => {
+          console.log("Error >> :Validation failed.");
+          const formattedErrors = error.inner.reduce((acc, err) => {
             return {
-              ...prevErrors,
-              ...error
+              ...acc,
+              [err.path]: err.message
             };
-          });
+          }, {});
+          setErrors(formattedErrors);
+          reject(formattedErrors);
         });
-    },
-    [schema]
-  );
+    });
+  }, []);
 
   const handleChange = useCallback(
     (event) => {
@@ -98,9 +98,22 @@ const useContentManager = () => {
     [validateField, setPageConfig]
   );
   const savePageConfig = useCallback(() => {
-    validateObject(pageConfig);
-    axiosPrivate
-      .post(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
+    const data = {
+      page_type: pageConfig.pageType,
+      name: pageConfig.name,
+      description: pageConfig.description,
+      parent: pageConfig.parent,
+      header_img: pageConfig.headerImage,
+      language: pageConfig.language,
+      header_text: pageConfig.headerText,
+      page_url: pageConfig.pageUrl,
+      seq_no: Number(pageConfig.orderNumber)
+    };
+
+    validateObject(pageConfig)
+      .then(() => {
+        return axiosPrivate.post(`/api/protected/${currentConfig.pageConfig}`, data);
+      })
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
@@ -108,6 +121,7 @@ const useContentManager = () => {
         console.error("error :>> ", err);
       });
   }, [pageConfig, validateObject]);
+
   const handleTabChange = useCallback(
     (event, newValue) => {
       setActiveTab(newValue);
@@ -122,12 +136,26 @@ const useContentManager = () => {
   const handleAddModalClose = useCallback(() => {
     setModalOpenAdd(false);
     setPageConfig(pageConfigInitial);
+    setErrors({});
   }, [setModalOpenAdd, setPageConfig]);
 
   const updatePageConfig = useCallback(() => {
-    validateObject(pageConfig);
-    axiosPrivate
-      .put(`/api/protected/${currentConfig.pageConfig}`, pageConfig)
+    validateObject(pageConfig)
+      .then(() => {
+        const data = {
+          id: pageConfig?.id,
+          page_type: pageConfig.pageType,
+          name: pageConfig.name,
+          description: pageConfig.description,
+          parent: pageConfig.parent,
+          header_img: pageConfig.headerImage,
+          language: pageConfig.language,
+          header_text: pageConfig.headerText,
+          page_url: pageConfig.pageUrl,
+          seq_no: pageConfig.orderNumber
+        };
+        return axiosPrivate.put(`/api/protected/${currentConfig.pageConfig}`, data);
+      })
       .then(({ data }) => {
         console.log("saved succefylly ", data);
       })
@@ -138,29 +166,37 @@ const useContentManager = () => {
   }, [validateObject, pageConfig]);
   const populatePageConfigForm = useCallback(
     (row) => {
-      const { id, name, page_type, parent, language, header_text, img_link, header_image, order_number, description } =
-        row.original;
-
-      const pageConfigTemp = {
-        id: id,
-        pageType: page_type,
-        parent: parent,
-        headerText: header_text,
-        language: language,
-        imageLink: img_link,
-        headerImage: header_image,
-        orderNumber: order_number,
-        description,
-        name
-      };
-
-      setPageConfig((prevPageConfig) => {
-        return {
-          ...prevPageConfig,
-          ...pageConfigTemp
-        };
-      });
-      handleAddModalOpen("Update Page Config");
+      const { id } = row.original;
+      axiosPrivate
+        .get(`/api/protected/${currentConfig.pageConfig}`, {
+          params: {
+            id
+          }
+        })
+        .then(({ data }) => {
+          const pageConfigTemp = {
+            id: data.id,
+            pageType: data.page_type,
+            parent: data.parent,
+            headerText: data.header_text,
+            language: data.language,
+            imageLink: data.img_link,
+            headerImage: data.header_image,
+            orderNumber: data.order_number,
+            description: data.description,
+            name: data.name
+          };
+          setPageConfig((prevPageConfig) => {
+            return {
+              ...prevPageConfig,
+              ...pageConfigTemp
+            };
+          });
+          handleAddModalOpen("Update Page Config");
+        })
+        .catch((error) => {
+          console.log("Error : >> ", error);
+        });
     },
     [handleAddModalOpen]
   );
@@ -168,16 +204,33 @@ const useContentManager = () => {
   const deletePageConfig = useCallback((row) => {
     const { id } = row.original;
     axiosPrivate
-      .delete(`/api/protected/${currentConfig.pageConfig}/${id}`)
+      .delete(`/api/protected/${currentConfig.pageConfig}}`, {
+        params: {
+          id
+        }
+      })
       .then(({ data }) => {
-        console.log("data deleted  ", data.id);
+        console.log("data deleted :>> ", data.id);
       })
       .catch((err) => {
         console.error("error :>> ", err);
       });
   }, []);
+  const addImageSelectionInPageConfig = (selectionButtonName, imageList) => {
+    setPageConfig((prevPageConfig) => {
+      return {
+        ...prevPageConfig,
+        [selectionButtonName]: imageList
+      };
+    });
+  };
   const pageConfigFormProps = useMemo(() => {
-    return { pageConfig: _.cloneDeep(pageConfig), handleChange, errors: _.cloneDeep(errors) };
+    return {
+      pageConfig: _.cloneDeep(pageConfig),
+      handleChange,
+      addImageSelectionInPageConfig,
+      errors: _.cloneDeep(errors)
+    };
   }, [errors, handleChange, pageConfig]);
   const dialogFormProps = useMemo(() => {
     return {

@@ -40,9 +40,9 @@ const reducer = (state, action) => {
       if (personalSettingStorage) {
         return { ...state, setting: action.payload, personalSetting: personalSettingStorage };
       }
-
-      personal.language = langs[0].id;
-      personal.themeColor = theme_colors[0].hexCode;
+      console.log("tenants ", tenants);
+      personal.language = langs[0]?.id;
+      personal.themeColor = theme_colors[0]?.hexCode;
       personal.selectedTenant = tenants[0].id;
       personal.themeMode = "light";
       setSetting("personalSetting", personal);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import PropTypes from "prop-types";
 
@@ -65,22 +65,29 @@ const COLUMNS = [
     accessor: "action"
   }
 ];
+const tableInitialState = {
+  pageIndex: 0,
+  pageSize: 10
+};
 
 const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
   const [data, setData] = React.useState([]);
-  const [skipPageReset, setSkipPageReset] = useState(false);
+
   const [loading, setLoading] = useState(true);
+  const [totalRows, setTotalRows] = useState();
+  const callFirstTimeOnly = useRef(false);
 
   const fetchData = useCallback((start, limit) => {
     axiosPrivate
-      .get(`/api/protected/${currentConfig.pageConfig}`, {
+      .get(`/api/protected/${currentConfig.pageConfigs}`, {
         params: {
           start,
           limit
         }
       })
       .then(({ data }) => {
-        setData(data);
+        setData(data.data);
+        setTotalRows(data.totalRows);
         setLoading(false);
       })
       .catch((err) => {
@@ -89,12 +96,19 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
       });
   }, []);
   useEffect(() => {
-    fetchData(0, 100);
+    if (!callFirstTimeOnly.current) {
+      callFirstTimeOnly.current = true;
+      fetchData(0, 10);
+    }
   }, [fetchData]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   const updateMyData = (rowIndex, columnId, value) => {
     // We also turn on the flag to not reset the page
-    setSkipPageReset(true);
+
     setData((old) =>
       old.map((row, index) => {
         if (index === rowIndex) {
@@ -108,10 +122,6 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
     );
   };
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
     <div>
       <EnhancedTable
@@ -120,10 +130,11 @@ const PageConfig = ({ populatePageConfigForm, deletePageConfig }) => {
         fetchData={fetchData}
         setData={setData}
         updateMyData={updateMyData}
-        skipPageReset={skipPageReset}
         deleteAction={deletePageConfig}
         shouldVisibleToolbar={true}
         populateForm={populatePageConfigForm}
+        totalRows={totalRows}
+        tableInitialState={tableInitialState}
       />
     </div>
   );

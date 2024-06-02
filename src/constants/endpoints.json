@@ -2,15 +2,19 @@
   "test": {
     "globalSetting": "global_setting",
     "contentData": "contents",
-    "pageConfig": "page_configs",
+    "pageConfigs": "page_configs",
+    "login": "login",
+    "file_list": "file_list"
     "login": "login",
     "languages": "languages"
   },
   "prod": {
     "globalSetting": "global_setting",
     "contentData": "contents",
-    "pageConfig": "page_configs",
+    "pageConfigs": "page_configs",
     "login": "login",
-    "lang": "lang"
+    "file_list": "file_list"
+    "login": "login",
+    "languages": "languages"
   }
 }
