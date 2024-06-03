@@ -26,18 +26,6 @@ const LanguageForm = ({ languageConfig, handleChange, errors }) => {
     <Grid container spacing={2} alignItems="baseline">
       <Grid item xs={12} sm={6}>
         <CustomTextField
-          label="ID:"
-          fullWidth
-          name="lang_id"
-          value={languageConfig.lang_id}
-          handleChange={handleChange}
-          helperText={(errors && errors?.id) || ""}
-          disabled
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={6}>
-        <CustomTextField
           label="Lang Name:"
           fullWidth
           name="lang_name"
@@ -52,7 +40,7 @@ const LanguageForm = ({ languageConfig, handleChange, errors }) => {
           label="Tenant name:"
           options={tenantOptions}
           fullWidth
-          name="tenant_name"
+          name="tenant_id"
           value={languageConfig.tenant_id}
           handleChange={handleChange}
           helperText={(errors && errors?.tenant_id) || ""}
