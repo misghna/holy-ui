@@ -204,7 +204,7 @@ const useContentManager = () => {
   const deletePageConfig = useCallback((row) => {
     const { id } = row.original;
     axiosPrivate
-      .delete(`/api/protected/${currentConfig.pageConfig}}`, {
+      .delete(`/api/protected/${currentConfig.pageConfig}`, {
         params: {
           id
         }
