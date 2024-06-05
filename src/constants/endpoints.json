@@ -1,24 +1,24 @@
 {
-    "test":
-    {
-        "globalSetting": "global_setting",
-        "contentData": "contents",
-        "pageConfigs": "page_configs",
-        "pageConfig": "page_config",
-        "login": "login",
-        "file_list": "file_list",
-        "userProfileAccessConfig": "user_profile",
-        "languages": "languages"
-    },
-    "prod":
-    {
-        "globalSetting": "global_setting",
-        "contentData": "contents",
-        "pageConfigs": "page_configs",
-        "pageConfig": "page_config",
-        "login": "login",
-        "file_list": "file_list",
-        "userProfileAccessConfig": "user_profile",
-        "languages": "languages"
-    }
+  "test": {
+    "globalSetting": "global_setting",
+    "contentData": "contents",
+    "pageConfigs": "page_configs",
+    "pageConfig": "page_config",
+    "login": "login",
+    "file_list": "file_list",
+    "userProfileAccessConfig": "user_profile",
+    "languages": "languages",
+    "dictionaries": "dictionaries"
+  },
+  "prod": {
+    "globalSetting": "global_setting",
+    "contentData": "contents",
+    "pageConfigs": "page_configs",
+    "pageConfig": "page_config",
+    "login": "login",
+    "file_list": "file_list",
+    "userProfileAccessConfig": "user_profile",
+    "languages": "languages",
+    "dictionaries": "dictionaries"
+  }
 }
