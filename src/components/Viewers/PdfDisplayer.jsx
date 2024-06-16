@@ -17,7 +17,7 @@ const PdfDisplayer = ({ item, onDoubleClick, displayContent }) => {
     <Box sx={{ cursor: "pointer" }} onDoubleClick={onDoubleClick}>
       {displayContent ? (
         <Box>
-          <Document file={item.media_link[0].file_name} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={item.media_link[0]} onLoadSuccess={onDocumentLoadSuccess}>
             {Array.from(new Array(numPages), (el, index) => (
               <Page
                 key={`page_${index + 1}`}
@@ -31,7 +31,7 @@ const PdfDisplayer = ({ item, onDoubleClick, displayContent }) => {
         </Box>
       ) : (
         <Box sx={{ height: 130, overflow: "hidden" }}>
-          <Document file={item.media_link[0].file_name} onLoadSuccess={onDocumentLoadSuccess}>
+          <Document file={item.media_link[0]} onLoadSuccess={onDocumentLoadSuccess}>
             <Page pageNumber={1} width={450} />
           </Document>
         </Box>
