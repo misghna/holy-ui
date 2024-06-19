@@ -57,7 +57,7 @@ const useUserAccessConfig = () => {
       });
   }, []);
   const validateObject = useCallback((formData) => {
-    schema
+    return schema
       .validate(formData)
       .then(() => {
         setErrors({});
@@ -87,7 +87,6 @@ const useUserAccessConfig = () => {
     [validateField, setFormData]
   );
   const saveAccessConfig = useCallback(() => {
-    validateObject(formData);
     validateObject(formData)
       .then(() => {
         return axiosPrivate.post(`/api/protected/${currentConfig.userProfileAccessConfig}`, formData);
